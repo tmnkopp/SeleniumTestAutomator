@@ -1,0 +1,43 @@
+{
+  "InputDefaults": {
+    "~unittest~": "success",
+    "(ip_address|ipaddress)": "255.255.255.255",
+    "(percent)": "50",
+    "(dateInput|date)": "01/01/2021",
+    "(CBYesNo)": "Y"
+  },
+  "InputDefaultsHVA": {
+    "(qid_5_1)": "12/2020",
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsHVAPOAM": {
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsIG": {
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsSAOP": {
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsAAPS": {
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsRMA": {
+    "(type:radio)": "Y"
+  },
+  "InputDefaultsCIO": {
+    "(qid_1_1_6)": "10",
+    "(qid_1_2_1)": "121",
+    "(qid_1_2_2)": "122",
+    "(qid_1_2_3)": "123",
+    "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
+  },
+  "CompositeControls": {
+    "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//td[text()[contains(.,'Agency Totals')]]": "InvGrid",
+    "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'rgCommandRow')]//span[contains(@id, 'AddNewRecord')]": "ServicesGrid",
+    "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'Row') and contains(@id, 'Config')]": "SystemsGrid",
+    "//*[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]": "NaiveFismaFormAutomator",
+    "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, 'CBButtPanel1_btnEdit')]": "NaiveFismaFormAutomator"
+  }
+}
+ 
