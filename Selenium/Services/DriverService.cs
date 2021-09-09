@@ -73,26 +73,30 @@ namespace CyberScope.Tests.Selenium
         #endregion
 
         #region Events 
-        public class ApplicationErrorEventArgs : EventArgs
+        public class DriverServiceEventArgs : EventArgs
         {
             public DriverService DriverService { get; set; }
             public QuestionGroup QuestionGroup { get; set; }
             public ChromeDriver Driver { get; set; }
-            public ApplicationErrorEventArgs(DriverService driverService)
+            public DriverServiceEventArgs(DriverService driverService)
             {
                 this.DriverService = driverService;
                 this.Driver = driverService.Driver;
             } 
         }
 
-        public event EventHandler<ApplicationErrorEventArgs> OnApplicationError;
-        protected virtual void ApplicationError(ApplicationErrorEventArgs e)
+        public event EventHandler<DriverServiceEventArgs> OnApplicationError;
+        protected virtual void ApplicationError(DriverServiceEventArgs e)
         { 
             OnApplicationError?.Invoke(this, e);
         }
-
+        public event EventHandler<DriverServiceEventArgs> OnSectionComplete;
+        protected virtual void SectionComplete(DriverServiceEventArgs e)
+        {
+            OnSectionComplete?.Invoke(this, e);
+        }
         #endregion
-       
+
         #region METHODS
 
         #region NAV
@@ -189,21 +193,18 @@ namespace CyberScope.Tests.Selenium
         {
             foreach (var section in this.Sections().Where(SectionGroupPredicate))
             {
+                var appargs = new DriverServiceEventArgs(this);
+                appargs.QuestionGroup = section;
+
                 this.ToSection(section);
                 foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
                     ((IAutomator)control).Automate(this.Driver);
+         
+                if (this.Driver.PageSource.Contains("Server Error in '/' Application")) 
+                    OnApplicationError(this, appargs);   
 
-                bool IsYellow = this.Driver.PageSource.Contains("Server Error in '/' Application");
-                if (IsYellow)
-                {
-                    var appargs = new ApplicationErrorEventArgs(this); 
-                    appargs.QuestionGroup = section;
-                    OnApplicationError(this, appargs);
-                    this.TestResult = TestResult.Fail;
-                    return this;
-                } 
-            }
-            this.TestResult = TestResult.Pass;
+                OnSectionComplete(this, appargs);
+            } 
             return this;
         }
         public DriverService FismaFormEnable()
