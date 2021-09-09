@@ -9,22 +9,19 @@ using System.Threading.Tasks;
 namespace CyberScope.Tests.Selenium
 {
     public interface IValueSetter {
-        void SetValue(ChromeDriver driver, string ElementId);
-        IWebElement Element { get; set; }
+        void SetValue(ChromeDriver driver, string ElementId); 
         Dictionary<string, string> Defaults { set; } 
         bool Overwrite { get; set; }
     }
     public abstract class BaseValueSetter
     {
         protected Dictionary<string, string> defaults;
-        public Dictionary<string, string> Defaults { set => defaults = value; protected get => defaults; }
-        public IWebElement Element { get; set; }
+        public Dictionary<string, string> Defaults { set => defaults = value; protected get => defaults; } 
         public bool Overwrite { get; set; } = true;
         protected IList<IWebElement> inputs;
         
         protected WebDriverWait wait; 
-        protected string GetMatchAttribute() {
-            IWebElement input = Element;
+        protected string GetMatchAttribute(IWebElement input) { 
             var target = $"{input.GetAttribute("name")} " +
                 $"{input.GetAttribute("id")} " +
                 $"{input.GetAttribute("class")} " +

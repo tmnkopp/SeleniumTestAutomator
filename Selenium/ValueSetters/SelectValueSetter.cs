@@ -10,13 +10,10 @@ namespace CyberScope.Tests.Selenium
     internal class SelectValueSetter : BaseValueSetter, IValueSetter
     {
         public void SetValue(ChromeDriver driver, string ElementId)
-        { 
-            Element = driver.FindElement(By.CssSelector($"#{ElementId}"));
+        {
+            IWebElement Element = driver.FindElement(By.CssSelector($"#{ElementId}"));
             SelectElement sel = new SelectElement(Element);
-            if (sel.SelectedOption == null)
-            {
-                sel.SelectByIndex(sel.Options.Count - 1);
-            }  
+            sel.SelectByIndex(sel.Options.Count - 1);
         }
     }
 }

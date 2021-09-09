@@ -70,31 +70,21 @@ namespace CyberScope.Tests.Selenium
         {
             this.OnPreAutomate += PreAutomate;
             this.OnPostAutomate += PostAutomate;
-        }
+        } 
         public NaiveAutomator(
         EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate
-        , Action<Exception,string> CatchAction
-        ): this (PreAutomate, PostAutomate)
-        {
-            this.CatchAction = CatchAction; 
-        }
-        public NaiveAutomator(
-        EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate
-        , Action<Exception, string> CatchAction
+        , EventHandler<AutomatorEventArgs> PostAutomate 
         , string ContainerCssSelector
-        ) : this(PreAutomate, PostAutomate, CatchAction)
+        ) : this(PreAutomate, PostAutomate)
         {
             this.ContainerSelector = ContainerCssSelector;
         }
         public NaiveAutomator(
         EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate
-        , Action<Exception, string> CatchAction
+        , EventHandler<AutomatorEventArgs> PostAutomate 
         , string ContainerCssSelector
         , string PK_FORM
-            ) : this(PreAutomate, PostAutomate, CatchAction, ContainerCssSelector)
+            ) : this(PreAutomate, PostAutomate, ContainerCssSelector)
         {
             this.PK_FORM = PK_FORM;
         } 
@@ -102,14 +92,7 @@ namespace CyberScope.Tests.Selenium
         {
             this.PK_FORM = PK_FORM;
         }
-        #endregion
-
-        #region ACTIONS
-         
-        private Action<Exception, string> catchAction = (e,m) => { };
-        public Action<Exception, string> CatchAction { get => catchAction; set => catchAction = value; }
-  
-        #endregion
+        #endregion 
 
         #region METHODS
 
@@ -121,12 +104,7 @@ namespace CyberScope.Tests.Selenium
                         select new { id=i.GetAttribute("id") }).ToList();
             while (elmts.Count > 0)
             {
-                try  { 
-                    InputAction(elmts[0].id);
-                }
-                catch (Exception ex) { 
-                    throw new Exception($"{Selector} {elmts[0].id} {ex.Message}");
-                }
+                InputAction(elmts[0].id); 
                 elmts.RemoveAt(0);
             }
         }
@@ -138,7 +116,19 @@ namespace CyberScope.Tests.Selenium
 
             var args = new AutomatorEventArgs(driver);
             PreAutomate(args);
-            Dictionary<string, string> InputDefaults = SettingsProvider.Config[$"InputDefaults{this.DataCall}"];
+            string dkey = this.DataCall;
+            Dictionary<string, string> InputDefaults = SettingsProvider.InputDefaults[$"Global"];
+            if (SettingsProvider.InputDefaults.ContainsKey($"{dkey}"))
+            {
+                foreach (var item in SettingsProvider.InputDefaults[$"{dkey}"])
+                {
+                    if (InputDefaults.ContainsKey(item.Key))
+                        InputDefaults[item.Key] = item.Value;
+                    else
+                        InputDefaults.Add(item.Key, item.Value);
+                }
+            }
+
             Dictionary<string, IValueSetter> valueSetters = new Dictionary<string, IValueSetter>();
             valueSetters.Add($"{this.container} input[type='radio']", new RadioValueSetter());
             valueSetters.Add($"{this.container} select:not([id*='_ddl_Sections'])", new SelectValueSetter());
@@ -157,7 +147,18 @@ namespace CyberScope.Tests.Selenium
                         IValueSetter valueSetter = item.Value;
                         valueSetter.Overwrite = posts==0;
                         valueSetter.Defaults = InputDefaults;
-                        valueSetter.SetValue(driver, ElementId);
+                        try
+                        {
+                            valueSetter.SetValue(driver, ElementId);
+                        }
+                        catch (StaleElementReferenceException ex)
+                        { 
+                            throw new Exception($"{ElementId} {ex.Message}");
+                        }
+                        catch (Exception ex)
+                        { 
+                            throw new Exception($"{ElementId} {ex.Message}");
+                        } 
                     });
                 } 
                 int postcnt = GetDisplayedElements().Count();

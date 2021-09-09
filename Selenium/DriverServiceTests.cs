@@ -23,7 +23,7 @@ namespace CyberScope.Tests.Selenium
             var ds = new DriverService();
             driver = ds.CsConnect(UserContext.Agency).Driver;
             Assert.IsType<ChromeDriver>(driver);
-            driver.Quit();
+            ds.DisposeDriverService(); 
         }  
     } 
 }

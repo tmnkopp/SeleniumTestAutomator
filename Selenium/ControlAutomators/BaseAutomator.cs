@@ -10,7 +10,13 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
 {
- 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+    public class AutomatorMeta : Attribute {
+        public Dictionary<string, string> Locators { get; set;  }
+        public AutomatorMeta( )
+        { 
+        }
+    }
     public interface IAutomator
     {
         string PK_FORM { get; set; }
@@ -44,7 +50,7 @@ namespace CyberScope.Tests.Selenium
         protected string container = "div[id*='ctl00_ContentPlaceHolder1_Panel'] .table";
         public string ContainerSelector
         {
-            get { return container; }
+            get { return container;  }
             set { container = value; }
         }
         #endregion

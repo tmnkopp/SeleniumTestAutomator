@@ -10,15 +10,15 @@ namespace CyberScope.Tests.Selenium
 {
     internal class RadioValueSetter : BaseValueSetter, IValueSetter
     {
+        
         public void SetValue(ChromeDriver driver, string ElementId)
         {
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(.25));
-            Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
-            var target = this.GetMatchAttribute(); 
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}"))); 
             bool matched = false;
             foreach (var item in Defaults.EmptyIfNull())
             {
-                if (Regex.Match(target, item.Key, RegexOptions.IgnoreCase).Success)
+                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
                 {
                     matched = true;
                     if (Element.GetAttribute("value").ToUpper() == item.Value.ToUpper())

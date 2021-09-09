@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
 {
+   
     public class InvGrid : BaseAutomator, IAutomator 
     {
         #region PROPS
@@ -59,12 +60,12 @@ namespace CyberScope.Tests.Selenium
             }
             foreach (string id in ids)
             { 
-                var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]");
+                var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
                 if (elements.Count > 0)
                 {
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                     ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                     driver.SwitchTo().Alert().Accept();
                 }
             }

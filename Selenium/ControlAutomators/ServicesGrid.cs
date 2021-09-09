@@ -62,8 +62,7 @@ namespace CyberScope.Tests.Selenium
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_AddNewRecordButton_input']")));
             ele.Click();
 
-            NaiveAutomator naiveFormFill = new NaiveAutomator() { ContainerSelector= ".rgEditRow" };
-            naiveFormFill.CatchAction = (e, m) => { throw e; };
+            NaiveAutomator naiveFormFill = new NaiveAutomator() { ContainerSelector= ".rgEditRow" }; 
             naiveFormFill.PK_FORM = base.PK_FORM;
             naiveFormFill.Automate(driver);
 

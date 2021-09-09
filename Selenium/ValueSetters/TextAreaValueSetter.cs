@@ -12,14 +12,14 @@ namespace CyberScope.Tests.Selenium
         public void SetValue(ChromeDriver driver, string ElementId)
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-            Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
+            IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
             if (!Overwrite && Element.Text != "")
                 return;
 
             Element.Clear();
             foreach (var item in Defaults.EmptyIfNull())
             { 
-                if (Regex.Match(this.GetMatchAttribute(), item.Key, RegexOptions.IgnoreCase).Success)
+                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
                     Element.SendKeys(item.Value);
             }
             if (Element.GetAttribute("value") == "")

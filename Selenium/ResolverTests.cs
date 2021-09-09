@@ -9,11 +9,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 using SeleniumExtras.WaitHelpers;
+using Serilog;
+using Serilog.Events;
+
 namespace CyberScope.Tests.Selenium
-{ 
+{
     public class ResolverTests
     {
+        ILogger _logger;
+        private readonly ITestOutputHelper output;
+        public ResolverTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
         [Theory]
         [InlineData("2021-Q4-CIO","3.9.1")]
         [InlineData("2021-Q4-CIO", "3.9.2")]
@@ -49,6 +59,16 @@ namespace CyberScope.Tests.Selenium
               }).FirstOrDefault();
             Assert.NotNull(datacall.Section.GroupName);
           
+        }
+        
+        [Fact]
+        public void Logger_logs( ) {
+            _logger = new LoggerConfiguration()   
+                .WriteTo.TestOutput(output, LogEventLevel.Verbose)
+                .CreateLogger();
+            _logger.Information("Information");
+            _logger.Error("Error");
+            _logger.Fatal("Fatal");  
         } 
     } 
 }

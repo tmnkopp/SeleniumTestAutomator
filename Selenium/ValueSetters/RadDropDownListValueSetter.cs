@@ -15,7 +15,7 @@ namespace CyberScope.Tests.Selenium
         {
             this.Driver = driver;
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-            Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
+            IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
             Element.Click();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             inputs = wait.Until(drv => drv.FindElements(By.CssSelector($".rddlPopup_Default ul li")));
