@@ -18,9 +18,8 @@ namespace CyberScope.Tests.Selenium
         {
             this.PK_FORM = _PK_FORM;
             this.ContainerSelector = "div[id*='ctl00_ContentPlaceHolder1_Panel'] table ";
-        }
-
-        public NaiveFismaFormAutomator()
+        } 
+        public NaiveFismaFormAutomator() : base()
         {
             this.OnPreAutomate += (sender, e) =>
             {
@@ -77,38 +76,14 @@ namespace CyberScope.Tests.Selenium
                 valueSetters.Add((IValueSetter)Activator.CreateInstance(Type.GetType($"{type.FullName}"))); 
 
         }
-        public NaiveAutomator(
-        EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate) : this()
+        public NaiveAutomator(List<IValueSetter> valueSetters)
         {
-            this.OnPreAutomate += PreAutomate;
-            this.OnPostAutomate += PostAutomate;
-        } 
-        public NaiveAutomator(
-        EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate 
-        , string ContainerCssSelector
-        ) : this(PreAutomate, PostAutomate)
-        {
-            this.ContainerSelector = ContainerCssSelector;
+            this.valueSetters = valueSetters; 
         }
-        public NaiveAutomator(
-        EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate 
-        , string ContainerCssSelector
-        , string PK_FORM
-            ) : this(PreAutomate, PostAutomate, ContainerCssSelector)
-        {
-            this.PK_FORM = PK_FORM;
-        } 
-        public NaiveAutomator(string PK_FORM)
-        {
-            this.PK_FORM = PK_FORM;
-        }
-        #endregion 
+        #endregion
 
         #region METHODS
-         
+
         public virtual void Automate(ChromeDriver driver)
         {
             this.driver = driver;

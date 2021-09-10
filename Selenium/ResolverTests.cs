@@ -100,8 +100,6 @@ namespace CyberScope.Tests.Selenium
             _logger.Information("Information");
             _logger.Error("Error");
             _logger.Fatal("Fatal");  
-        } 
-
-
+        }  
     } 
 }

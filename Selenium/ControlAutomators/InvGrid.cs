@@ -34,10 +34,11 @@ namespace CyberScope.Tests.Selenium
                 var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
                 if (esublist.Count > 0)
                 {
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                     esublist[0].Click();
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
                     IAlert alert = driver.SwitchTo().Alert();
-                    alert.Accept();
+                    alert.Accept(); 
                 }
             }
             foreach (string id in ids)

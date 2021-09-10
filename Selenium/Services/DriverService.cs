@@ -116,8 +116,7 @@ namespace CyberScope.Tests.Selenium
             return this;
         }
         public DriverService ToTab(string PK_FORM)
-        {
-            Log.Information("ToTab Init");
+        { 
             var driver = this.Driver;
             var datacall = (from rc in RepCycRepo.Instance.Query(r => r.FormMaster.PK_Form == PK_FORM)
                             select new { Tab = rc.Description }).FirstOrDefault();
@@ -201,9 +200,9 @@ namespace CyberScope.Tests.Selenium
                     ((IAutomator)control).Automate(this.Driver);
          
                 if (this.Driver.PageSource.Contains("Server Error in '/' Application")) 
-                    OnApplicationError(this, appargs);   
+                    ApplicationError(appargs);   
 
-                OnSectionComplete(this, appargs);
+                SectionComplete(appargs);
             } 
             return this;
         }

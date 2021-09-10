@@ -62,13 +62,14 @@ namespace CyberScope.Tests.Selenium
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_AddNewRecordButton_input']")));
             ele.Click();
 
-            NaiveAutomator naiveFormFill = new NaiveAutomator() { ContainerSelector= ".rgEditRow" }; 
-            naiveFormFill.PK_FORM = base.PK_FORM;
-            naiveFormFill.ValueSetters.Clear();
-            naiveFormFill.ValueSetters.Add(new TextInputValueSetter());
-            naiveFormFill.ValueSetters.Add(new RadDropDownListValueSetter());
-            naiveFormFill.ValueSetters.Add(new RadioValueSetter());
-            naiveFormFill.ValueSetters.Add(new SelectValueSetter());
+            List<IValueSetter> valueSetters = new List<IValueSetter>();
+                valueSetters.Add(new TextInputValueSetter());
+                valueSetters.Add(new RadDropDownListValueSetter());
+                valueSetters.Add(new RadioValueSetter());
+                valueSetters.Add(new SelectValueSetter()); 
+            NaiveAutomator naiveFormFill = new NaiveAutomator(valueSetters) ;
+            naiveFormFill.ContainerSelector = ".rgEditRow";
+            naiveFormFill.PK_FORM = base.PK_FORM; 
             naiveFormFill.Automate(driver);
 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
