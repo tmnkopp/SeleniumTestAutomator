@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
 {
+    [ValueSetterMeta( Selector="input[type='text']:not([readonly='readonly'])")]
     public class TextInputValueSetter : BaseValueSetter, IValueSetter
     { 
         public void SetValue(ChromeDriver driver, string ElementId) {
@@ -21,17 +22,16 @@ namespace CyberScope.Tests.Selenium
  
             foreach (var item in Defaults.EmptyIfNull())
             {
-                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
+                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success) {
+                    Element.Clear();
                     Element.SendKeys(item.Value);
+                }     
             }
             Element = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
             if (Element.GetAttribute("value") == "")
             {
-                if (Regex.Match(this.GetMatchAttribute(Element), $"(frequency|numeric|currency|numeral|decimal|age|year|day|month|number)", RegexOptions.IgnoreCase).Success)
-                    Element.SendKeys("0");
-                else
-                    Element.SendKeys("0");
+                Element.SendKeys("0");
             }
         }
     }

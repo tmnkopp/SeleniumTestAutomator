@@ -22,8 +22,9 @@
     "AAPS": {
       "(type:radio)": "Y"
     },
-    "RMA": {
-      "(type:radio)": "Y"
+    "EINSTEIN": {
+      "(IPAddress)": "2002::1234:ABCD:ffff:c0a8:101/64",
+      "(BGPPeerIP)": "123.123.123.123"
     },
     "CIO": {
       "(qid_1_1_6)": "10",

@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace CyberScope.Tests.Selenium
 {
+    [ValueSetterMeta(Selector = "*[class*='RadDropDownList']")]
     public class RadDropDownListValueSetter : BaseValueSetter, IValueSetter
     {
         private ChromeDriver Driver;

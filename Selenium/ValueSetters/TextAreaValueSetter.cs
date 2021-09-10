@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
 {
+    [ValueSetterMeta(Selector = "textarea")]
     public class TextAreaValueSetter : BaseValueSetter, IValueSetter
     {  
         public void SetValue(ChromeDriver driver, string ElementId)

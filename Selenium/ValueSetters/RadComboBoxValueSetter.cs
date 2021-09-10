@@ -7,6 +7,7 @@ using System.Linq;
 
 namespace CyberScope.Tests.Selenium
 {
+    [ValueSetterMeta(Selector = "div[class*='RadComboBox']")]
     public class RadComboBoxValueSetter : BaseValueSetter, IValueSetter
     {
         private ChromeDriver Driver;

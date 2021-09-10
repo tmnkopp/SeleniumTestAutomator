@@ -54,19 +54,32 @@ namespace CyberScope.Tests.Selenium
     }
     public class NaiveAutomator : BaseAutomator, IAutomator 
     { 
-        #region PROPS  
-        private Random _random = new Random(); 
-
+        #region PROPS 
+        
+        private Random _random = new Random();
+        private List<IValueSetter> valueSetters;
+        public List<IValueSetter> ValueSetters { get => valueSetters; set=> valueSetters = value; }
 
         #endregion
 
         #region CTOR
         public NaiveAutomator()
-        { 
+        {
+            // TODO: injet this dependancy 
+            valueSetters = new List<IValueSetter>();
+            var setters = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+                           where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
+                           from t in assm.GetTypes()
+                           where typeof(IValueSetter).IsAssignableFrom(t)
+                           && t.IsClass
+                           select t).ToList(); 
+            foreach (var type in setters) 
+                valueSetters.Add((IValueSetter)Activator.CreateInstance(Type.GetType($"{type.FullName}"))); 
+
         }
         public NaiveAutomator(
         EventHandler<AutomatorEventArgs> PreAutomate
-        , EventHandler<AutomatorEventArgs> PostAutomate)
+        , EventHandler<AutomatorEventArgs> PostAutomate) : this()
         {
             this.OnPreAutomate += PreAutomate;
             this.OnPostAutomate += PostAutomate;
@@ -95,20 +108,7 @@ namespace CyberScope.Tests.Selenium
         #endregion 
 
         #region METHODS
-
-        private void ElementIdIterator(string Selector, Action<string> InputAction)
-        {
-            inputs = driver.FindElements(By.CssSelector($"{Selector}"));
-            var elmts = (from i in inputs
-                        where i.Enabled && i.Displayed
-                        select new { id=i.GetAttribute("id") }).ToList();
-            while (elmts.Count > 0)
-            {
-                InputAction(elmts[0].id); 
-                elmts.RemoveAt(0);
-            }
-        }
-
+         
         public virtual void Automate(ChromeDriver driver)
         {
             this.driver = driver;
@@ -116,6 +116,61 @@ namespace CyberScope.Tests.Selenium
 
             var args = new AutomatorEventArgs(driver);
             PreAutomate(args);
+
+            Dictionary<string, string> InputDefaults = GetInputDefaults();
+                 
+            int posts = 0;
+            while (true) { 
+                int precnt = GetDisplayedElements().Count();
+                foreach (var setter in ValueSetters)
+                {
+                    var meta = (ValueSetterMeta)Attribute.GetCustomAttribute(setter.GetType(), typeof(ValueSetterMeta));
+                    var selector = $"{this.container} {meta.Selector}";
+                    ElementIdIterator(selector, (ElementId) =>
+                    {
+                        IValueSetter valueSetter = setter;
+                        valueSetter.Overwrite = posts==0;
+                        valueSetter.Defaults = InputDefaults;
+                        try
+                        {
+                            valueSetter.SetValue(driver, ElementId);
+                        }
+                        catch (StaleElementReferenceException ex)
+                        { 
+                            throw new Exception($"{ElementId} {ex.Message} {ex.InnerException}");
+                        }
+                        catch (Exception ex)
+                        { 
+                            throw new Exception($"{ElementId} {ex.Message} {ex.InnerException}");
+                        } 
+                    });
+                } 
+                int postcnt = GetDisplayedElements().Count();
+                ((IJavaScriptExecutor)driver).ExecuteScript("document.title=arguments[0];", $"{precnt}:{postcnt}");
+                posts++;
+                if (precnt >= postcnt || posts > 5) 
+                    break; 
+            }  
+            PostAutomate(args);
+        }
+
+        #region PRIV
+
+        private void ElementIdIterator(string Selector, Action<string> InputAction)
+        {
+            inputs = driver.FindElements(By.CssSelector($"{Selector}"));
+            var elmts = (from i in inputs
+                         where i.Enabled && i.Displayed
+                         select new { id = i.GetAttribute("id") }).ToList();
+            while (elmts.Count > 0)
+            {
+                InputAction(elmts[0].id);
+                elmts.RemoveAt(0);
+            }
+        }
+
+        private Dictionary<string, string> GetInputDefaults()
+        {
             string dkey = this.DataCall;
             Dictionary<string, string> InputDefaults = SettingsProvider.InputDefaults[$"Global"];
             if (SettingsProvider.InputDefaults.ContainsKey($"{dkey}"))
@@ -128,60 +183,19 @@ namespace CyberScope.Tests.Selenium
                         InputDefaults.Add(item.Key, item.Value);
                 }
             }
-
-            Dictionary<string, IValueSetter> valueSetters = new Dictionary<string, IValueSetter>();
-            valueSetters.Add($"{this.container} input[type='radio']", new RadioValueSetter());
-            valueSetters.Add($"{this.container} select:not([id*='_ddl_Sections'])", new SelectValueSetter());
-            valueSetters.Add($"{this.container} *[class*='RadDropDownList']", new RadDropDownListValueSetter());
-            valueSetters.Add($"{this.container} div[class*='RadComboBox']", new RadComboBoxValueSetter());
-            valueSetters.Add($"{this.container} textarea", new TextAreaValueSetter());
-            valueSetters.Add($"{this.container} input[type='text']:not([readonly='readonly'])", new TextInputValueSetter());
-
-            int posts = 0;
-            while (true) { 
-                int precnt = GetDisplayedElements().Count();
-                foreach (var item in valueSetters)
-                {
-                    ElementIdIterator(item.Key, (ElementId) =>
-                    {
-                        IValueSetter valueSetter = item.Value;
-                        valueSetter.Overwrite = posts==0;
-                        valueSetter.Defaults = InputDefaults;
-                        try
-                        {
-                            valueSetter.SetValue(driver, ElementId);
-                        }
-                        catch (StaleElementReferenceException ex)
-                        { 
-                            throw new Exception($"{ElementId} {ex.Message}");
-                        }
-                        catch (Exception ex)
-                        { 
-                            throw new Exception($"{ElementId} {ex.Message}");
-                        } 
-                    });
-                } 
-                int postcnt = GetDisplayedElements().Count();
-                ((IJavaScriptExecutor)driver).ExecuteScript("document.title=arguments[0];", $"{precnt}:{postcnt}");
-                posts++;
-                if (precnt >= postcnt || posts > 5) 
-                    break; 
-            }  
-            PostAutomate(args);
+            return InputDefaults;
         }
-        private IReadOnlyCollection<IWebElement> GetDisplayedElements() {
-            IReadOnlyCollection<IWebElement> eCollection = 
+        private IReadOnlyCollection<IWebElement> GetDisplayedElements()
+        {
+            IReadOnlyCollection<IWebElement> eCollection =
                 (from e in driver.FindElement(By.CssSelector($"{this.container}")).FindElements(By.XPath($"//input|//select|//textarea"))
-                where e.Displayed
-                select e).ToList();
+                 where e.Displayed
+                 select e).ToList();
             return eCollection;
         }
-        private string GetRand()
-        { 
-            return string.Format("{0}:{1}"
-                , DateTime.Now.TimeOfDay.Hours.ToString()
-                , DateTime.Now.TimeOfDay.Minutes.ToString());
-        } 
-        #endregion 
+
+        #endregion
+
+        #endregion
     }
 }

@@ -7,7 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
 {
-    internal class SelectValueSetter : BaseValueSetter, IValueSetter
+    [ValueSetterMeta(Selector = "select:not([id*='_ddl_Sections'])")]
+    public class SelectValueSetter : BaseValueSetter, IValueSetter
     {
         public void SetValue(ChromeDriver driver, string ElementId)
         {

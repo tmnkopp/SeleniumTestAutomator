@@ -8,9 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
 {
-    internal class RadioValueSetter : BaseValueSetter, IValueSetter
-    {
-        
+    [ValueSetterMeta(Selector = "input[type='radio']")]
+    public class RadioValueSetter : BaseValueSetter, IValueSetter
+    { 
         public void SetValue(ChromeDriver driver, string ElementId)
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));

@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,15 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
 {
+    public class ValueSetterMeta: Attribute
+    {
+        public string Selector { get; set; }
+        public ValueSetterMeta()
+        {
+
+        }
+    }
+
     public interface IValueSetter {
         void SetValue(ChromeDriver driver, string ElementId); 
         Dictionary<string, string> Defaults { set; } 
