@@ -66,6 +66,11 @@ namespace CyberScope.Tests.Selenium
         {
             OnPostAutomate?.Invoke(this, e);
         }
+        public event EventHandler<AutomatorEventArgs> OnStaleElement;
+        protected virtual void StaleElement(AutomatorEventArgs e)
+        {
+            OnStaleElement?.Invoke(this, e);
+        }
         #endregion
     } 
     
