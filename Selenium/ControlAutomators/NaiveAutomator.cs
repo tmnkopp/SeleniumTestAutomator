@@ -42,8 +42,7 @@ namespace CyberScope.Tests.Selenium
                     error = e.Driver.FindElements(By.CssSelector(errorSelector))?.FirstOrDefault(); 
                     if (error != null)
                     {
-                        string errtxt = error.Text;
-                        //e.Driver.FindElements(By.CssSelector("*[id$='_btnEdit']"))?.FirstOrDefault().Click(); 
+                        string errtxt = error.Text; 
                         throw new Exception($"Form Contains Errors {errtxt}");
                     }
                 } 

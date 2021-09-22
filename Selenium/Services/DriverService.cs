@@ -169,7 +169,7 @@ namespace CyberScope.Tests.Selenium
             return FismaSections.GetAll(_PK_FORM);
         }
 
-        public IWebElement GetField(By By) {
+        protected IWebElement GetField(By By) {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(2));
             return (from e in wait.Until(dvr => dvr.FindElements(By))
                                    where e.Enabled && e.Displayed
