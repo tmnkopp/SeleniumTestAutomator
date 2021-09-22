@@ -112,7 +112,7 @@ namespace CyberScope.Tests.Selenium
                         }
                         catch (StaleElementReferenceException ex)
                         { 
-                            throw new StaleElementReferenceException($"{ElementId} {ex.Message} {ex.InnerException}");
+                            // throw new StaleElementReferenceException($"{ElementId} {ex.Message} {ex.InnerException}");
                         }
                         catch (Exception ex)
                         { 
