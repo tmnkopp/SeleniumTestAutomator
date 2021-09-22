@@ -101,8 +101,7 @@ namespace CyberScope.Tests.Selenium
 
         #region NAV
         public DriverService CsConnect(UserContext userContext)
-        {
-            Log.Information("CsConnect Init");
+        { 
             var driver = this.Driver;
             var user = $"{ConfigurationManager.AppSettings.Get($"{userContext.ToString()}User")}";
             var pass = $"{ConfigurationManager.AppSettings.Get($"{userContext.ToString()}Pass")}";
