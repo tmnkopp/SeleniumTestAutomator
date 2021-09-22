@@ -83,9 +83,10 @@ namespace CyberScope.Tests.Selenium
 
         #region METHODS
 
-        public virtual void Automate(ChromeDriver driver)
+        public virtual void Automate(SessionContext sessionContext)
         {
-            this.driver = driver;
+            this.driver = sessionContext.Driver; 
+
             IWebElement eContainer = driver.FindElement(By.CssSelector($"{this.container}")); 
 
             var args = new AutomatorEventArgs(driver);

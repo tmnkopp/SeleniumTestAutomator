@@ -22,9 +22,12 @@ namespace CyberScope.Tests.Selenium
              
         }
         #endregion
-        
+
         #region METHODS
-        public void Automate(ChromeDriver driver) {
+        public virtual void Automate(SessionContext sessionContext)
+        {
+            this.driver = sessionContext.Driver;
+
             IAlert alert;
             try
             {
@@ -70,7 +73,7 @@ namespace CyberScope.Tests.Selenium
             NaiveAutomator naiveFormFill = new NaiveAutomator(valueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow";
             naiveFormFill.PK_FORM = base.PK_FORM; 
-            naiveFormFill.Automate(driver);
+            naiveFormFill.Automate(sessionContext);
 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_PerformInsertButton']")));

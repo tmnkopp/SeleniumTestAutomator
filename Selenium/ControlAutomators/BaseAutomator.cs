@@ -22,14 +22,9 @@ namespace CyberScope.Tests.Selenium
     {
         string PK_FORM { get; set; }
         string ContainerSelector { get; set; } 
-        void Automate(ChromeDriver driver);
-    }
-    public interface ISessionContext
-    {
-        ILogger Logger{ get; set; }
-        ChromeDriver Driver { get; set; } 
-    }
-    public class SessionContext : ISessionContext
+        void Automate(SessionContext context); 
+    } 
+    public struct SessionContext 
     {
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }

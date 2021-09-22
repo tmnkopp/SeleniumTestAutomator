@@ -36,10 +36,11 @@ namespace CyberScope.Tests.Selenium
 
         public UserContext UserContext { get; set; } = UserContext.Agency;
         public TestResult TestResult { get; set; }
+        private ILogger Logger; 
         private string _PK_FORM;
         private ChromeDriver _driver;  
-        public DriverService() {
-     
+        public DriverService(ILogger Logger) {
+            this.Logger = Logger;
         }
         public void DisposeDriverService() { 
             Driver.Quit();
@@ -189,6 +190,7 @@ namespace CyberScope.Tests.Selenium
 
         public DriverService SectionTest(Func<QuestionGroup, bool> SectionGroupPredicate )
         {
+            SessionContext sc = new SessionContext() { Driver = this.Driver, Logger = this.Logger };
             foreach (var section in this.Sections().Where(SectionGroupPredicate))
             {
                 var appargs = new DriverServiceEventArgs(this);
@@ -196,7 +198,7 @@ namespace CyberScope.Tests.Selenium
 
                 this.ToSection(section);
                 foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
-                    ((IAutomator)control).Automate(this.Driver);
+                    ((IAutomator)control).Automate(sc);
          
                 if (this.Driver.PageSource.Contains("Server Error in '/' Application")) 
                     ApplicationError(appargs);   

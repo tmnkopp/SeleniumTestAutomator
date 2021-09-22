@@ -24,8 +24,10 @@ namespace CyberScope.Tests.Selenium
         #endregion
 
         #region METHODS
-        public void Automate(ChromeDriver driver)
+        public virtual void Automate(SessionContext sessionContext)
         {
+            this.driver = sessionContext.Driver;
+
             IReadOnlyCollection<IWebElement> elist =
                 driver.FindElementsByXPath(@"//table[contains(@class,'rgMasterTable')]/tbody//tr[contains(@class,'Row')]");
             var ids = (from e in elist select e.GetAttribute("id")).ToList();

@@ -23,8 +23,10 @@ namespace CyberScope.Tests.Selenium
         #endregion
 
         #region METHODS
-        public void Automate(ChromeDriver driver)
+        public virtual void Automate(SessionContext sessionContext)
         {
+            this.driver = sessionContext.Driver;
+
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IReadOnlyCollection<IWebElement> elist = wait.Until(drv =>
                 drv.FindElements(By.CssSelector(".rgMasterTable tr[class$='Row']")));
