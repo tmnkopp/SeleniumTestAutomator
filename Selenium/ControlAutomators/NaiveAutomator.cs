@@ -111,8 +111,8 @@ namespace CyberScope.Tests.Selenium
                             valueSetter.SetValue(driver, ElementId);
                         }
                         catch (StaleElementReferenceException ex)
-                        { 
-                            // throw new StaleElementReferenceException($"{ElementId} {ex.Message} {ex.InnerException}");
+                        {
+                            sessionContext.Logger.Warning($"StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
                         }
                         catch (Exception ex)
                         { 
