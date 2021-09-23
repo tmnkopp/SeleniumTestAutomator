@@ -11,7 +11,7 @@ using System.Threading.Tasks;
  
 namespace CyberScope.Tests.Selenium
 {
-    public class NaiveFismaFormAutomator : NaiveAutomator, IAutomator 
+    internal class NaiveFismaFormAutomator : NaiveAutomator, IAutomator 
     {
         #region CTOR 
         public NaiveFismaFormAutomator(string _PK_FORM) : this()
@@ -50,7 +50,7 @@ namespace CyberScope.Tests.Selenium
         } 
         #endregion
     }
-    public class NaiveAutomator : BaseAutomator, IAutomator 
+    internal class NaiveAutomator : BaseAutomator, IAutomator 
     { 
         #region PROPS 
         

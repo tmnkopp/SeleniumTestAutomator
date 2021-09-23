@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
 {
-    public class SystemsGrid : BaseAutomator, IAutomator 
+    internal class SystemsGrid : BaseAutomator, IAutomator 
     {
         #region PROPS
         private IWebElement ele;
@@ -34,20 +34,31 @@ namespace CyberScope.Tests.Selenium
 
             foreach (string id in ids)
             {
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
-                if (esublist.Count > 0)
-                {
-                    esublist[0].Click();
+                try 
+                { 
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                    var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                    foreach (var input in inputs)
+                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
+                    if (esublist.Count > 0)
                     {
-                        input.Clear();
-                        input.SendKeys("0");
+                        esublist[0].Click();
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
+                        foreach (var input in inputs)
+                        {
+                            input.Clear();
+                            input.SendKeys("0");
+                        }
+                        driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_UpdateButton')]").Click();
                     }
-                    driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_UpdateButton')]").Click();
                 }
+                catch (StaleElementReferenceException ex)
+                {
+                    sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{ex.Message} {ex.InnerException}");
+                } 
             }
         }
         #endregion

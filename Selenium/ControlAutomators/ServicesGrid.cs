@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
-{ 
-    public class ServicesGrid : BaseAutomator, IAutomator
+{
+    internal class ServicesGrid : BaseAutomator, IAutomator
     {
         #region PROPS
         private IWebElement ele;
@@ -38,9 +38,13 @@ namespace CyberScope.Tests.Selenium
                     driver.SwitchTo()?.Alert()?.Accept();
                 } 
             }
+            catch (StaleElementReferenceException ex)
+            {
+                sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
+            }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception($"{ex.Message} {ex.InnerException}");
             }
             try
             {
@@ -51,10 +55,14 @@ namespace CyberScope.Tests.Selenium
                     driver.SwitchTo()?.Alert()?.Accept();
                 } 
             }
+            catch (StaleElementReferenceException ex)
+            {
+                sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
+            }
             catch (Exception ex)
             {
-                throw ex;
-            } 
+                throw new Exception($"{ex.Message} {ex.InnerException}");
+            }
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_DeleteButton']")));
             ele.Click();

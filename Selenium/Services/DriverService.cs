@@ -36,7 +36,7 @@ namespace CyberScope.Tests.Selenium
 
         public UserContext UserContext { get; set; } = UserContext.Agency;
         public TestResult TestResult { get; set; }
-        private ILogger Logger; 
+        public ILogger Logger; 
         private string _PK_FORM;
         private ChromeDriver _driver;  
         public DriverService(ILogger Logger) {
@@ -84,8 +84,7 @@ namespace CyberScope.Tests.Selenium
                 this.DriverService = driverService;
                 this.Driver = driverService.Driver;
             } 
-        }
-
+        } 
         public event EventHandler<DriverServiceEventArgs> OnApplicationError;
         protected virtual void ApplicationError(DriverServiceEventArgs e)
         { 
@@ -242,11 +241,20 @@ namespace CyberScope.Tests.Selenium
             return this;
         }
 
+        public bool FismaFormValidates() {
+            this.ToSection(-1);
+            var success = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(5))
+            .Until(dvr => dvr.FindElements(By.CssSelector("#ctl00_ContentPlaceHolder1_lblSuccessInfo")));
+            if (success.Count() > 0)
+                return success[0].Text.Contains("Your form has been validated and contains no errors.");
+            return false;
+        }
+
         #endregion
 
         #region METHODS: Control ACCESSORS 
 
-        public IEnumerable<IAutomator> PageControlCollection() {
+        internal IEnumerable<IAutomator> PageControlCollection() {
             var automators = new List<IAutomator>();
             var driver = this.Driver;
             foreach (var c in SettingsProvider.ControlLocators.EmptyIfNull())

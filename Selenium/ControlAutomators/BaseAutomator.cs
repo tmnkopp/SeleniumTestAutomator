@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 namespace CyberScope.Tests.Selenium
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
-    public class AutomatorMeta : Attribute {
+    internal class AutomatorMeta : Attribute {
         public Dictionary<string, string> Locators { get; set;  }
         public AutomatorMeta( )
         { 
         }
     }
-    public interface IAutomator
+    internal interface IAutomator
     {
         string PK_FORM { get; set; }
         string ContainerSelector { get; set; } 
         void Automate(SessionContext context); 
-    } 
-    public struct SessionContext 
+    }
+    internal struct SessionContext 
     {
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
@@ -37,8 +37,8 @@ namespace CyberScope.Tests.Selenium
         }
         public ChromeDriver Driver { get; set; }
         public string CurrentWindowHandle { get; set; }
-    } 
-    public abstract class BaseAutomator
+    }
+    internal abstract class BaseAutomator
     { 
         #region PROPS 
         protected ChromeDriver driver;

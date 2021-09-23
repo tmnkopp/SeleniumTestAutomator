@@ -8,9 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
-{
-   
-    public class InvGrid : BaseAutomator, IAutomator 
+{ 
+    internal class InvGrid : BaseAutomator, IAutomator 
     {
         #region PROPS
         private IWebElement ele;
@@ -33,44 +32,79 @@ namespace CyberScope.Tests.Selenium
             var ids = (from e in elist select e.GetAttribute("id")).ToList();
             foreach (string id in ids)
             { 
-                var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
-                if (esublist.Count > 0)
-                {
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                    esublist[0].Click();
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
-                    IAlert alert = driver.SwitchTo().Alert();
-                    alert.Accept(); 
-                }
-            }
-            foreach (string id in ids)
-            { 
-                var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
-                if (esublist.Count > 0)
-                {
-                    esublist[0].Click(); 
-                    var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                    foreach (var input in inputs)
+                try
+                { 
+                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
+                    if (esublist.Count > 0)
                     {
-                        if (input.GetAttribute("value") == "") 
-                            input.SendKeys("1");  
-                    }   
-                } 
-                var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
-                if (elements.Count > 0) 
-                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]); 
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1); 
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+                        esublist[0].Click();
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+                        IAlert alert = driver.SwitchTo().Alert();
+                        alert.Accept();
+                    } 
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                }
+
             }
             foreach (string id in ids)
-            { 
-                var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
-                if (elements.Count > 0)
-                {
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                    driver.SwitchTo().Alert().Accept();
+            {
+                try
+                { 
+                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
+                    if (esublist.Count > 0)
+                    {
+                        esublist[0].Click();
+                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
+                        foreach (var input in inputs)
+                        {
+                            if (input.GetAttribute("value") == "")
+                                input.SendKeys("1");
+                        }
+                    }
+                    var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
+                    if (elements.Count > 0)
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 }
+                catch (StaleElementReferenceException ex)
+                {
+                    sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                }
+
+            }
+            foreach (string id in ids)
+            {
+                try 
+                { 
+                    var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
+                    if (elements.Count > 0)
+                    {
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                        driver.SwitchTo().Alert().Accept();
+                    }
+                }
+                catch (StaleElementReferenceException ex)
+                {
+                    sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                } 
             }
         }
         #endregion 
