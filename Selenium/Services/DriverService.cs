@@ -100,7 +100,7 @@ namespace CyberScope.Tests.Selenium
 
         #region METHODS
 
-        #region NAV
+        #region METHODS: NAV
         public DriverService CsConnect(UserContext userContext)
         { 
             var driver = this.Driver;
@@ -165,29 +165,34 @@ namespace CyberScope.Tests.Selenium
         }
         #endregion
 
-         
-        public IEnumerable<QuestionGroup> Sections() {
-            return FismaSections.GetAll(_PK_FORM);
-        }
-
-        protected IWebElement GetField(By By) {
+        #region METHODS: FIELD ACCESSORS
+        public IWebElement GetField(By By)
+        {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(2));
             return (from e in wait.Until(dvr => dvr.FindElements(By))
-                                   where e.Enabled && e.Displayed
-                                   select e).FirstOrDefault();
+                    where e.Enabled && e.Displayed
+                    select e).FirstOrDefault();
         }
         public string GetFieldValue(By By)
         {
             IWebElement element = GetField(By);
             return element?.Text;
         }
-        public DriverService SetFieldValue(By By, string value) { 
+        public DriverService SetFieldValue(By By, string value)
+        {
             IWebElement element = GetField(By);
             element?.Clear();
             element?.SendKeys(value);
             return this;
         }
+        #endregion
 
+        #region METHODS: Section ACCESSORS
+
+        public IEnumerable<QuestionGroup> Sections() {
+            return FismaSections.GetAll(_PK_FORM);
+        }
+         
         public DriverService SectionTest(Func<QuestionGroup, bool> SectionGroupPredicate )
         {
             SessionContext sc = new SessionContext() { Driver = this.Driver, Logger = this.Logger };
@@ -207,6 +212,11 @@ namespace CyberScope.Tests.Selenium
             } 
             return this;
         }
+
+        #endregion
+
+        #region METHODS: FismaForm ACCESSORS 
+
         public DriverService FismaFormEnable()
         {
            var driver = this.Driver; 
@@ -231,6 +241,11 @@ namespace CyberScope.Tests.Selenium
             input.Click();
             return this;
         }
+
+        #endregion
+
+        #region METHODS: Control ACCESSORS 
+
         public IEnumerable<IAutomator> PageControlCollection() {
             var automators = new List<IAutomator>();
             var driver = this.Driver;
@@ -250,12 +265,18 @@ namespace CyberScope.Tests.Selenium
         public bool ElementExists(By Selector) {
             return (this.Driver.FindElements(Selector).Count() > 0);
         }
+        #endregion
+
+        #region METHODS: PRIV
         private string GetElementID(string XPathSelector) {
             string id = "";
             if (this.Driver.FindElements(By.XPath(XPathSelector)).Count > 0)
                 id = this.Driver.FindElement(By.XPath(XPathSelector)).GetAttribute("id"); 
             return id;
         }
+
+        #endregion
+
         #endregion
     }
 }
