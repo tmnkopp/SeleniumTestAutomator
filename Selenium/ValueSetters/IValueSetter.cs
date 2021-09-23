@@ -13,11 +13,9 @@ namespace CyberScope.Tests.Selenium
     {
         public string Selector { get; set; }
         public ValueSetterMeta()
-        {
-
+        { 
         }
-    }
-
+    } 
     public interface IValueSetter {
         void SetValue(ChromeDriver driver, string ElementId); 
         Dictionary<string, string> Defaults { set; } 

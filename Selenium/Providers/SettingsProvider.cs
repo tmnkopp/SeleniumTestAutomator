@@ -19,8 +19,7 @@ namespace CyberScope.Tests.Selenium
         public string Selector { get; set; }
     }
     public static class SettingsProvider
-    {
-
+    { 
         #region PROPS 
         private static string RawConfig() {
             var codeBaseUrl = new Uri(Assembly.GetExecutingAssembly().CodeBase);
