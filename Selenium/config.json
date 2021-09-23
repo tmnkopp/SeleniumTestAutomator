@@ -4,14 +4,18 @@
       "(ip_address|ipaddress)": "255.255.255.255",
       "(percent)": "50",
       "(dateInput|date)": "01/01/2021",
-      "(CBYesNo)": "Y"
+      "(CBYesNo)": "Y",
+      "(RadRadioButton)": "Yes",
+      "(Title|Name)": "NameTitle"
     },
     "HVA": {
       "(qid_5_1)": "12/2020",
       "(type:radio|CBYesNo)": "Y"
     },
     "HVAPOAM": {
-      "(type:radio)": "Y"
+      "(ActCompDate)": "",
+      "(SchCompDate|RemediationDate)": "01/01/2023",
+      "(CompletionDate)": "01/01/2024"
     },
     "IG": {
       "(type:radio)": "Y"
@@ -23,8 +27,9 @@
       "(type:radio)": "Y"
     },
     "EINSTEIN": {
+      "(IPAddress)": "2002::1234:ABCD:ffff:c0a8:101/64",
       "(BGPPeerIP)": "123.123.123.123",
-      "(IPAddress)": "2002::1234:ABCD:ffff:c0a8:101/64" 
+      "(BGPRoute)": "255.255.255.255/12"
     },
     "CIO": {
       "(qid_1_1_6)": "10",
@@ -51,13 +56,18 @@
       "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]"
     },
     {
-      "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'rgCommandRow')]//span[contains(@id, 'AddNewRecord')]",
+      "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'rgCommandRow')]//span[contains(@id, 'DeleteButton')]",
       "Type": "ServicesGrid",
       "Selector": "//div[contains(@class, 'RadGrid')]"
     },
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'Row') and contains(@id, 'Config')]",
       "Type": "SystemsGrid",
+      "Selector": "//div[contains(@class, 'RadGrid')]"
+    },
+    {
+      "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
+      "Type": "RadGridForm",
       "Selector": "//div[contains(@class, 'RadGrid')]"
     }
   ]

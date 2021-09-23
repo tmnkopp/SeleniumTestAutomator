@@ -87,7 +87,7 @@ namespace CyberScope.Tests.Selenium
         {
             this.driver = sessionContext.Driver; 
 
-            IWebElement eContainer = driver.FindElement(By.CssSelector($"{this.container}")); 
+            var eContainer = driver.FindElements(By.CssSelector($"{this.container}")); 
 
             var args = new AutomatorEventArgs(driver);
             PreAutomate(args);
