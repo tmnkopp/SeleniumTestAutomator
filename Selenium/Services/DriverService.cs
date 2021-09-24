@@ -258,13 +258,17 @@ namespace CyberScope.Tests.Selenium
             var automators = new List<IAutomator>();
             var driver = this.Driver;
             foreach (var c in SettingsProvider.ControlLocators.EmptyIfNull())
-            {
+            { 
                 if (driver.FindElements(By.XPath($"{c.Locator}")).Count > 0)
                 {
                     var type = Assm.GetTypes().Where(t => t.Name.Contains(c.Type)).FirstOrDefault();
                     IAutomator obj = (IAutomator)Activator.CreateInstance(Type.GetType($"{type.FullName}"));
                     obj.PK_FORM = _PK_FORM;
                     obj.ContainerSelector = $" #{GetElementID(c.Selector)} ";
+                    obj.ValueSetters = (from vs in obj.ValueSetters
+                                        where Regex.IsMatch(vs.GetType().Name, $"{c.ValueSetterTypes}")
+                                        select vs).ToList();
+
                     automators.Add(obj);
                 }
             }

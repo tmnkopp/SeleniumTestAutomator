@@ -55,29 +55,15 @@ namespace CyberScope.Tests.Selenium
         #region PROPS 
         
         private Random _random = new Random();
-        private List<IValueSetter> valueSetters;
-        public List<IValueSetter> ValueSetters { get => valueSetters; set=> valueSetters = value; }
-
+         
         #endregion
 
         #region CTOR
-        public NaiveAutomator()
-        {
-            // TODO: injet this dependancy 
-            valueSetters = new List<IValueSetter>();
-            var setters = (from assm in AppDomain.CurrentDomain.GetAssemblies()
-                           where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
-                           from t in assm.GetTypes()
-                           where typeof(IValueSetter).IsAssignableFrom(t)
-                           && t.IsClass
-                           select t).ToList(); 
-            foreach (var type in setters) 
-                valueSetters.Add((IValueSetter)Activator.CreateInstance(Type.GetType($"{type.FullName}"))); 
-
+        public NaiveAutomator():base()
+        {  
         }
-        public NaiveAutomator(List<IValueSetter> valueSetters)
-        {
-            this.valueSetters = valueSetters; 
+        public NaiveAutomator(List<IValueSetter> valueSetters) : base(valueSetters)
+        { 
         }
         #endregion
 
@@ -85,8 +71,7 @@ namespace CyberScope.Tests.Selenium
 
         public virtual void Automate(SessionContext sessionContext)
         {
-            this.driver = sessionContext.Driver; 
-
+            this.driver = sessionContext.Driver;  
             var eContainer = driver.FindElements(By.CssSelector($"{this.container}")); 
 
             var args = new AutomatorEventArgs(driver);

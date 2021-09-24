@@ -21,7 +21,8 @@ namespace CyberScope.Tests.Selenium
     internal interface IAutomator
     {
         string PK_FORM { get; set; }
-        string ContainerSelector { get; set; } 
+        string ContainerSelector { get; set; }
+        List<IValueSetter> ValueSetters { get; set; } 
         void Automate(SessionContext context); 
     }
     internal struct SessionContext 
@@ -39,14 +40,37 @@ namespace CyberScope.Tests.Selenium
         public string CurrentWindowHandle { get; set; }
     }
     internal abstract class BaseAutomator
-    { 
+    {
+        #region CTOR
+
+        public BaseAutomator()
+        {
+            //TODO INJECT THIS
+            valueSetters = new List<IValueSetter>();
+            var setters = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+                           where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
+                           from t in assm.GetTypes()
+                           where typeof(IValueSetter).IsAssignableFrom(t)
+                           && t.IsClass
+                           select t).ToList();
+            foreach (var type in setters)
+                valueSetters.Add((IValueSetter)Activator.CreateInstance(Type.GetType($"{type.FullName}")));
+        }
+        public BaseAutomator(List<IValueSetter> valueSetters)
+        {
+            this.valueSetters = valueSetters;
+        }
+        #endregion
+
         #region PROPS 
         protected ChromeDriver driver;
         protected WebDriverWait wait;
         protected IList<IWebElement> inputs;
         protected IWebElement input; 
         private string _PK_FORM; 
-        public string PK_FORM { get => _PK_FORM; set => _PK_FORM = value;  } 
+        public string PK_FORM { get => _PK_FORM; set => _PK_FORM = value;  }
+        protected List<IValueSetter> valueSetters;
+        public List<IValueSetter> ValueSetters { get => valueSetters; set => valueSetters = value;   }
         public string DataCall {
             get {
                 var lst = PK_FORM?.Split('-');

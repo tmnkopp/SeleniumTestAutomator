@@ -17,6 +17,7 @@ namespace CyberScope.Tests.Selenium
         public string Locator { get; set; }
         public string Type { get; set; }
         public string Selector { get; set; }
+        public string ValueSetterTypes { get; set; } = ".*";
     }
     public static class SettingsProvider
     { 

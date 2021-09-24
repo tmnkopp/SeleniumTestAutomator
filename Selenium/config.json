@@ -43,32 +43,38 @@
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, 'CBButtPanel1_btnEdit')]",
       "Type": "NaiveFismaFormAutomator",
-      "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]"
+      "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]",
+      "ValueSetterTypes": ""
     },
     {
       "Locator": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//td[text()[contains(.,'Agency Totals')]]",
       "Type": "InvGrid",
-      "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]"
+      "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": ".*"
     },
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]",
       "Type": "NaiveFismaFormAutomator",
-      "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]"
+      "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]",
+      "ValueSetterTypes": "TextInputValueSetter"
     },
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'rgCommandRow')]//span[contains(@id, 'DeleteButton')]",
       "Type": "ServicesGrid",
-      "Selector": "//div[contains(@class, 'RadGrid')]"
+      "Selector": "//div[contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": ""
     },
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'Row') and contains(@id, 'Config')]",
       "Type": "SystemsGrid",
-      "Selector": "//div[contains(@class, 'RadGrid')]"
+      "Selector": "//div[contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": ""
     },
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
       "Type": "RadGridForm",
-      "Selector": "//div[contains(@class, 'RadGrid')]"
+      "Selector": "//div[contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": ""
     }
   ]
 }
