@@ -50,21 +50,6 @@ namespace CyberScope.Tests.Selenium
         {
             var set = SettingsProvider.ControlLocators[0];
             Assert.IsType<ControlLocator>(set);
-        }
-        [Fact]
-        public void ControlLocator_Locates()
-        {
-            var type = Assm.GetTypes().Where(t => t.Name.Contains("NaiveFismaFormAutomator")).FirstOrDefault();
-            IAutomator obj = (IAutomator)Activator.CreateInstance(Type.GetType($"{type.FullName}"));
-            obj.ValueSetters = (from vs in obj.ValueSetters
-                               where Regex.IsMatch(vs.GetType().Name, $".*Text.*")
-                               select vs).ToList(); 
- 
-
-            var o1 = obj;
-            var set = SettingsProvider.ControlLocators[2];
-            Assert.IsType<ControlLocator>(set);
-
-        }
+        } 
     } 
 }
