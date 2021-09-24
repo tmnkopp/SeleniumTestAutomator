@@ -1,18 +1,14 @@
 ﻿using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration; 
+using System.Linq; 
 using System.Reflection;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System.Text.RegularExpressions;
 using System.IO;
-using Serilog;
-using Serilog.Core;
+using Serilog; 
 
 namespace CyberScope.Tests.Selenium
 {

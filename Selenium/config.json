@@ -41,7 +41,7 @@
   },
   "ControlLocators": [
     {
-      "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, 'CBButtPanel1_btnEdit')]",
+      "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",
       "Type": "NaiveFismaFormAutomator",
       "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]",
       "ValueSetterTypes": ""
