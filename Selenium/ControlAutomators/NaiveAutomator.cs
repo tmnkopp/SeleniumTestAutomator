@@ -76,9 +76,7 @@ namespace CyberScope.Tests.Selenium
 
             var args = new AutomatorEventArgs(driver);
             PreAutomate(args);
-
-            Dictionary<string, string> InputDefaults = GetInputDefaults();
-                 
+             
             int posts = 0;
             while (true) { 
                 int precnt = GetDisplayedElements().Count();
@@ -94,7 +92,7 @@ namespace CyberScope.Tests.Selenium
                     {
                         IValueSetter valueSetter = setter;
                         valueSetter.Overwrite = posts==0;
-                        valueSetter.Defaults = InputDefaults;
+                        valueSetter.Defaults = GetInputDefaults();
                         try
                         {
                             valueSetter.SetValue(driver, ElementId);
@@ -149,6 +147,7 @@ namespace CyberScope.Tests.Selenium
             }
             return InputDefaults;
         }
+
         private IReadOnlyCollection<IWebElement> GetDisplayedElements()
         {
             IReadOnlyCollection<IWebElement> eCollection =

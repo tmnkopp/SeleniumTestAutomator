@@ -65,8 +65,11 @@ namespace CyberScope.Tests.Selenium
                         var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
                         foreach (var input in inputs)
                         {
-                            if (input.GetAttribute("value") == "")
-                                input.SendKeys("1");
+                            if (input.GetAttribute("value") != "0") {
+                                input.Clear();
+                                input.SendKeys("0");
+                            }
+                                
                         }
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
