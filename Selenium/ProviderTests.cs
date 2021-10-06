@@ -50,6 +50,36 @@ namespace CyberScope.Tests.Selenium
         {
             var set = SettingsProvider.ControlLocators[0];
             Assert.IsType<ControlLocator>(set);
-        } 
-    } 
+        }
+        [Fact]
+        public void OrgSubmissionProvider_Provides()
+        {
+            var orgsub = OrgSubmissionProvider.GetBySession("Bill-D-Robertson", "2021-A-SAOP").FirstOrDefault();
+            Assert.NotNull(orgsub);
+        }
+        [Fact]
+        public void Repository_Provides()
+        {
+            string dcall = "2020-A-HVA";
+            var orgsub = OrgSubmissionProvider.GetBySession("Bill-D-Robertson", $"{dcall}").FirstOrDefault().PK_OrgSubmission;
+
+            var questiongroups = Repository<QuestionGroup>.Get(qg=> qg.PK_Form == $"{dcall}");
+            var questions = Repository<Question>.GetAll();
+            var answers = Repository<FsmaAnswer>.Get(a=>a.FK_OrgSubmission==orgsub);
+
+            var result = (from q in questions 
+                          join qg in questiongroups on q.FK_QuestionGroup equals qg.PK_QuestionGroup
+                          join ans in answers on q.PK_Question equals ans.FK_Question into q_ans
+                          from q_a in q_ans.DefaultIfEmpty(new FsmaAnswer() { Answer="" })
+                          where qg.PK_Form == $"{dcall}" && q.identifier_text != ""
+                          select new { 
+                                PK_Question = q.PK_Question
+                              , identifier_text = q.identifier_text
+                              , selector = q.selector
+                              , Answer=q_a.Answer 
+                          }).ToList();
+
+            Assert.NotNull(result);
+        }
+    }
 }
