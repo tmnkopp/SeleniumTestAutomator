@@ -25,10 +25,11 @@ namespace CyberScope.Tests.Selenium
         List<IValueSetter> ValueSetters { get; set; } 
         void Automate(SessionContext context); 
     }
-    internal struct SessionContext 
+    internal class SessionContext 
     {
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
+        public OrgSubmission OrgSubmission { get; set; }
     }
     public class AutomatorEventArgs : EventArgs
     {

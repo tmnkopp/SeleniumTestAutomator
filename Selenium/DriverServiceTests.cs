@@ -30,12 +30,9 @@ namespace CyberScope.Tests.Selenium
 
         [Fact]
         public void Connects()
-        { 
-            var driver = new DriverService(_logger).Driver;
-            Assert.IsType<ChromeDriver>(driver);
-            driver.Quit();
+        {  
             var ds = new DriverService(_logger);
-            driver = ds.CsConnect(UserContext.Agency).Driver;
+            var driver = ds.CsConnect(UserContext.Agency).Driver;
             Assert.IsType<ChromeDriver>(driver);
             ds.DisposeDriverService(); 
         }  

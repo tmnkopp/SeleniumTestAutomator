@@ -35,9 +35,7 @@ namespace CyberScope.Tests.Selenium
         public ILogger Logger; 
         private string _PK_FORM;
         private ChromeDriver _driver;  
-        public DriverService(ILogger Logger) {
-            this.Logger = Logger;
-        }
+
         public void DisposeDriverService() { 
             Driver.Quit();
         }
@@ -65,6 +63,15 @@ namespace CyberScope.Tests.Selenium
                 }
                 return _driver;
             }
+        }
+
+        #endregion
+
+        #region CTOR
+
+        public DriverService(ILogger Logger)
+        {
+            this.Logger = Logger;
         }
 
         #endregion
@@ -215,8 +222,11 @@ namespace CyberScope.Tests.Selenium
             }
          
             public DriverService SectionTest(Func<QuestionGroup, bool> SectionGroupPredicate )
-            {
-                SessionContext sc = new SessionContext() { Driver = this.Driver, Logger = this.Logger };
+            { 
+                SessionContext sc = new SessionContext() { 
+                    Driver = this.Driver
+                    , Logger = this.Logger  
+                };
                 foreach (var section in this.Sections().Where(SectionGroupPredicate))
                 {
                     var appargs = new DriverServiceEventArgs(this);

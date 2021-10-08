@@ -25,17 +25,6 @@ namespace CyberScope.Tests
             }
             return results;
         }
-    }
-    public class FismaSections
-    {
-        public static IEnumerable<QuestionGroup> GetAll(string PKFORM)
-        {
-            var rc = RepCycRepo.Instance.Query(q => q.FormMaster.PK_Form == PKFORM);
-            var sections = (from r in rc
-                            select r.FormMaster.QuestionGroups)
-                            .SelectMany(qg => qg).OrderBy(s=>s.sortpos).ToList();
-            return sections;
-        } 
     } 
     public class RepCycRepo 
     {
@@ -107,6 +96,17 @@ namespace CyberScope.Tests
                 result = lookup.Values.ToList();
             }
             return result.AsEnumerable();
-        }  
+        }
     }  
+    public class FismaSections
+    {
+        public static IEnumerable<QuestionGroup> GetAll(string PKFORM)
+        {
+            var rc = RepCycRepo.Instance.Query(q => q.FormMaster.PK_Form == PKFORM);
+            var sections = (from r in rc
+                            select r.FormMaster.QuestionGroups)
+                            .SelectMany(qg => qg).OrderBy(s => s.sortpos).ToList();
+            return sections;
+        }
+    }
 }

@@ -51,33 +51,26 @@ namespace CyberScope.Tests.Selenium
             var set = SettingsProvider.ControlLocators[0];
             Assert.IsType<ControlLocator>(set);
         }
-        [Fact]
-        public void OrgSubmissionProvider_Provides()
+        [Theory]
+        [InlineData("2020-A-HVA")]
+        public void OrgSubmissionProvider_Provides(string PK_Form)
         {
-            var orgsub = OrgSubmissionProvider.GetBySession("Bill-D-Robertson", "2021-A-SAOP").FirstOrDefault();
+            var user = $"{ConfigurationManager.AppSettings.Get($"{UserContext.Agency.ToString()}User")}";
+            var orgsub = OrgSubmissionProvider.GetBySession(user, PK_Form).FirstOrDefault();
             Assert.NotNull(orgsub);
         }
-        [Fact]
-        public void Repository_Provides()
-        {
-            string dcall = "2020-A-HVA";
-            var orgsub = OrgSubmissionProvider.GetBySession("Bill-D-Robertson", $"{dcall}").FirstOrDefault().PK_OrgSubmission;
+        [Theory]
+        [InlineData("2021-A-IG")]
+        public void MetricProvider_Provides(string PK_Form)
+        {  
+            var user = $"{ConfigurationManager.AppSettings.Get($"{UserContext.Agency.ToString()}User")}";
 
-            var questiongroups = Repository<QuestionGroup>.Get(qg=> qg.PK_Form == $"{dcall}");
-            var questions = Repository<Question>.GetAll();
-            var answers = Repository<FsmaAnswer>.Get(a=>a.FK_OrgSubmission==orgsub);
+            var orgsub = OrgSubmissionProvider.GetBySession($"{user}", $"{PK_Form}").FirstOrDefault();  
+            var metrics = MetricProvider.GetItems(orgsub);
 
-            var result = (from q in questions 
-                          join qg in questiongroups on q.FK_QuestionGroup equals qg.PK_QuestionGroup
-                          join ans in answers on q.PK_Question equals ans.FK_Question into q_ans
-                          from q_a in q_ans.DefaultIfEmpty(new FsmaAnswer() { Answer="" })
-                          where qg.PK_Form == $"{dcall}" && q.identifier_text != ""
-                          select new { 
-                                PK_Question = q.PK_Question
-                              , identifier_text = q.identifier_text
-                              , selector = q.selector
-                              , Answer=q_a.Answer 
-                          }).ToList();
+            var result = (from m in metrics
+                         where m.FsmaAnswer.Answer != null
+                         select m).ToList();
 
             Assert.NotNull(result);
         }
