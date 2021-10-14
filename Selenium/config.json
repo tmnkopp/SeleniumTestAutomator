@@ -36,6 +36,8 @@
       "(qid_1_2_1)": "121",
       "(qid_1_2_2)": "122",
       "(qid_1_2_3)": "123",
+      "(type:radio)": "Y",
+      "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
       "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
     }
   },

@@ -59,7 +59,7 @@ namespace CyberScope.Tests.Selenium
                     chromeDriverService.SuppressInitialDiagnosticInformation = true;
                     options.AddArgument("log-level=3");
                     _driver = new ChromeDriver(chromeDriverService, options);
-                    _driver.Manage().Window.Maximize();
+                    _driver.Manage().Window.Minimize();
                 }
                 return _driver;
             }
