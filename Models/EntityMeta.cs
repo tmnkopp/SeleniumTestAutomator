@@ -35,6 +35,7 @@ namespace CyberScope.Tests
     }
     public static class PK_FORM
     {
+        public static string BOD2201_Q4_2021 = "2021-Q4-BOD2201";
         public static string ED2101A_A_2021 = "2021-A-ED2101A";
         public static string ED2101N_A_2021 = "2021-A-ED2101N";
         public static string EINSTEIN_A_2021 = "2021-A-EINSTEIN";
