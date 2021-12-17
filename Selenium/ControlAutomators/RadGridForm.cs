@@ -39,7 +39,7 @@ namespace CyberScope.Tests.Selenium
             else {
                 NaiveAutomator naiveFormFill = new NaiveAutomator();
                 naiveFormFill.ContainerSelector = ".rgEditForm";
-                naiveFormFill.PK_FORM = base.PK_FORM;
+                //naiveFormFill.PK_FORM = base.PK_FORM;
                 naiveFormFill.Automate(sessionContext);
 
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));

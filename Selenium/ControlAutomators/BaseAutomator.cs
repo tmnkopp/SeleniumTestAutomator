@@ -67,8 +67,8 @@ namespace CyberScope.Tests.Selenium
         protected WebDriverWait wait;
         protected IList<IWebElement> inputs;
         protected IWebElement input; 
-        private string _PK_FORM; 
-        public string PK_FORM { get => _PK_FORM; set => _PK_FORM = value;  }
+        //private string _PK_FORM; 
+        //public string PK_FORM { get => _PK_FORM; set => _PK_FORM = value;  }
         protected List<IValueSetter> valueSetters;
         public List<IValueSetter> ValueSetters { get => valueSetters; set => valueSetters = value;   } 
         protected string container = "div[id*='ctl00_ContentPlaceHolder1_Panel'] .table";
