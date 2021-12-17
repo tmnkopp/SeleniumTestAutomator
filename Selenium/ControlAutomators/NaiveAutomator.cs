@@ -13,12 +13,7 @@ namespace CyberScope.Tests.Selenium
 {
     internal class NaiveFismaFormAutomator : NaiveAutomator, IAutomator 
     {
-        #region CTOR 
-        // public NaiveFismaFormAutomator(string _PK_FORM) : this()
-        // {
-        //     //this.PK_FORM = _PK_FORM;
-        //     
-        // } 
+        #region CTOR  
         public NaiveFismaFormAutomator() : base()
         {
             this.ContainerSelector = "div[id*='ctl00_ContentPlaceHolder1_Panel'] table ";
