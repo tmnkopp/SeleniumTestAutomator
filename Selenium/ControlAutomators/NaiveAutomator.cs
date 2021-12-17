@@ -134,8 +134,7 @@ namespace CyberScope.Tests.Selenium
         }
 
         private Dictionary<string, string> GetInputDefaults()
-        {
-            string dkey = this.DataCall;
+        { 
             Dictionary<string, string> DefaultValues = SettingsProvider.InputDefaults[$"Global"];
             foreach (var item in SettingsProvider.InputDefaults)
             { 

@@ -19,8 +19,7 @@ namespace CyberScope.Tests.Selenium
         }
     }
     internal interface IAutomator
-    {
-        string PK_FORM { get; set; }
+    { 
         string ContainerSelector { get; set; }
         List<IValueSetter> ValueSetters { get; set; } 
         void Automate(SessionContext context); 
@@ -71,13 +70,7 @@ namespace CyberScope.Tests.Selenium
         private string _PK_FORM; 
         public string PK_FORM { get => _PK_FORM; set => _PK_FORM = value;  }
         protected List<IValueSetter> valueSetters;
-        public List<IValueSetter> ValueSetters { get => valueSetters; set => valueSetters = value;   }
-        public string DataCall {
-            get {
-                var lst = PK_FORM?.Split('-');
-                return (lst==null) ? "" : lst[lst.Count() - 1]; 
-            }   
-        }
+        public List<IValueSetter> ValueSetters { get => valueSetters; set => valueSetters = value;   } 
         protected string container = "div[id*='ctl00_ContentPlaceHolder1_Panel'] .table";
         public string ContainerSelector
         {
