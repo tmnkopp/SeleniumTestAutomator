@@ -13,7 +13,7 @@ namespace CyberScope.Tests.Selenium
     { 
         public void SetValue(ChromeDriver driver, string ElementId)
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}"))); 
             bool matched = false;
             foreach (var item in Defaults.EmptyIfNull())

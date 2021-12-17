@@ -77,7 +77,8 @@ namespace CyberScope.Tests.Selenium
 
             var args = new AutomatorEventArgs(driver);
             PreAutomate(args);
-             
+
+            var defaults = GetInputDefaults();
             int posts = 0;
             while (true) { 
                 int precnt = GetDisplayedElements().Count();
@@ -93,7 +94,7 @@ namespace CyberScope.Tests.Selenium
                     {
                         IValueSetter valueSetter = setter;
                         valueSetter.Overwrite = posts==0;
-                        valueSetter.Defaults = GetInputDefaults();
+                        valueSetter.Defaults = defaults;
                         try
                         {
                             sessionContext.Logger.Warning($"SetValue ElementId: {ElementId}");
