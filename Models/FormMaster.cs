@@ -23,6 +23,7 @@ namespace CyberScope.Tests
 		public string CrystalReportForm2 { get; set; }
 		public string SprocFormValidation { get; set; }
 		public string SprocFormUpdate { get; set; }
+		public string SprocFormSubmit { get; set; }
 		public string CrystalReportForm3 { get; set; }
 		public string SprocAppendix { get; set; }
     } 

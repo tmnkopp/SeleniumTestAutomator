@@ -77,6 +77,7 @@ namespace CyberScope.Tests.Selenium
                 valueSetters.Add(new TextInputValueSetter());
                 valueSetters.Add(new RadDropDownListValueSetter());
                 valueSetters.Add(new RadioValueSetter());
+                valueSetters.Add(new RadButtonValueSetter());
                 valueSetters.Add(new SelectValueSetter()); 
             NaiveAutomator naiveFormFill = new NaiveAutomator(valueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow";

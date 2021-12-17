@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 
 namespace CyberScope.Tests.Selenium
-{
+{ 
     [ValueSetterMeta(Selector = "input[type='radio']")]
     public class RadioValueSetter : BaseValueSetter, IValueSetter
     { 

@@ -8,6 +8,15 @@
       "(RadRadioButton)": "Yes",
       "(Title|Name)": "NameTitle"
     },
+    "//form[contains(@action, '_CIO_')]|//title[text()[contains(.,'CIO')]]": {
+      "(qid_1_1_6)": "10",
+      "(qid_1_2_1)": "121",
+      "(qid_1_2_2)": "122",
+      "(qid_1_2_3)": "123",
+      "(type:radio)": "Y",
+      "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
+      "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
+    },
     "HVA": {
       "(qid_5_1)": "12/2020",
       "(type:radio|CBYesNo)": "Y"
@@ -31,15 +40,6 @@
       "(IP)": "2002::1234:ABCD:ffff:c0a8:101/64",
       "(BGPPeerIP)": "123.123.123.123",
       "(BGPRoute)": "255.255.255.255/12"
-    },
-    "CIO": {
-      "(qid_1_1_6)": "10",
-      "(qid_1_2_1)": "121",
-      "(qid_1_2_2)": "122",
-      "(qid_1_2_3)": "123",
-      "(type:radio)": "Y",
-      "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
-      "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
     }
   },
   "ControlLocators": [
@@ -72,7 +72,7 @@
       "Type": "SystemsGrid",
       "Selector": "//div[contains(@class, 'RadGrid')]",
       "ValueSetterTypes": ""
-    },
+    }, 
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
       "Type": "RadGridForm",

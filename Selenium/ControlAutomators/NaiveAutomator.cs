@@ -55,7 +55,7 @@ namespace CyberScope.Tests.Selenium
         #region PROPS 
         
         private Random _random = new Random();
-         
+        private SessionContext sessionContext;
         #endregion
 
         #region CTOR
@@ -71,7 +71,8 @@ namespace CyberScope.Tests.Selenium
 
         public virtual void Automate(SessionContext sessionContext)
         {
-            this.driver = sessionContext.Driver;  
+            this.driver = sessionContext.Driver;
+            this.sessionContext = sessionContext;
             var eContainer = driver.FindElements(By.CssSelector($"{this.container}")); 
 
             var args = new AutomatorEventArgs(driver);
@@ -135,18 +136,41 @@ namespace CyberScope.Tests.Selenium
         private Dictionary<string, string> GetInputDefaults()
         {
             string dkey = this.DataCall;
-            Dictionary<string, string> InputDefaults = SettingsProvider.InputDefaults[$"Global"];
-            if (SettingsProvider.InputDefaults.ContainsKey($"{dkey}"))
-            {
-                foreach (var item in SettingsProvider.InputDefaults[$"{dkey}"])
+            Dictionary<string, string> DefaultValues = SettingsProvider.InputDefaults[$"Global"];
+            foreach (var item in SettingsProvider.InputDefaults)
+            { 
+                try
                 {
-                    if (InputDefaults.ContainsKey(item.Key))
-                        InputDefaults[item.Key] = item.Value;
-                    else
-                        InputDefaults.Add(item.Key, item.Value);
+                    IReadOnlyCollection<IWebElement> elmts = driver.FindElements(By.XPath(item.Key));
+                    if (elmts.Count > 0)
+                    {
+                        Dictionary<string, string> dct = SettingsProvider.InputDefaults[item.Key];
+                        foreach (var kv in dct)
+                        {
+                            if (DefaultValues.ContainsKey(kv.Key))
+                                DefaultValues[kv.Key] = kv.Value;
+                            else
+                                DefaultValues.Add(kv.Key, kv.Value);
+                        }
+                    }
                 }
+                catch (Exception ex)
+                {
+                    sessionContext.Logger.Error($"GetInputDefaults: {ex.Message} {ex.InnerException}");
+                } 
             }
-            return InputDefaults;
+            
+            // if (SettingsProvider.InputDefaults.ContainsKey($"{dkey}"))
+            // {
+            //     foreach (var item in SettingsProvider.InputDefaults[$"{dkey}"])
+            //     {
+            //         if (DefaultValues.ContainsKey(item.Key))
+            //             DefaultValues[item.Key] = item.Value;
+            //         else
+            //             DefaultValues.Add(item.Key, item.Value);
+            //     }
+            // }
+            return DefaultValues;
         }
 
         private IReadOnlyCollection<IWebElement> GetDisplayedElements()
