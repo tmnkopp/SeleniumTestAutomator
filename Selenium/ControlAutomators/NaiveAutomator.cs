@@ -158,18 +158,7 @@ namespace CyberScope.Tests.Selenium
                 {
                     sessionContext.Logger.Error($"GetInputDefaults: {ex.Message} {ex.InnerException}");
                 } 
-            }
-            
-            // if (SettingsProvider.InputDefaults.ContainsKey($"{dkey}"))
-            // {
-            //     foreach (var item in SettingsProvider.InputDefaults[$"{dkey}"])
-            //     {
-            //         if (DefaultValues.ContainsKey(item.Key))
-            //             DefaultValues[item.Key] = item.Value;
-            //         else
-            //             DefaultValues.Add(item.Key, item.Value);
-            //     }
-            // }
+            } 
             return DefaultValues;
         }
 

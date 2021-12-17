@@ -17,25 +17,22 @@
       "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
       "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
     },
-    "HVA": {
+    "//form[contains(@action, '_HVA_')]": {
       "(qid_5_1)": "12/2020",
       "(type:radio|CBYesNo)": "Y"
     },
-    "HVAPOAM": {
+    "//form[contains(@action, '_HVAPOAM_')]": {
       "(ActCompDate)": "",
       "(SchCompDate|RemediationDate)": "01/01/2023",
       "(CompletionDate)": "01/01/2024"
     },
-    "IG": {
+    "//form[contains(@action, '_IG_')]": {
       "(type:radio)": "Y"
     },
-    "SAOP": {
+    "//form[contains(@action, '_SAOP_')]": {
       "(type:radio)": "Y"
     },
-    "AAPS": {
-      "(type:radio)": "Y"
-    },
-    "EINSTEIN": {
+    "//form[contains(@action, '_EINSTEIN_')]": {
       "(IPAddress)": "2002::1234:ABCD:ffff:c0a8:101/64",
       "(IP)": "2002::1234:ABCD:ffff:c0a8:101/64",
       "(BGPPeerIP)": "123.123.123.123",
