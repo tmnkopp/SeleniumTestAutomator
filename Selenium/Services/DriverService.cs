@@ -32,8 +32,7 @@ namespace CyberScope.Tests.Selenium
 
         public UserContext UserContext { get; set; } = UserContext.Agency;
         public TestResult TestResult { get; set; }
-        public ILogger Logger; 
-        private string _PK_FORM;
+        public ILogger Logger;  
         private ChromeDriver _driver;  
 
         public void DisposeDriverService() { 
@@ -142,43 +141,29 @@ namespace CyberScope.Tests.Selenium
                 ele.Click(); 
                 return this;
             }
-            public DriverService ToTab(string PK_FORM)
+            public DriverService ToTab(string TabText)
             { 
-                var driver = this.Driver;
-                var datacall = (from rc in RepCycRepo.Instance.Query(r => r.FormMaster.PK_Form == PK_FORM)
-                                select new { Tab = rc.Description }).FirstOrDefault();
-
+                var driver = this.Driver;  
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-                IWebElement ele = wait.Until(drv => drv.FindElement(By.XPath($"//ul[@class='rtsUL']//li//span[contains(text(), '{datacall.Tab}')]")));
+                IWebElement ele = wait.Until(drv => drv.FindElement(By.XPath($"//*[contains(@id, '_Surveys')]//span[contains(text(), '{TabText}')]")));
                 ele.Click();
 
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
                 ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));
                 ele.Click();
-            
-                this._PK_FORM = PK_FORM;
+             
                 return this;
             }
             public DriverService ToSection(QuestionGroup QuestionGroup)
             {
                 var driver = this.Driver; 
                 SelectElement se = new SelectElement(driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
-                se?.Options.Where(o => o.Text.Contains(QuestionGroup.SectionText)).FirstOrDefault()?.Click();
+                se?.Options.Where(o => o.Text.Contains(QuestionGroup?.SectionText)).FirstOrDefault()?.Click();
                 return this;
             }
-            public DriverService ToSection(Func<QuestionGroup, bool> Predicate) {
-                var driver = this.Driver;
-                var datacall =
-                 (from rc in RepCycRepo.Instance.Query(r => r.FormMaster.PK_Form == _PK_FORM)
-                  select new
-                  {
-                      Tab = rc.Description,
-                      Section = (
-                        from qg in rc.FormMaster.QuestionGroups.Where(Predicate) 
-                        select new { qg.Text, qg.GroupName, qg.SectionText }).FirstOrDefault()
-                  }).FirstOrDefault();
-                SelectElement se = new SelectElement(driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
-                se?.Options.Where(o => o.Text.Contains(datacall.Section.SectionText)).FirstOrDefault()?.Click();
+            public DriverService ToSection(Func<QuestionGroup, bool> Predicate) { 
+                var section = this.Sections().Where(Predicate).FirstOrDefault();
+                this.ToSection(section);
                 return this; 
             }
             public DriverService ToSection(int Index)
@@ -216,8 +201,17 @@ namespace CyberScope.Tests.Selenium
 
             #region METHODS: Section ACCESSORS
 
-            public IEnumerable<QuestionGroup> Sections() {
-                return FismaSections.GetAll(_PK_FORM);
+            public IEnumerable<QuestionGroup> Sections() { 
+                var driver = this.Driver;
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
+                IReadOnlyCollection<IWebElement> ele = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_ddl_Sections')]/option")));
+                var groups = (from e in ele
+                              select new QuestionGroup
+                              {
+                                 GroupName = e.Text,
+                                 SectionText = e.Text
+                              }).ToList(); 
+                return groups;  
             }
          
             public DriverService SectionTest(Func<QuestionGroup, bool> SectionGroupPredicate )

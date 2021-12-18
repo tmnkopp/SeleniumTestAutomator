@@ -31,11 +31,13 @@ namespace CyberScope.Tests.Selenium
         public static Dictionary<string, Dictionary<string, string>> InputDefaults
         {
             get {
-                var local_settings = RawConfig();
-                dynamic json = JsonConvert.DeserializeObject(local_settings);
-                Dictionary<string, Dictionary<string, string>> config
-                    = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>
-                    (JsonConvert.SerializeObject(json.InputDefaults));
+                var json_config = RawConfig();
+                dynamic obj = JsonConvert.DeserializeObject(json_config);
+                string json_input_defaults = JsonConvert.SerializeObject(obj.InputDefaults);
+
+                Dictionary<string, Dictionary<string, string>> config; 
+                config = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>
+                    (json_input_defaults);
                 return config;
             }
         }
