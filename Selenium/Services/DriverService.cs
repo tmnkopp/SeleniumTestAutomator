@@ -79,7 +79,7 @@ namespace CyberScope.Tests.Selenium
         public class DriverServiceEventArgs : EventArgs
         {
             public DriverService DriverService { get; set; }
-            public QuestionGroup QuestionGroup { get; set; }
+            public DataCallSection Section { get; set; }
             public ChromeDriver Driver { get; set; }
             public DriverServiceEventArgs(DriverService driverService)
             {
@@ -154,14 +154,14 @@ namespace CyberScope.Tests.Selenium
              
                 return this;
             }
-            public DriverService ToSection(QuestionGroup QuestionGroup)
+            public DriverService ToSection(DataCallSection Section)
             {
                 var driver = this.Driver; 
                 SelectElement se = new SelectElement(driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
-                se?.Options.Where(o => o.Text.Contains(QuestionGroup?.SectionText)).FirstOrDefault()?.Click();
+                se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click();
                 return this;
             }
-            public DriverService ToSection(Func<QuestionGroup, bool> Predicate) { 
+            public DriverService ToSection(Func<DataCallSection, bool> Predicate) { 
                 var section = this.Sections().Where(Predicate).FirstOrDefault();
                 this.ToSection(section);
                 return this; 
@@ -201,29 +201,30 @@ namespace CyberScope.Tests.Selenium
 
             #region METHODS: Section ACCESSORS
 
-            public IEnumerable<QuestionGroup> Sections() { 
+            public IEnumerable<DataCallSection> Sections() { 
                 var driver = this.Driver;
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                IReadOnlyCollection<IWebElement> ele = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_ddl_Sections')]/option")));
+                IReadOnlyCollection<IWebElement> ele;
+                ele = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_ddl_Sections')]/option")));
                 var groups = (from e in ele
-                              select new QuestionGroup
+                              select new DataCallSection
                               {
-                                 GroupName = e.Text,
+                                 URL = e.GetAttribute("value"),
                                  SectionText = e.Text
                               }).ToList(); 
                 return groups;  
             }
          
-            public DriverService SectionTest(Func<QuestionGroup, bool> SectionGroupPredicate )
+            public DriverService SectionTest(Func<DataCallSection, bool> SectionGroupPredicate )
             { 
                 SessionContext sc = new SessionContext() { 
                     Driver = this.Driver
                     , Logger = this.Logger  
                 };
-                foreach (var section in this.Sections().Where(SectionGroupPredicate))
+                foreach (DataCallSection section in this.Sections().Where(SectionGroupPredicate))
                 {
                     var appargs = new DriverServiceEventArgs(this);
-                    appargs.QuestionGroup = section;
+                    appargs.Section = section;
 
                     this.ToSection(section);
                     foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
