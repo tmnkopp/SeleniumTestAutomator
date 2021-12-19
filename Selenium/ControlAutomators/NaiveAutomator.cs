@@ -48,8 +48,7 @@ namespace CyberScope.Tests.Selenium
     }
     internal class NaiveAutomator : BaseAutomator, IAutomator 
     { 
-        #region PROPS 
-        
+        #region PROPS  
         private Random _random = new Random();
         private SessionContext sessionContext;
         #endregion

@@ -152,7 +152,7 @@ namespace CyberScope.Tests.Selenium
                 ele?.Click();
 
                 ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));
-                ele.Click();
+                ele?.Click();
              
                 return this;
             }
