@@ -143,12 +143,14 @@ namespace CyberScope.Tests.Selenium
             }
             public DriverService ToTab(string TabText)
             { 
-                var driver = this.Driver;  
+                var driver = this.Driver;
+                IWebElement ele; 
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-                IWebElement ele = wait.Until(drv => drv.FindElement(By.XPath($"//*[contains(@id, '_Surveys')]//span[contains(text(), '{TabText}')]")));
-                ele.Click();
+                var eles = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_Surveys')]//*[contains(@class, 'rtsTxt')]")))?.Reverse();
+   
+                ele = (from e in eles where Regex.IsMatch(e.Text, TabText) select e).FirstOrDefault();
+                ele?.Click();
 
-                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
                 ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));
                 ele.Click();
              
