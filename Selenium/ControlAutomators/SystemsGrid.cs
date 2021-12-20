@@ -31,7 +31,7 @@ namespace CyberScope.Tests.Selenium
             IReadOnlyCollection<IWebElement> elist = wait.Until(drv =>
                 drv.FindElements(By.CssSelector(".rgMasterTable tr[class$='Row']")));
             var ids = (from e in elist select e.GetAttribute("id")).ToList();
-
+            var defaults = new DefaultInputProvider(sessionContext).DefaultValues;
             foreach (string id in ids)
             {
                 try 
@@ -42,11 +42,13 @@ namespace CyberScope.Tests.Selenium
                     {
                         esublist[0].Click();
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+                         
                         var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
                         foreach (var input in inputs)
                         { 
-                            input.Clear();
-                            input.SendKeys("0");
+                            var setter = new TextInputValueSetter();
+                            setter.Defaults = defaults;
+                            setter.SetValue(this.driver, input.GetAttribute("id")); 
                         }
                         driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_UpdateButton')]").Click();
                     }
