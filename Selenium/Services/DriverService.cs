@@ -145,7 +145,7 @@ namespace CyberScope.Tests.Selenium
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
                 var eles = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_Surveys')]//*[contains(@class, 'rtsTxt')]")))?.Reverse();
    
-                ele = (from e in eles where Regex.IsMatch(e.Text, TabText) select e).FirstOrDefault();
+                ele = (from e in eles where Regex.IsMatch(e.Text, TabText) || e.Text.Contains(TabText) select e).FirstOrDefault();
                 ele?.Click(); 
                 ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));
                 ele?.Click();
@@ -212,7 +212,7 @@ namespace CyberScope.Tests.Selenium
                 return groups;  
             }
          
-            public DriverService SectionTest(Func<DataCallSection, bool> SectionGroupPredicate )
+            public DriverService TestSections(Func<DataCallSection, bool> SectionGroupPredicate )
             { 
                 SessionContext sc = new SessionContext() { 
                     Driver = this.Driver
