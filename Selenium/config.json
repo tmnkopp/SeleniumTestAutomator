@@ -15,7 +15,10 @@
       "(qid_1_2_3)": "123",
       "(type:radio)": "Y",
       "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
-      "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov"
+      "(lblSystemCount)": "1",
+      "(Artifact1_rbNA)": "Y",
+      "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov",
+      "(qid_9_1_2|qid_10_6_1|qid_10_6_3)": "12/12/2022"
     },
     "//form[contains(@action, '_HVA_')]": {
       "(qid_5_1)": "12/2020",
@@ -69,7 +72,13 @@
       "Type": "SystemsGrid",
       "Selector": "//div[contains(@class, 'RadGrid')]",
       "ValueSetterTypes": ""
-    }, 
+    },
+    {
+      "Locator": "//div[contains(@class, 'GTTDataGrid')]/table[contains(@class, 'rgMasterTable')]//tr[contains(@class, 'Row')]",
+      "Type": "SystemsGrid",
+      "Selector": "//div[contains(@class, 'GTTDataGrid')]",
+      "ValueSetterTypes": "TextInputValueSetter"
+    },
     {
       "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
       "Type": "RadGridForm",

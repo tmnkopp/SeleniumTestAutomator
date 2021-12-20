@@ -18,9 +18,11 @@ namespace CyberScope.Tests.Selenium
         {
             this.ContainerSelector = "div[id*='ctl00_ContentPlaceHolder1_Panel'] table ";
             this.OnPreAutomate += (sender, e) =>
-            {
-                new WebDriverWait(driver, TimeSpan.FromSeconds(1))
-                  .Until(drv => drv.FindElement(By.CssSelector($"*[id$='_btnEdit']"))).Click();
+            { 
+                var eles = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
+                  .Until(drv => drv.FindElements(By.CssSelector($"*[id$='_btnEdit']")));
+                if (eles.Count > 0) 
+                    eles.FirstOrDefault().Click(); 
             };
             this.OnPostAutomate += (sender, e) =>
             {
