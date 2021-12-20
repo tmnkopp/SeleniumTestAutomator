@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CyberScope.Tests.Selenium
 {
@@ -27,7 +28,16 @@ namespace CyberScope.Tests.Selenium
             var codeBasePath = Uri.UnescapeDataString(codeBaseUrl.AbsolutePath);
             var dirPath = Path.GetDirectoryName(codeBasePath);
             return File.ReadAllText($"{dirPath}\\Selenium\\config.json"); 
-        } 
+        }
+        public static List<string> ChromeOptions
+        {
+            get
+            { 
+                dynamic json = JsonConvert.DeserializeObject(RawConfig());
+                var options = json.ChromeOptions; 
+                return ((JArray)options).Select(i => (string)i).ToList();
+            }
+        }
         public static Dictionary<string, Dictionary<string, string>> InputDefaults
         {
             get {

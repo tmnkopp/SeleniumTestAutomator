@@ -55,9 +55,11 @@ namespace CyberScope.Tests.Selenium
                     var chromeDriverService = ChromeDriverService.CreateDefaultService(chromedriverpath);
                     chromeDriverService.HideCommandPromptWindow = true;
                     chromeDriverService.SuppressInitialDiagnosticInformation = true;
-                    options.AddArgument("log-level=3");
-                    _driver = new ChromeDriver(chromeDriverService, options);
-                    _driver.Manage().Window.Maximize();
+                    var args = SettingsProvider.ChromeOptions;
+                    foreach (var item in args.EmptyIfNull()) 
+                        options.AddArgument(item);
+                 
+                    _driver = new ChromeDriver(chromeDriverService, options); 
                 }
                 return _driver;
             }
