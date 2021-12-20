@@ -56,7 +56,7 @@
       "ValueSetterTypes": ".*"
     },
     {
-      "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]",
+      "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]//*[contains(@class, 'qid_1_1_6')]",
       "Type": "NaiveFismaFormAutomator",
       "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]",
       "ValueSetterTypes": "TextInputValueSetter"

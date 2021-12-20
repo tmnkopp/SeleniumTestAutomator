@@ -33,9 +33,11 @@ namespace CyberScope.Tests.Selenium
                     e.Driver.FindElements(By.CssSelector("*[id$='_btnEdit']"))?.FirstOrDefault().Click();
                     throw new Exception($"Form Contains Errors {error.Text}"); 
                 } else {
-                    new WebDriverWait(driver, TimeSpan.FromSeconds(1))
-                        .Until(drv => drv.FindElement(By.CssSelector($"*[id$='_btnSave']"))).Click();
-
+                    var eles = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
+                        .Until(drv => drv.FindElements(By.CssSelector($"*[id$='_btnSave']")));
+                    if (eles.Count > 0)
+                        eles.FirstOrDefault().Click();
+                      
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                     error = e.Driver.FindElements(By.CssSelector(errorSelector))?.FirstOrDefault(); 
                     if (error != null)

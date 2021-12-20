@@ -37,7 +37,7 @@ namespace CyberScope.Tests.Selenium
                 try 
                 { 
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
+                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
                     {
                         esublist[0].Click();
@@ -48,7 +48,7 @@ namespace CyberScope.Tests.Selenium
                             input.Clear();
                             input.SendKeys("0");
                         }
-                        driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_UpdateButton')]").Click();
+                        driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_UpdateButton')]").Click();
                     }
                 }
                 catch (StaleElementReferenceException ex)
