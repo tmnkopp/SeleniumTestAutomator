@@ -28,8 +28,7 @@ namespace CyberScope.Tests.Selenium
 
     public class DriverService
     {
-        #region PROPS
-
+        #region PROPS 
         public UserContext UserContext { get; set; } = UserContext.Agency;
         public TestResult TestResult { get; set; }
         public ILogger Logger;  
@@ -66,13 +65,11 @@ namespace CyberScope.Tests.Selenium
 
         #endregion
 
-        #region CTOR
-
+        #region CTOR 
         public DriverService(ILogger Logger)
         {
             this.Logger = Logger;
-        }
-
+        } 
         #endregion
 
         #region Events 
@@ -106,15 +103,15 @@ namespace CyberScope.Tests.Selenium
             internal IEnumerable<IAutomator> PageControlCollection() {
                 var automators = new List<IAutomator>();
                 var driver = this.Driver;
-                foreach (var c in SettingsProvider.ControlLocators.EmptyIfNull())
+                foreach (ControlLocator controlLocator in SettingsProvider.ControlLocators.EmptyIfNull())
                 { 
-                    if (driver.FindElements(By.XPath($"{c.Locator}")).Count > 0)
+                    if (driver.FindElements(By.XPath($"{controlLocator.Locator}")).Count > 0)
                     {
-                        var type = Assm.GetTypes().Where(t => t.Name.Contains(c.Type)).FirstOrDefault();
+                        var type = Assm.GetTypes().Where(t => t.Name.Contains(controlLocator.Type)).FirstOrDefault();
                         IAutomator obj = (IAutomator)Activator.CreateInstance(Type.GetType($"{type.FullName}")); 
-                        obj.ContainerSelector = $" #{GetElementID(c.Selector)} ";
+                        obj.ContainerSelector = $" #{GetElementID(controlLocator.Selector)} ";
                         obj.ValueSetters = (from vs in obj.ValueSetters
-                                            where Regex.IsMatch(vs.GetType().Name, $"{c.ValueSetterTypes}")
+                                            where Regex.IsMatch(vs.GetType().Name, $"{controlLocator.ValueSetterTypes}")
                                             select vs).ToList(); 
                         automators.Add(obj);
                     }
@@ -149,17 +146,15 @@ namespace CyberScope.Tests.Selenium
                 var eles = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_Surveys')]//*[contains(@class, 'rtsTxt')]")))?.Reverse();
    
                 ele = (from e in eles where Regex.IsMatch(e.Text, TabText) select e).FirstOrDefault();
-                ele?.Click();
-
+                ele?.Click(); 
                 ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));
                 ele?.Click();
              
                 return this;
             }
             public DriverService ToSection(DataCallSection Section)
-            {
-                var driver = this.Driver; 
-                SelectElement se = new SelectElement(driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
+            { 
+                SelectElement se = new SelectElement(this.Driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
                 se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click();
                 return this;
             }
