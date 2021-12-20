@@ -44,7 +44,7 @@ namespace CyberScope.Tests.Selenium
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                         var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
                         foreach (var input in inputs)
-                        {
+                        { 
                             input.Clear();
                             input.SendKeys("0");
                         }

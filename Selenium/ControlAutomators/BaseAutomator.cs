@@ -24,7 +24,7 @@ namespace CyberScope.Tests.Selenium
         List<IValueSetter> ValueSetters { get; set; } 
         void Automate(SessionContext context); 
     }
-    internal class SessionContext 
+    public class SessionContext 
     {
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
