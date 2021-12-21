@@ -227,8 +227,7 @@ namespace CyberScope.Tests.Selenium
                 {
                     var appargs = new DriverServiceEventArgs(this);
                     appargs.Section = section;
-
-
+                 
                     this.ToSection(section);
                     ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.getElementsByClassName('navbar')[0].style.display = 'none';");
                     
