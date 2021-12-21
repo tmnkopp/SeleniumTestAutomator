@@ -228,6 +228,7 @@ namespace CyberScope.Tests.Selenium
                     var appargs = new DriverServiceEventArgs(this);
                     appargs.Section = section;
 
+
                     this.ToSection(section);
                     ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.getElementsByClassName('navbar')[0].style.display = 'none';");
                     
@@ -239,12 +240,14 @@ namespace CyberScope.Tests.Selenium
 
                     SectionComplete(appargs);
                 }
+
                 string url = this.Driver.Url;
                 ((IJavaScriptExecutor)this.Driver).ExecuteScript("window.open();");
                 this.Driver.SwitchTo().Window(this.Driver.WindowHandles.Last());
                 this.Driver.Navigate().GoToUrl($"{url}");
                 this.ToSection(-1);
                 this.Driver.SwitchTo().Window(this.Driver.WindowHandles.First());
+
                 return this;
             }
 

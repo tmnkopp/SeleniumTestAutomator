@@ -98,7 +98,7 @@ namespace CyberScope.Tests.Selenium
                         }
                         catch (StaleElementReferenceException ex)
                         {
-                            sessionContext.Logger.Warning($"StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
+                            sessionContext.Logger.Warning($"StaleElement {ElementId} {ex.Message} {ex.InnerException}"); 
                         }
                         catch (Exception ex)
                         { 
