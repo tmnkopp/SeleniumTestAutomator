@@ -218,7 +218,8 @@ namespace CyberScope.Tests.Selenium
             { 
                 SessionContext sc = new SessionContext() { 
                     Driver = this.Driver
-                    , Logger = this.Logger  
+                    , Logger = this.Logger
+                    , Defaults = new DefaultInputProvider(this.Driver).DefaultValues 
                 };
                 foreach (DataCallSection section in this.Sections().Where(SectionGroupPredicate))
                 {
@@ -226,6 +227,8 @@ namespace CyberScope.Tests.Selenium
                     appargs.Section = section;
 
                     this.ToSection(section);
+                    ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.getElementsByClassName('navbar')[0].style.display = 'none';");
+                    
                     foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
                         ((IAutomator)control).Automate(sc);
          

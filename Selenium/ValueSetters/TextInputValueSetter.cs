@@ -3,6 +3,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
@@ -13,16 +16,17 @@ namespace CyberScope.Tests.Selenium
         public void SetValue(ChromeDriver driver, string ElementId) {
 
             string id = ElementId;
-            IWebElement Element = new WebDriverWait(driver, TimeSpan.FromSeconds(2))
+            IWebElement Element = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
   
             Element.Clear();
-            Element = new WebDriverWait(driver, TimeSpan.FromSeconds(2))
+            Element = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
- 
+
+            string matchAttr = this.GetMatchAttribute(Element); 
             foreach (var item in Defaults.EmptyIfNull())
             {
-                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success) {
+                if (Regex.Match(matchAttr, item.Key, RegexOptions.IgnoreCase).Success) {
                     Element.Clear();
                     Element.SendKeys(item.Value);
                 }     
@@ -33,6 +37,6 @@ namespace CyberScope.Tests.Selenium
             {
                 Element.SendKeys("0");
             }
-        }
+        } 
     }
 }

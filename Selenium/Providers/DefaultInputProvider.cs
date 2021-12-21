@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace CyberScope.Tests.Selenium
 {
     public class DefaultInputProvider
-    {
-        SessionContext _sessionContext;
-        public DefaultInputProvider(SessionContext sessionContext)
+    { 
+        ChromeDriver driver;
+        public DefaultInputProvider(ChromeDriver driver)
         {
-            this._sessionContext = sessionContext;
+            this.driver = driver;
         }
         #region PROPS
         private Dictionary<string, string> _DefaultValues = new Dictionary<string, string>();
@@ -21,7 +21,7 @@ namespace CyberScope.Tests.Selenium
         {
             get {
                 if (_DefaultValues.Count < 1) 
-                    LoadItems(); 
+                    Populate(); 
                 return _DefaultValues; 
             }
         }
@@ -29,9 +29,8 @@ namespace CyberScope.Tests.Selenium
 
         #region Methods
           
-        private void LoadItems()
-        {
-            var driver = _sessionContext.Driver;
+        private void Populate()
+        { 
             _DefaultValues = new Dictionary<string, string>();
             _DefaultValues = SettingsProvider.InputDefaults[$"Global"];
             foreach (var item in SettingsProvider.InputDefaults)
@@ -53,7 +52,7 @@ namespace CyberScope.Tests.Selenium
                 }
                 catch (Exception ex)
                 {
-                    _sessionContext.Logger.Error($"GetInputDefaults: {ex.Message} {ex.InnerException}");
+                    Console.WriteLine($"GetInputDefaults: {ex.Message} {ex.InnerException}");
                 }
             } 
         }

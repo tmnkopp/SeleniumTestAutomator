@@ -16,6 +16,7 @@
       "(type:radio)": "Y",
       "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
       "(_SystemCount)": "1",
+      "(_TestsPerformedCount)": "10",
       "(Artifact1_rbNA)": "Y",
       "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov",
       "(qid_9_1_2|qid_10_6_1|qid_10_6_3)": "12/12/2022"
@@ -42,7 +43,7 @@
       "(BGPRoute)": "255.255.255.255/12"
     }
   },
-  "ChromeOptions": [ "log-level=3", "--window-size=1480,480" ],
+  "ChromeOptions": [ "log-level=3", "--window-size=1480,680" ],
   "ControlLocators": [
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",

@@ -28,6 +28,7 @@ namespace CyberScope.Tests.Selenium
     {
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
+        public Dictionary<string,string> Defaults { get; set; }
         public OrgSubmission OrgSubmission { get; set; }
     }
     public class AutomatorEventArgs : EventArgs
@@ -74,7 +75,7 @@ namespace CyberScope.Tests.Selenium
         {
             get { return container;  }
             set { container = value; }
-        }
+        }  
         #endregion
 
         #region Events 

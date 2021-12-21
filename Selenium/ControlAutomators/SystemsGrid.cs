@@ -31,35 +31,19 @@ namespace CyberScope.Tests.Selenium
             IReadOnlyCollection<IWebElement> elist = wait.Until(drv =>
                 drv.FindElements(By.CssSelector(".rgMasterTable tr[class$='Row']")));
             var ids = (from e in elist select e.GetAttribute("id")).ToList();
-            var defaults = new DefaultInputProvider(sessionContext).DefaultValues;
+              
+            NaiveAutomator na = new NaiveAutomator(); 
+            na.ValueSetters = this.ValueSetters; 
             foreach (string id in ids)
-            {
-                try 
-                { 
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_EditButton')]");
-                    if (esublist.Count > 0)
-                    {
-                        esublist[0].Click();
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                         
-                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                        foreach (var input in inputs)
-                        { 
-                            var setter = new TextInputValueSetter();
-                            setter.Defaults = defaults;
-                            setter.SetValue(this.driver, input.GetAttribute("id")); 
-                        }
-                        driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_UpdateButton')]").Click();
-                    }
-                }
-                catch (StaleElementReferenceException ex)
+            { 
+                elist = wait.Until(drv =>
+                    drv.FindElements(By.XPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_EditButton')]"))); 
+                if (elist.Count > 0)
                 {
-                    sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"{ex.Message} {ex.InnerException}");
+                    elist.FirstOrDefault().Click(); 
+                    na.ContainerSelector = $"#{id}";
+                    na.Automate(sessionContext);  
+                    driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_UpdateButton')]").Click();
                 } 
             }
         }
