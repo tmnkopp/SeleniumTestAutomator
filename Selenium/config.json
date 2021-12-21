@@ -21,6 +21,11 @@
       "(qid_8_2_2)": "https://cyberscope-staging.dhs.gov",
       "(qid_9_1_2|qid_10_6_1|qid_10_6_3)": "12/12/2022"
     },
+    "//form[contains(@id, '_rgInvCIOSystems')]": {
+      "(riTextBox)": "1",
+      "(first_Moderate)": "1",
+      "(first_Low)": "1"
+    },
     "//form[contains(@action, '_HVA_')]": {
       "(qid_5_1)": "12/2020",
       "(type:radio|CBYesNo)": "Y"

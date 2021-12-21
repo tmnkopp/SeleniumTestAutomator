@@ -83,7 +83,7 @@ namespace CyberScope.Tests.Selenium
                 {
                     var meta = (ValueSetterMeta)Attribute.GetCustomAttribute(setter.GetType(), typeof(ValueSetterMeta));
                     var selector = $"{this.container} {meta.Selector}";
-                    
+                    sessionContext.Logger.Information($"NaiveAutomator.ValueSetters: {meta.Selector}");
                     if (driver.FindElements(By.CssSelector($"{selector}")).Count < 1)
                         continue; 
 
@@ -94,7 +94,6 @@ namespace CyberScope.Tests.Selenium
                         valueSetter.Defaults = sessionContext.Defaults;
                         try
                         {
-                            sessionContext.Logger.Information($"SetValue ElementId: {ElementId}");
                             valueSetter.SetValue(driver, ElementId);
                         }
                         catch (StaleElementReferenceException ex)

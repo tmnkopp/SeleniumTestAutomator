@@ -165,6 +165,7 @@ namespace CyberScope.Tests.Selenium
                 this.ToSection(section);
                 return this; 
             }
+           
             public DriverService ToSection(int Index)
             {
                 var driver = this.Driver; 
@@ -221,6 +222,7 @@ namespace CyberScope.Tests.Selenium
                     , Logger = this.Logger
                     , Defaults = new DefaultInputProvider(this.Driver).DefaultValues 
                 };
+             
                 foreach (DataCallSection section in this.Sections().Where(SectionGroupPredicate))
                 {
                     var appargs = new DriverServiceEventArgs(this);
@@ -236,7 +238,13 @@ namespace CyberScope.Tests.Selenium
                         ApplicationError(appargs);   
 
                     SectionComplete(appargs);
-                } 
+                }
+                string url = this.Driver.Url;
+                ((IJavaScriptExecutor)this.Driver).ExecuteScript("window.open();");
+                this.Driver.SwitchTo().Window(this.Driver.WindowHandles.Last());
+                this.Driver.Navigate().GoToUrl($"{url}");
+                this.ToSection(-1);
+                this.Driver.SwitchTo().Window(this.Driver.WindowHandles.First());
                 return this;
             }
 
@@ -252,6 +260,7 @@ namespace CyberScope.Tests.Selenium
                 input.Click(); 
                 return this;
             }
+            
             public DriverService FismaFormCancel()
             {
                 var driver = this.Driver;
@@ -260,6 +269,7 @@ namespace CyberScope.Tests.Selenium
                 input.Click();
                 return this;
             }
+            
             public DriverService FismaFormSave()
             {
                 var driver = this.Driver;
