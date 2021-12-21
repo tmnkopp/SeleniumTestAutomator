@@ -94,7 +94,7 @@ namespace CyberScope.Tests.Selenium
                         valueSetter.Defaults = sessionContext.Defaults;
                         try
                         {
-                            sessionContext.Logger.Warning($"SetValue ElementId: {ElementId}");
+                            sessionContext.Logger.Information($"SetValue ElementId: {ElementId}");
                             valueSetter.SetValue(driver, ElementId);
                         }
                         catch (StaleElementReferenceException ex)
