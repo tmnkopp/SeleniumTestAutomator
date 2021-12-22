@@ -51,9 +51,10 @@ namespace CyberScope.Tests.Selenium
                 return config;
             }
         }
+        private static List<ControlLocator> _ControlLocators;
         public static List<ControlLocator> ControlLocators
         { 
-            get {
+            get { 
                 var local_settings = RawConfig();
                 List<ControlLocator> locators = new List<ControlLocator>();
                 dynamic json = JsonConvert.DeserializeObject(local_settings); 
