@@ -48,7 +48,7 @@
       "(BGPRoute)": "255.255.255.255/12"
     }
   },
-  "ChromeOptions": [ "log-level=3", "--window-size=1480,880" ],
+  "ChromeOptions": [ "log-level=3", "--window-size=1480,580" ],
   "ControlLocators": [
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",
