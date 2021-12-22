@@ -86,7 +86,8 @@ namespace CyberScope.Tests.Selenium
                     
                     sessionContext.Logger.Information($"NaiveAutomator.ValueSetters: {meta.Selector}");
 
-                    if (driver.FindElements(By.CssSelector($"{selector}")).Count < 1)
+                    IWebElement we = driver.FindElement(By.CssSelector($"{selector}")); 
+                    if (we == null)
                         continue; 
 
                     ElementIdIterator(selector, (ElementId) =>
@@ -100,7 +101,7 @@ namespace CyberScope.Tests.Selenium
                         }
                         catch (StaleElementReferenceException ex)
                         {
-                            sessionContext.Logger.Warning($"StaleElement {ElementId} {ex.Message} {ex.InnerException}"); 
+                            sessionContext.Logger.Warning($"StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
                         }
                         catch (Exception ex)
                         { 

@@ -39,7 +39,7 @@ namespace CyberScope.Tests.Selenium
                     {
                         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                         esublist[0].Click();
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                         IAlert alert = driver.SwitchTo().Alert();
                         alert.Accept();
                     } 
