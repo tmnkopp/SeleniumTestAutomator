@@ -105,7 +105,8 @@ namespace CyberScope.Tests.Selenium
         internal IEnumerable<IAutomator> PageControlCollection() {
             var automators = new List<IAutomator>();
             var driver = this.Driver;
-            foreach (ControlLocator controlLocator in SettingsProvider.ControlLocators.EmptyIfNull())
+            var controlLocators = SettingsProvider.ControlLocators.EmptyIfNull();
+            foreach (ControlLocator controlLocator in controlLocators)
             { 
                 if (driver.FindElements(By.XPath($"{controlLocator.Locator}")).Count > 0)
                 {
