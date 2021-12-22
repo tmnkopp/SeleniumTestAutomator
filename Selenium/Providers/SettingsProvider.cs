@@ -50,8 +50,7 @@ namespace CyberScope.Tests.Selenium
                     (json_input_defaults);
                 return config;
             }
-        }
-        private static List<ControlLocator> _ControlLocators;
+        } 
         public static List<ControlLocator> ControlLocators
         { 
             get { 
