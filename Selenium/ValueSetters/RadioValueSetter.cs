@@ -16,6 +16,12 @@ namespace CyberScope.Tests.Selenium
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}"))); 
             bool matched = false;
+            string onclick = Element.GetAttribute("onclick") ?? "";
+            // if (onclick.Contains("__doPostBack"))
+            // {
+            //     Element.Click();
+            //     return;
+            // }
             foreach (var item in Defaults.EmptyIfNull())
             {
                 if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
@@ -27,8 +33,10 @@ namespace CyberScope.Tests.Selenium
                         break;
                     }
                 }
-            }
-            if (!matched) Element.Click();
+            } 
+            if (!matched) {
+                Element.Click();
+            } 
         }
     }
 }

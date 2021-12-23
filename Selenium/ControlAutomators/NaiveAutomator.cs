@@ -103,8 +103,11 @@ namespace CyberScope.Tests.Selenium
                             sessionContext.Logger.Warning($"StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
                         }
                         catch (Exception ex)
-                        { 
-                            throw new Exception($"{ElementId} {ex.Message} {ex.InnerException}");
+                        {
+                            if (!ex.Message.Contains("element not interactable"))
+                            {
+                                throw new Exception($"{ElementId} {ex.Message} {ex.InnerException}");
+                            } 
                         } 
                     });
                 } 
