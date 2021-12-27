@@ -45,20 +45,20 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             //ds.Driver.Quit(); 
         }
         [Theory]
-        [InlineData("qid_2_1", "sum111_112 + 1", "cannot exceed the value of", "0")]
-        [InlineData("qid_2_2", "sum111_112 + 1", "cannot exceed the value of", "0")]
-        [InlineData("qid_2_3", "sum111_112 + 1", "cannot exceed the value of", "1")]
-        [InlineData("qid_2_4", "( sum111_112 - 1 ) + 2", "cannot exceed the value of", "1")]
-        [InlineData("qid_2_5", "( sum111_112 - 2 ) + 4", "cannot exceed the value of", "1")]
-        [InlineData("qid_2_6", "sum111_112 + 1", "cannot exceed the value of", "1")]
+        [InlineData("qid_2_1", "sum1_1_1__1_1_2 + 1", "cannot exceed the value of", "0")]
+        [InlineData("qid_2_2", "sum1_1_1__1_1_2 + 1", "cannot exceed the value of", "0")]
+        [InlineData("qid_2_3", "sum1_1_1__1_1_2 + 1", "cannot exceed the value of", "1")]
+        [InlineData("qid_2_4", "( sum1_1_1__1_1_2 - 1 ) + 2", "cannot exceed the value of", "1")]
+        [InlineData("qid_2_5", "( sum1_1_1__1_1_2 - 2 ) + 4", "cannot exceed the value of", "1")]
+        [InlineData("qid_2_6", "sum1_1_1__1_1_2 + 1", "cannot exceed the value of", "1")]
         [InlineData("qid_2_6_1", "2", "cannot exceed the value of", "1")]
         public void S2_Conditional(string qid, string attempt, string expected, string finalValue)
         {
             DriverService ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains("S2")));
 
-            int sum111_112 = GetSum_111_112(ds);
-            SetMetric("sum111_112", sum111_112.ToString());
+            int sum1_1_1__1_1_2 = GetSum_111_112(ds);
+            SetMetric("sum1_1_1__1_1_2", sum1_1_1__1_1_2.ToString());
             attempt = EvalAnswer(attempt);
              
             ds.FismaFormEnable();
