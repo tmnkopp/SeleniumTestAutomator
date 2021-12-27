@@ -86,7 +86,10 @@ namespace CyberScope.Tests.Selenium
                     
                     sessionContext.Logger.Information($"NaiveAutomator.ValueSetter: {meta.Selector}");
 
-                    if (driver.FindElements(By.CssSelector($"{selector}")).Count < 1)
+                    wait = new WebDriverWait(driver, TimeSpan.FromSeconds(.1));
+                    var ele = wait.Until(drv => drv.FindElement(By.CssSelector($"{selector}")));
+               
+                    if (ele == null)
                         continue; 
 
                     ElementIdIterator(selector, (ElementId) =>
