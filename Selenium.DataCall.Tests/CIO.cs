@@ -15,6 +15,7 @@ using Serilog;
 using Xunit.Abstractions;
 using Serilog.Events;
 using NCalc;
+using System.Collections;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
@@ -44,10 +45,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             //ds.Driver.Quit(); 
         }
         [Theory]
-        [InlineData("qid_2_1", "sum111_112 + 1", "cannot exceed the value of", "0")]
-        [InlineData("qid_2_2", "sum111_112 + 1", "cannot exceed the value of", "0")]
-        [InlineData("qid_2_3", "sum111_112 + 1", "cannot exceed the value of", "1")]
-        [InlineData("qid_2_4", "( sum111_112 - qid_2_3 ) + 1", "cannot exceed the value of", "0")]
+        [ClassData(typeof(TestData))]
         public void S2_Conditional(string qid, string attempt, string expected, string finalValue)
         {
             DriverService ds = new DriverService(_logger);
@@ -56,8 +54,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             int sum111_112 = GetSum_111_112(ds);
             SetMetric("sum111_112", sum111_112.ToString());
             attempt = EvalAnswer(attempt);
-
-
+             
             ds.FismaFormEnable();
             ds.SetFieldValue(By.XPath($"//input[contains(concat(' ', @class, ' '), ' {qid} ')]"), attempt);
             ds.FismaFormSave();
@@ -77,17 +74,22 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             ds.Driver.Quit();
         }
-        [Fact]
-        public void Ncalc_Calculates(){
-            Expression e = new Expression("17");
-            var actual = e.Evaluate();
-            Assert.Equal(17, actual);
-        }
-         
+ 
         #endregion
 
         #region PRIVS
-
+        private class TestData : IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[] { "qid_2_1", "sum111_112 + 1", "cannot exceed the value of", "0" };
+                yield return new object[] { "qid_2_2", "sum111_112 + 1", "cannot exceed the value of", "0" };
+                yield return new object[] { "qid_2_3", "sum111_112 + 1", "cannot exceed the value of", "1" };
+                yield return new object[] { "qid_2_4", "( sum111_112 - 1 ) + 2", "cannot exceed the value of", "1" };
+                yield return new object[] { "qid_2_5", "( sum111_112 - 2 ) + 4", "cannot exceed the value of", "1" };
+            } 
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
         private Dictionary<string, string> _Answers = new Dictionary<string, string>();
         private void SetMetric(string key, string val) { 
             if (!_Answers.ContainsKey(key)) 
