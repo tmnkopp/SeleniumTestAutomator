@@ -58,19 +58,20 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"7D")); 
         }
         [Theory] 
-        [InlineData("CIO 2022 Q1", ".*")] 
+        [InlineData("CIO 2022 Q1", "1A")] 
         public void DataCall_Resolves(string TabText, string SectionPattern)
-        {
-            var timer = new Stopwatch(); 
-            timer.Start();
+        { 
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText);   
-            ds.OnSectionComplete += (s, dsvc) => {
-                TimeSpan timeTaken = timer.Elapsed;
-                dsvc.DriverService.Logger.Information($"{timeTaken.ToString(@"m\:ss")} Section Complete {dsvc.Section.SectionText}"); 
+            ds.CsConnect(UserContext.Agency).ToTab(TabText);
+
+            string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
+            string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
+            int SUM_111_112 = Convert.ToInt32(m111) + Convert.ToInt32(m112);
+
+            ds.OnSectionComplete += (s, dsvc) => { 
+                dsvc.DriverService.Logger.Information($"Section Complete {dsvc.Section.SectionText}"); 
             };
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-            timer.Stop();
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
 
         }
         #endregion 

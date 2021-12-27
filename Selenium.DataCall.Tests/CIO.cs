@@ -43,24 +43,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             //ds.Driver.Quit(); 
         } 
         [Theory] 
-        [InlineData("qid_6_1", "9999", "6.1 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_2", "9999", "6.2 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_3", "9999", "6.3 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_5", "9999", "6.5 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_6", "9999", "6.6 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_7", "9999", "6.7 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_7_1", "9999", "6.7.1 should not exceed 6.7")] 
-        [InlineData("qid_6_8", "9999", "6.8 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_9", "9999", "6.9 Should not exceed the total of H, M")] 
-        [InlineData("qid_6_10_1", "9999", "6.10.1 should not exceed 6.10")] 
-        [InlineData("qid_6_10_2", "9999", "6.10.2 should not exceed (6.10-6.10.1)")] 
-        [InlineData("qid_6_10_3", "9999", "6.10.3 should not exceed 6.10")] 
-        [InlineData("qid_6_10_4", "9999", "6.10.4 should not exceed 6.10")] 
-        [InlineData("qid_6_11", "9999", "6.11 should not exceed 6.9")] 
-        public void S6A_Conditional(string qid, string attempt, string expected)
+        [InlineData("qid_2_1", "9999", "cannot exceed the value of 1.1.1+1.1.2", "0")]  
+        [InlineData("qid_2_2", "9999", "cannot exceed the value of 1.1.1+1.1.2", "0")]
+        [InlineData("qid_2_3", "9999", "cannot exceed the value of 1.1.1+1.1.2", "1")]
+        public void S2_Conditional(string qid, string attempt, string expected, string finalValue)
         { 
             DriverService ds = new DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains("S6A")));
+            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains("S2")));
        
             ds.FismaFormEnable(); 
             ds.SetFieldValue(  By.XPath($"//input[contains(concat(' ', @class, ' '), ' {qid} ')]"), attempt);  
@@ -71,14 +60,25 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.FismaFormCancel();
 
             ds.FismaFormEnable();
-            ds.SetFieldValue(By.XPath($"//input[contains(concat(' ', @class, ' '), ' {qid} ')]"), "0");
+            ds.SetFieldValue(By.XPath($"//input[contains(concat(' ', @class, ' '), ' {qid} ')]"), finalValue);
             ds.FismaFormSave();
  
             actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
             Assert.Equal("", actual);
 
             ds.Driver.Quit();
-        } 
+        }
+        private int? _SUM_111_112; 
+        private int GetSum_111_112(DriverService ds) { 
+            ds.ToSection((g => g.SectionText.Contains("S1")));
+            if (this._SUM_111_112 == null)
+            {
+                string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
+                string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
+                this._SUM_111_112 = Convert.ToInt32(m111) + Convert.ToInt32(m112);
+            } 
+            return this._SUM_111_112 ?? 0;
+        }
         #endregion
     } 
 }
