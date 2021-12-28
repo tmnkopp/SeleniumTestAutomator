@@ -34,7 +34,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS 
 
         [Theory]
-        [InlineData("CIO 2022 Q1", "1A")]
+        [InlineData("CIO 2022 Q1", ".*")]
         public void TestSections(string _PK_FORM, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
@@ -52,7 +52,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [InlineData("qid_2_5", "( sum1_1_1__1_1_2 - 2 ) + 4", "cannot exceed the value of", "1")]
         [InlineData("qid_2_6", "sum1_1_1__1_1_2 + 1", "cannot exceed the value of", "1")]
         [InlineData("qid_2_6_1", "2", "cannot exceed the value of", "1")]
-        public void S2_Conditional(string qid, string attempt, string expected, string finalValue)
+        public void S2_Validations(string qid, string attempt, string expected, string finalValue)
         {
             DriverService ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains("S2")));
