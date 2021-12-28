@@ -13,6 +13,7 @@
       "(qid_1_2_1)": "121",
       "(qid_1_2_2)": "122",
       "(qid_1_2_3)": "123",
+      "(qid_2_3|qid_2_4|qid_2_5|qid_2_6|qid_2_6_1)": "1",
       "(type:radio)": "Y",
       "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
       "(_SystemCount)": "1",

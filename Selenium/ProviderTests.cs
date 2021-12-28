@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using CyberScope.Data.Tests;
+using Dapper;
 using Dapper.Mapper;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;

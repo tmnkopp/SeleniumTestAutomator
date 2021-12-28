@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using CyberScope.Tests;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CyberScope.Tests
+namespace CyberScope.Data.Tests
 {
     public static class Repository<T> where T : class, new()
     {

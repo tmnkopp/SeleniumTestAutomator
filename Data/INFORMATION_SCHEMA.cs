@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CyberScope.Tests 
+namespace CyberScope.Data.Tests
 {
     public class Column
     {

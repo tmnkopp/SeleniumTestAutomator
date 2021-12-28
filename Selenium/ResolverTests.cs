@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 using SeleniumExtras.WaitHelpers;
 using Serilog;
 using Serilog.Events;
+using CyberScope.Data.Tests;
 
 namespace CyberScope.Tests.Selenium
 {
