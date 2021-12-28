@@ -9,18 +9,22 @@ using System.Threading.Tasks;
 namespace CyberScope.Tests.Selenium.Providers 
 {
     public abstract class MetricProvider
-    {
- 
-        protected Dictionary<string, string> _Answers = new Dictionary<string, string>();
+    { 
+        private KeyLengthSortedDecendingDictionary _Answers = new KeyLengthSortedDecendingDictionary();
         public void SetMetric(string key, string val)
         {
+            key = key.Replace(".", "_");
+            if (!Regex.IsMatch(key, "^\\w+_"))
+                key = $"qid_{key}";
+
             if (!_Answers.ContainsKey(key))
                 _Answers.Add(key, val);
         }
         public T Eval<T>(string Expression)
         {
-            foreach (var kv in _Answers)
-                Expression = Expression.Replace($"{kv.Key} ", $"{_Answers[kv.Key]} ");
+            foreach (var kv in _Answers) {
+                Expression = Expression.Replace($"{kv.Key}", $" {_Answers[kv.Key]} ");
+            } 
             var evaled = new Expression(Expression).Evaluate(); 
             return (T)Convert.ChangeType(evaled, typeof(T));
         }
@@ -38,5 +42,19 @@ namespace CyberScope.Tests.Selenium.Providers
                 SetMetric(m, item.Text);
             }
         }
-    }
+        private class KeyLengthSortedDecendingDictionary : SortedDictionary<string, string>
+        {
+            private class StringLengthComparer : IComparer<string>
+            {
+                public int Compare(string x, string y)
+                {
+                    if (x == null) throw new ArgumentNullException(nameof(x));
+                    if (y == null) throw new ArgumentNullException(nameof(y));
+                    var lengthComparison = x.Length.CompareTo(y.Length) * -1;
+                    return lengthComparison == 0 ? string.Compare(x, y, StringComparison.Ordinal) : lengthComparison;
+                }
+            }
+            public KeyLengthSortedDecendingDictionary() : base(new StringLengthComparer()) { }
+        }
+    }  
 }

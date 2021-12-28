@@ -71,14 +71,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
 
         } 
-        [Theory]
-        [InlineData("qid_2_1", "sum111_112 + 1", "cannot exceed the value")]
-        [InlineData("qid_2_2", "sum111_112 + 1", "cannot exceed the value")]
-        [InlineData("qid_2_3", "sum111_112 + 1", "cannot exceed the value")]
-        [InlineData("qid_2_4", "( sum111_112 - qid_2_3 ) + 2 ", "cannot exceed the value")]
-        [InlineData("qid_2_5", "( sum111_112 - ( qid_2_3 + qid_2_4 ) ) + 1 ", "cannot exceed the value")]
-        [InlineData("qid_2_6", "sum111_112 + 1", "cannot exceed the value")]
-        [InlineData("qid_2_6_1", "qid_2_6 + 1", "cannot exceed the value")]
+        [Theory] 
+        [CsvData(@"")]
         public void S2_Validations(string qid, string attempt, string expected )
         {
             DriverService ds = new DriverService(_logger);

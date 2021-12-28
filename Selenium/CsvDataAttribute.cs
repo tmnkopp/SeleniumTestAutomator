@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,13 +13,17 @@ namespace CyberScope.Tests.Selenium
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
     {
-        private readonly string _fileName;
+        private string _fileName;
         public CsvDataAttribute(string fileName)
         {
             _fileName = fileName;
         }
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
+            if (string.IsNullOrEmpty(_fileName))
+            {
+                _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.Name}.csv";
+            } 
             var pars = testMethod.GetParameters();
             var parameterTypes = pars.Select(par => par.ParameterType).ToArray();
             using (var csvFile = new StreamReader(_fileName))
