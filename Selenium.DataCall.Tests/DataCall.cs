@@ -56,7 +56,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         public void DataCall_Resolves(string TabText, string SectionPattern)
         { 
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText); 
+            ds.CsConnect(UserContext.Agency).ToTab(TabText);  
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
 
         } 
@@ -69,29 +69,23 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var metrics = new CIOMetricProvider();
             metrics.Populate(ds); 
             attempt = metrics.Eval<string>(attempt);
-
+             
             ds.FismaFormEnable(); 
             var element = ds.GetField(By.XPath(metricXpath));
-            var parent = element.FindElement(By.XPath(".."));
-            string containerid = parent.GetAttribute("id"); 
+            string e_id = element?.GetAttribute("id") ?? "";
             ds.FismaFormCancel();
-
+             
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
-            Defaults.Add(element.GetAttribute("id"), attempt);
+            Defaults.Add(e_id, attempt);
 
-            SessionContext sc = new SessionContext()
-            {
+            SessionContext sc = new SessionContext() {
                 Driver = ds.Driver , Logger = ds.Logger, Defaults = Defaults
             };
-
-            // List<IAutomator> automators = new List<IAutomator>();
-            //automators.Add(new SubmitAttemptAutomator());
-            foreach (IAutomator control in ds.PageControlCollection().EmptyIfNull()) { 
-                ((IAutomator)control).ContainerSelector = $"#{containerid}";
+             
+            ds.FismaFormEnable();
+            foreach (IAutomator control in ds.PageControlCollection().EmptyIfNull()) {  
                 ((IAutomator)control).Automate(sc);
-            }
-
-            // ds.SetFieldValue(By.XPath(metricXpath), attempt);
+            }  
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
@@ -100,8 +94,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 Assert.Equal(expected, actual); 
             else  
                 Assert.Contains(expected, actual);
-           
-            ds.FismaFormCancel(); 
+            
             ds.Driver.Quit();
         } 
         #endregion 
