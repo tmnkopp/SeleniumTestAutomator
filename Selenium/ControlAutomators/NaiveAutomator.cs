@@ -11,6 +11,15 @@ using System.Threading.Tasks;
  
 namespace CyberScope.Tests.Selenium
 {
+    internal class SubmitAttemptAutomator : NaiveAutomator, IAutomator
+    {
+        #region CTOR  
+        public SubmitAttemptAutomator() : base()
+        {
+           
+        }
+        #endregion
+    }
     internal class NaiveFismaFormAutomator : NaiveAutomator, IAutomator 
     {
         #region CTOR  

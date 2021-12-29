@@ -31,38 +31,30 @@ namespace CyberScope.Tests.Selenium
             IAlert alert;
             try
             {
-                IWebElement ele = driver.FindElements(By.CssSelector("input[type='checkbox']")).FirstOrDefault();  
-                if (ele?.GetAttribute("checked") == "checked") 
+                IWebElement ele = driver.FindElements(By.CssSelector("input[type='checkbox']")).FirstOrDefault();
+                var chk = ele?.GetAttribute("checked");
+                if (chk == "true" || chk == "checked")
                 {
-                    ele?.Click();
-                    driver.SwitchTo()?.Alert()?.Accept();
+                    ele?.Click(); 
                 } 
             }
             catch (StaleElementReferenceException ex)
             {
                 sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message} {ex.InnerException}");
-            }
+            } 
             try
             {
                 IWebElement ele = driver.FindElements(By.CssSelector("button[class='rbCheckBox']")).FirstOrDefault();
-                if (ele?.GetAttribute("checked") == "checked")
+                var chk = ele?.GetAttribute("checked");
+                if (chk == "true" || chk == "checked")
                 {
-                    ele?.Click();
-                    driver.SwitchTo()?.Alert()?.Accept();
+                    ele?.Click(); 
                 } 
             }
             catch (StaleElementReferenceException ex)
             {
                 sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message} {ex.InnerException}");
-            }
+            } 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_DeleteButton']")));
             ele.Click();

@@ -12,7 +12,8 @@
       "(qid_1_1_6)": "10",
       "(qid_1_2_1|qid_1_2_2|qid_1_2_3)": "10",
       "(qid_2_3|qid_2_4|qid_2_5|qid_2_6)": "1",
-      "(qid_2_10|qid_2_10_1|qid_2_10_2)": "1",
+      "(qid_2_10|qid_2_10_1)": "1",
+      "(qid_2_10_2)": "0",
       "(type:radio)": "Y",
       "(ctl00_ContentPlaceHolder1_CBYesNo1_SelectionList_1|ctl00_ContentPlaceHolder1_CBYesNo4_SelectionList_1)": "N",
       "(_SystemCount)": "1",
@@ -52,7 +53,7 @@
   "ControlLocators": [
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",
-      "Type": "NaiveFismaFormAutomator",
+      "Type": "NaiveAutomator",
       "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]",
       "ValueSetterTypes": ""
     },
@@ -64,7 +65,7 @@
     },
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]//*[contains(@class, 'qid_1_1_6')]",
-      "Type": "NaiveFismaFormAutomator",
+      "Type": "NaiveAutomator",
       "Selector": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]",
       "ValueSetterTypes": "TextInputValueSetter"
     },

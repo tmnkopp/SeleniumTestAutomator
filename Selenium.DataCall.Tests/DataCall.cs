@@ -49,10 +49,10 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         {
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1"); 
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"7D")); 
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"S2|7D")); 
         }
         [Theory] 
-        [InlineData("CIO 2022 Q1", "S2")] 
+        [InlineData("CIO 2022 Q1", "S1C")] 
         public void DataCall_Resolves(string TabText, string SectionPattern)
         { 
             var ds = new Selenium.DriverService(_logger);
@@ -68,21 +68,39 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains($"{Section}")));
             var metrics = new CIOMetricProvider();
             metrics.Populate(ds); 
-            attempt = metrics.Eval<string>(attempt); 
+            attempt = metrics.Eval<string>(attempt);
 
-            ds.FismaFormEnable();
-            ds.SetFieldValue(By.XPath(metricXpath), attempt);
+            ds.FismaFormEnable(); 
+            var element = ds.GetField(By.XPath(metricXpath));
+            var parent = element.FindElement(By.XPath(".."));
+            string containerid = parent.GetAttribute("id"); 
+            ds.FismaFormCancel();
+
+            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
+            Defaults.Add(element.GetAttribute("id"), attempt);
+
+            SessionContext sc = new SessionContext()
+            {
+                Driver = ds.Driver , Logger = ds.Logger, Defaults = Defaults
+            };
+
+            // List<IAutomator> automators = new List<IAutomator>();
+            //automators.Add(new SubmitAttemptAutomator());
+            foreach (IAutomator control in ds.PageControlCollection().EmptyIfNull()) { 
+                ((IAutomator)control).ContainerSelector = $"#{containerid}";
+                ((IAutomator)control).Automate(sc);
+            }
+
+            // ds.SetFieldValue(By.XPath(metricXpath), attempt);
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
 
-            if (string.IsNullOrEmpty(expected))  {
-                Assert.Equal(expected, actual);
-            }
-            else {
+            if (string.IsNullOrEmpty(expected))  
+                Assert.Equal(expected, actual); 
+            else  
                 Assert.Contains(expected, actual);
-            }
-             
+           
             ds.FismaFormCancel(); 
             ds.Driver.Quit();
         } 

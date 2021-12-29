@@ -234,13 +234,17 @@ namespace CyberScope.Tests.Selenium
                 appargs.Section = section;
                  
                 this.ToSection(section);
+                this.FismaFormEnable();
+
                 ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.getElementsByClassName('navbar')[0].style.display = 'none';");
                     
                 foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
                     ((IAutomator)control).Automate(sc);
          
                 if (this.Driver.PageSource.Contains("Server Error in '/' Application")) 
-                    ApplicationError(appargs);   
+                    ApplicationError(appargs);
+
+                this.FismaFormSave();
 
                 SectionComplete(appargs);
             }
@@ -253,28 +257,30 @@ namespace CyberScope.Tests.Selenium
         #region METHODS: FismaForm ACCESSORS 
 
         public DriverService FismaFormEnable()
-        { 
-            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(2));
-            IWebElement input = wait.Until(drv => drv.FindElement(By.CssSelector($"*[id$='_btnEdit']")));
-            input.Click(); 
+        {
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.5)); 
+            IWebElement ele = wait.Until(drv => 
+            drv.FindElements(By.XPath($"//*[contains(@id, '_btnEdit')]"))).FirstOrDefault(); 
+            ele?.Click(); 
             return this;
         }
             
         public DriverService FismaFormCancel()
-        { 
-            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(2));
-            IWebElement input = wait.Until(drv => drv.FindElement(By.CssSelector($"*[id$='_btnEdit']")));
-            input.Click();
+        {
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.5));
+            IWebElement ele = wait.Until(drv =>
+            drv.FindElements(By.XPath($"//*[contains(@id, '_btnEdit')]"))).FirstOrDefault();
+            ele?.Click();
             return this;
         }
             
         public DriverService FismaFormSave()
         {
-            var driver = this.Driver;
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-            IWebElement input = wait.Until(drv => drv.FindElement(By.CssSelector($"*[id$='_btnSave']")));
-            input.Click();
-            return this;
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.5));
+            IWebElement ele = wait.Until(drv =>
+            drv.FindElements(By.XPath($"//*[contains(@id, '_btnSave')]"))).FirstOrDefault();
+            ele?.Click();
+            return this; 
         }
 
         public bool FismaFormValidates() {

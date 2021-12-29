@@ -38,7 +38,7 @@ namespace CyberScope.Tests.Selenium.Providers
             foreach (var item in mEles)
             {
                 string cls = item.GetAttribute("class");
-                string m = Regex.Match(cls, $"qid_[\\d_]+")?.Groups[0]?.Value ?? "0";
+                string m = Regex.Match(cls, $"qid_[\\d_\\w]+")?.Groups[0]?.Value ?? "0";
                 SetMetric(m, item.Text);
             }
         }
