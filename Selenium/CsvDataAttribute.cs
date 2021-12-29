@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TinyCsvParser;
+using TinyCsvParser.Mapping;
 using Xunit.Sdk;
 
 namespace CyberScope.Tests.Selenium
@@ -13,7 +15,7 @@ namespace CyberScope.Tests.Selenium
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
     {
-        private string _fileName;
+        private readonly string _fileName;
         public CsvDataAttribute(string fileName)
         {
             _fileName = fileName; 
@@ -22,21 +24,18 @@ namespace CyberScope.Tests.Selenium
         {
             if (string.IsNullOrEmpty(_fileName))
             {
-                _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
+               // _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
             }
-            var pars = testMethod.GetParameters();
-            var parameterTypes = pars.Select(par => par.ParameterType).ToArray();
-            using (var csvFile = new StreamReader(_fileName))
+            var csvMapper = new CsvValidationAttemptMapping();
+            var csvParserOptions = new CsvParserOptions(true, ',');
+            CsvParser<ValidationAttempt> csvParser = new CsvParser<ValidationAttempt>(csvParserOptions, csvMapper); 
+            var result = csvParser
+                .ReadFromFile(_fileName, Encoding.ASCII)
+                .ToList(); 
+            foreach (var item in result)
             {
-                // csvFile.ReadLine(); Delimiter Row: "sep=,". Comment out if not used
-                // csvFile.ReadLine(); Headings Row. Comment out if not used
-                string line;
-                while ((line = csvFile.ReadLine()) != null)
-                {
-                    var row = line.Split(',');
-                    yield return ConvertParameters((object[])row, parameterTypes);
-                }
-            }
+                yield return item.Result.GetAsRow;
+            } 
         }
         private static object[] ConvertParameters(IReadOnlyList<object> values, IReadOnlyList<Type> parameterTypes)
         {
@@ -50,6 +49,25 @@ namespace CyberScope.Tests.Selenium
         private static object ConvertParameter(object parameter, Type parameterType)
         {
             return parameterType == typeof(int) ? Convert.ToInt32(parameter) : parameter;
+        } 
+        private class ValidationAttempt
+        {
+            public string Section { get; set; }
+            public string MetricXpath { get; set; }
+            public string AttemptExpression { get; set; }
+            public string ExpectedError { get; set; }
+            public object[] GetAsRow => new object[] { Section, MetricXpath, AttemptExpression, ExpectedError };
+        }
+        private class CsvValidationAttemptMapping : CsvMapping<ValidationAttempt>
+        {
+            public CsvValidationAttemptMapping() : base()
+            {
+                MapProperty(0, x => x.Section);
+                MapProperty(1, x => x.MetricXpath);
+                MapProperty(2, x => x.AttemptExpression);
+                MapProperty(3, x => x.ExpectedError);
+            }
         }
     }
+
 }

@@ -42,18 +42,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             .CreateLogger(); 
         }
         #endregion
-
-        #region PRIV 
-
-        private void AppErrorHandler(DriverServiceEventArgs e)
-        {
-            string fnam = Regex.Replace(e.Section.SectionText + e.Driver.Title, $"[^A-Za-z0-9]", "");
-            if (fnam.Length > 245) fnam = fnam.Substring(0, 245);
-            var path = Environment.GetEnvironmentVariable("TMP", EnvironmentVariableTarget.User);
-            e.Driver.GetScreenshot().SaveAsFile($"{path}/{fnam}.png", ScreenshotImageFormat.Png);
-        }
-        #endregion
-
+  
         #region UNITTESTS 
         [Fact] 
         public void Service_Resolves()
@@ -94,10 +83,10 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region PRIVS  
         [Theory]
-        [CsvData(@"")]
-        public void TestWithCSVData(string a, string b, string c)
+        [CsvData(@"C:\temp\DataCall_Validate.csv")]
+        public void TestCSV(string a, string b, string c, string d)
         {
-            var cda = new CsvDataAttribute("");
+            var cda = new CsvDataAttribute(@"C:\temp\DataCall_Validate.csv");
             var a1 = a; 
         } 
         #endregion 
