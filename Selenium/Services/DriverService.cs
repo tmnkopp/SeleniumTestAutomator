@@ -183,7 +183,7 @@ namespace CyberScope.Tests.Selenium
         #region METHODS: FIELD ACCESSORS
         public IWebElement GetField(By By)
         {
-            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(2));
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(1));
             return (from e in wait.Until(dvr => dvr.FindElements(By))
                     where e.Enabled && e.Displayed
                     select e).FirstOrDefault();

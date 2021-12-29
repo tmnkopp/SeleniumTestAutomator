@@ -39,7 +39,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             this.output = output;
             _logger = new LoggerConfiguration()
             .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .CreateLogger();
+            .CreateLogger(); 
         }
         #endregion
 
@@ -73,36 +73,36 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         } 
         [Theory] 
         [CsvData(@"")]
-        public void S2_Validations(string qid, string attempt, string expected )
+        public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             DriverService ds = new DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains("S2")));
-            var metrics = new S2Provider();
+            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains($"{Section}")));
+            var metrics = new CIOMetricProvider();
             metrics.Populate(ds); 
-            attempt = metrics.Eval<string>(attempt);
+            attempt = metrics.Eval<string>(attempt); 
 
             ds.FismaFormEnable();
-            ds.SetFieldValue(By.XPath($"//input[contains(concat(' ', @class, ' '), ' {qid} ')]"), attempt);
+            ds.SetFieldValue(By.XPath(metricXpath), attempt);
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
             Assert.Contains(expected, actual);
-            ds.FismaFormCancel();
-              
+            ds.FismaFormCancel(); 
             ds.Driver.Quit();
         } 
-        #endregion
+        #endregion 
 
         #region PRIVS  
         [Theory]
-        [CsvData(@"C:\temp\test.csv")]
-        public void TestWithCSVData(string a, string b, string c, string d)
+        [CsvData(@"")]
+        public void TestWithCSVData(string a, string b, string c)
         {
+            var cda = new CsvDataAttribute("");
             var a1 = a; 
         } 
         #endregion 
     }
-    public class S2Provider : MetricProvider
+    public class CIOMetricProvider : MetricProvider
     {
         public override void Populate(DriverService ds)
         {
@@ -115,8 +115,10 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
             string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
+            string m115 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
             SetMetric("qid_111_111", m111);
             SetMetric("qid_111_112", m112);
+            SetMetric("qid_1_1_5", m115);
             int sum111_112 = this.GetMetric<int>("qid_111_111") + this.GetMetric<int>("qid_111_112"); 
             SetMetric("sum_111_112", sum111_112.ToString());
 

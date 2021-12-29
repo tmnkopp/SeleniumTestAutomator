@@ -16,14 +16,14 @@ namespace CyberScope.Tests.Selenium
         private string _fileName;
         public CsvDataAttribute(string fileName)
         {
-            _fileName = fileName;
+            _fileName = fileName; 
         }
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (string.IsNullOrEmpty(_fileName))
             {
-                _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.Name}.csv";
-            } 
+                _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
+            }
             var pars = testMethod.GetParameters();
             var parameterTypes = pars.Select(par => par.ParameterType).ToArray();
             using (var csvFile = new StreamReader(_fileName))
