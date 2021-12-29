@@ -26,7 +26,14 @@ namespace CyberScope.Tests.Selenium
             string matchAttr = this.GetMatchAttribute(Element); 
             foreach (var item in Defaults.EmptyIfNull())
             {
-                if (Regex.Match(matchAttr, item.Key, RegexOptions.IgnoreCase).Success) {
+                string MatchKey = item.Key;
+                if (MatchKey.StartsWith("//"))
+                {
+                    var element = new WebDriverWait(driver, TimeSpan.FromSeconds(.25))
+                        .Until(drv => drv.FindElements(By.XPath(MatchKey))).FirstOrDefault();
+                    MatchKey = element?.GetAttribute("id") ?? "";
+                } 
+                if (Regex.Match(matchAttr, MatchKey, RegexOptions.IgnoreCase).Success) {
                     Element.Clear();
                     Element.SendKeys(item.Value);
                 }     

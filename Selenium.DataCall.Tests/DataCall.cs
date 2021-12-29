@@ -61,35 +61,32 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         } 
         [Theory] 
-        [CsvData(@"")]
+        [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             DriverService ds = new DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains($"{Section}")));
-            var metrics = new CIOMetricProvider();
+            //ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains($"{Section}")));
+            ds.CsConnect(UserContext.Agency).ToTab("EINSTEIN").ToSection((g => g.SectionText.Contains($"{Section}")));
+            
+            var metrics = new EINSTEINMetricProvider();
             metrics.Populate(ds); 
             attempt = metrics.Eval<string>(attempt);
-             
-            ds.FismaFormEnable(); 
-            var element = ds.GetField(By.XPath(metricXpath));
-            string e_id = element?.GetAttribute("id") ?? "";
-            ds.FismaFormCancel();
-             
+              
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
-            Defaults.Add(e_id, attempt);
+            Defaults.Add(metricXpath, attempt);
 
             SessionContext sc = new SessionContext() {
                 Driver = ds.Driver , Logger = ds.Logger, Defaults = Defaults
             };
              
             ds.FismaFormEnable();
-            foreach (IAutomator control in ds.PageControlCollection().EmptyIfNull()) {  
+            var pcc = ds.PageControlCollection().EmptyIfNull();
+            foreach (IAutomator control in pcc) {  
                 ((IAutomator)control).Automate(sc);
             }  
             ds.FismaFormSave();
 
-            var actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
-
+            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? ""; 
             if (string.IsNullOrEmpty(expected))  
                 Assert.Equal(expected, actual); 
             else  
@@ -108,7 +105,15 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var a1 = a; 
         } 
         #endregion 
+
     }
+    public class EINSTEINMetricProvider : MetricProvider
+    {
+        public override void Populate(DriverService ds)
+        {
+            base.Populate(ds);
+        }
+     }
     public class CIOMetricProvider : MetricProvider
     {
         public override void Populate(DriverService ds)

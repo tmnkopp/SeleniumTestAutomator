@@ -260,7 +260,7 @@ namespace CyberScope.Tests.Selenium
         {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15)); 
             IWebElement ele = wait.Until(drv => 
-            drv.FindElements(By.XPath($"//*[contains(@id, '_btnEdit')]"))).FirstOrDefault(); 
+            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnEdit')]"))).FirstOrDefault(); 
             ele?.Click(); 
             return this;
         }
@@ -269,7 +269,7 @@ namespace CyberScope.Tests.Selenium
         {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
             IWebElement ele = wait.Until(drv =>
-            drv.FindElements(By.XPath($"//*[contains(@id, '_btnEdit')]"))).FirstOrDefault();
+            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnEdit')]"))).FirstOrDefault();
             ele?.Click();
             return this;
         }
@@ -278,7 +278,7 @@ namespace CyberScope.Tests.Selenium
         {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
             IWebElement ele = wait.Until(drv =>
-            drv.FindElements(By.XPath($"//*[contains(@id, '_btnSave')]"))).FirstOrDefault();
+            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnSave')]"))).FirstOrDefault();
             ele?.Click();
             return this; 
         }

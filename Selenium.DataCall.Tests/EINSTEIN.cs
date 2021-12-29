@@ -40,7 +40,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS 
    
         [Theory] 
-        [InlineData("EINSTEIN", "[1-7]")]  
+        [InlineData("EINSTEIN", "[1]")]  
         public void TestSections(string _PK_FORM, string SectionPattern)
         { 
             var ds = new Selenium.DriverService(_logger);

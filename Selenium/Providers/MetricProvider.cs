@@ -20,12 +20,24 @@ namespace CyberScope.Tests.Selenium.Providers
             if (!_Answers.ContainsKey(key))
                 _Answers.Add(key, val);
         }
-        public T Eval<T>(string Expression)
+        public T Eval<T>(string EvalExpression)
         {
             foreach (var kv in _Answers) {
-                Expression = Expression.Replace($"{kv.Key}", $" {_Answers[kv.Key]} ");
+                EvalExpression = EvalExpression.Replace($"{kv.Key}", $" {_Answers[kv.Key]} ");
             } 
-            var evaled = new Expression(Expression).Evaluate(); 
+            if (Regex.IsMatch(EvalExpression,$@"\w+" ) || string.IsNullOrEmpty(EvalExpression))
+            {
+                return (T)Convert.ChangeType(EvalExpression, typeof(string));
+            }
+            object evaled = EvalExpression;
+            try
+            {
+                evaled = new Expression(EvalExpression).Evaluate();
+            }
+            catch (Exception ex)
+            { 
+                throw ex;
+            } 
             return (T)Convert.ChangeType(evaled, typeof(T));
         }
         public T GetMetric<T>(string key)
