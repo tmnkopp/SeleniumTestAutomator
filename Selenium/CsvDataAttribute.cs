@@ -15,7 +15,7 @@ namespace CyberScope.Tests.Selenium
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
     {
-        private readonly string _fileName;
+        private string _fileName;
         public CsvDataAttribute(string fileName)
         {
             _fileName = fileName; 
@@ -24,14 +24,12 @@ namespace CyberScope.Tests.Selenium
         {
             if (string.IsNullOrEmpty(_fileName))
             {
-               // _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
+               _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
             }
             var csvMapper = new CsvValidationAttemptMapping();
             var csvParserOptions = new CsvParserOptions(true, ',');
             CsvParser<ValidationAttempt> csvParser = new CsvParser<ValidationAttempt>(csvParserOptions, csvMapper); 
-            var result = csvParser
-                .ReadFromFile(_fileName, Encoding.ASCII)
-                .ToList(); 
+            var result = csvParser.ReadFromFile(_fileName, Encoding.ASCII).ToList(); 
             foreach (var item in result)
             {
                 yield return item.Result.GetAsRow;

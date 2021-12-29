@@ -75,7 +75,14 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//span[contains(@id, '_lblError')]")) ?? "";
-            Assert.Contains(expected, actual);
+
+            if (string.IsNullOrEmpty(expected))  {
+                Assert.Equal(expected, actual);
+            }
+            else {
+                Assert.Contains(expected, actual);
+            }
+             
             ds.FismaFormCancel(); 
             ds.Driver.Quit();
         } 
