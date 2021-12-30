@@ -11,14 +11,19 @@ namespace CyberScope.Tests.Selenium.Providers
     public abstract class MetricProvider
     { 
         private KeyLengthSortedDecendingDictionary _Answers = new KeyLengthSortedDecendingDictionary();
-        public void SetMetric(string key, string val)
+        private class KeyLengthSortedDecendingDictionary : SortedDictionary<string, string>
         {
-            key = key.Replace(".", "_");
-            if (!Regex.IsMatch(key, "^\\w+_"))
-                key = $"qid_{key}";
-
-            if (!_Answers.ContainsKey(key))
-                _Answers.Add(key, val);
+            private class StringLengthComparer : IComparer<string>
+            {
+                public int Compare(string x, string y)
+                {
+                    if (x == null) throw new ArgumentNullException(nameof(x));
+                    if (y == null) throw new ArgumentNullException(nameof(y));
+                    var lengthComparison = x.Length.CompareTo(y.Length) * -1;
+                    return lengthComparison == 0 ? string.Compare(x, y, StringComparison.Ordinal) : lengthComparison;
+                }
+            }
+            public KeyLengthSortedDecendingDictionary() : base(new StringLengthComparer()) { }
         }
         public T Eval<T>(string EvalExpression)
         {
@@ -54,19 +59,14 @@ namespace CyberScope.Tests.Selenium.Providers
                 SetMetric(m, item.Text);
             }
         }
-        private class KeyLengthSortedDecendingDictionary : SortedDictionary<string, string>
+        public void SetMetric(string key, string val)
         {
-            private class StringLengthComparer : IComparer<string>
-            {
-                public int Compare(string x, string y)
-                {
-                    if (x == null) throw new ArgumentNullException(nameof(x));
-                    if (y == null) throw new ArgumentNullException(nameof(y));
-                    var lengthComparison = x.Length.CompareTo(y.Length) * -1;
-                    return lengthComparison == 0 ? string.Compare(x, y, StringComparison.Ordinal) : lengthComparison;
-                }
-            }
-            public KeyLengthSortedDecendingDictionary() : base(new StringLengthComparer()) { }
-        }
+            key = key.Replace(".", "_");
+            if (!Regex.IsMatch(key, "^\\w+_"))
+                key = $"qid_{key}";
+
+            if (!_Answers.ContainsKey(key))
+                _Answers.Add(key, val);
+        } 
     }  
 }
