@@ -62,7 +62,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         } 
         [Theory] // C:\temp\EINSTEIN_Validate.csv
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void Validate(string Section, string metricXpath, string attempt, string expected )
+        public void CIOValidate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -89,8 +89,38 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
             ds.Driver.Quit();
-        } 
-        #endregion 
+        }
+        [Theory]  
+        [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
+        public void EINSTEIN_Validate(string Section, string metricXpath, string attempt, string expected)
+        {
+            var ds = new DriverService(_logger);
+            ds.CsConnect(UserContext.Agency)
+                .ToTab("EINSTEIN") // CIO 2022 Q1
+                .ToSection((g => g.SectionText.Contains($"{Section}"))); 
+
+            var metrics = new MetricAnswerProvider();
+            metrics.Populate(ds);
+            attempt = metrics.Eval<string>(attempt);
+
+            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
+            Defaults.Add(metricXpath, attempt);
+
+            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
+
+            ds.FismaFormEnable();
+            var pcc = ds.PageControlCollection().EmptyIfNull();
+            foreach (IAutomator control in pcc)
+            {
+                ((IAutomator)control).Automate(sc);
+            }
+            ds.FismaFormSave();
+
+            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+            Assert.Contains(expected, actual);
+            ds.Driver.Quit();
+        }
+        #endregion
 
         #region PRIVS  
         [Theory]
@@ -102,15 +132,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         } 
         #endregion 
 
-    }
-    public class EINSTEINMetricProvider : MetricProvider
-    {
-        public override void Populate(DriverService ds)
-        {
-            base.Populate(ds);
-        }
-     }
-    public class CIOMetricProvider : MetricProvider
+    } 
+    public class CIOMetricProvider : MetricAnswerProvider
     {
         public override void Populate(DriverService ds)
         {
