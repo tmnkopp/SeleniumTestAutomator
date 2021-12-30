@@ -107,8 +107,10 @@ namespace CyberScope.Tests.Selenium
             var driver = this.Driver;
             var controlLocators = SettingsProvider.ControlLocators.EmptyIfNull();
             foreach (ControlLocator controlLocator in controlLocators)
-            { 
-                if (driver.FindElements(By.XPath($"{controlLocator.Locator}")).Count > 0)
+            {
+                var eles = (from e in driver.FindElements(By.XPath($"{controlLocator.Locator}"))
+                           where e.Displayed==true && e.Enabled==true select e).ToList();
+                if (eles.Count > 0)
                 {
                     var type = Assm.GetTypes().Where(t => t.Name == controlLocator.Type).FirstOrDefault();
                     IAutomator obj = (IAutomator)Activator.CreateInstance(Type.GetType($"{type.FullName}")); 
@@ -279,9 +281,9 @@ namespace CyberScope.Tests.Selenium
         public DriverService FismaFormSave()
         {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
-            IWebElement ele = wait.Until(drv =>
-            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnSave')]"))).FirstOrDefault();
-            ele?.Click();
+            var eles = wait.Until(drv =>
+                drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnSave')]")));
+            (from el in eles where el.Displayed && el.Enabled select el).FirstOrDefault()?.Click();  
             return this; 
         }
 

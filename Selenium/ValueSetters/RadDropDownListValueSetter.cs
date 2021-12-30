@@ -21,9 +21,10 @@ namespace CyberScope.Tests.Selenium
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             inputs = wait.Until(drv => drv.FindElements(By.CssSelector($".rddlPopup_Default ul li")));
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-            var elements = (from i in inputs
-                            where i.Enabled && i.Displayed
-                            select i).SkipWhile(o => o.Text == "").Take(1).ToList();
+            inputs = (from i in inputs
+                      where i.Enabled && i.Displayed
+                      select i).ToList();
+            var elements = (from i in inputs select i).SkipWhile(o => o.Text == "").ToList();
             this.SelectFromDropDown(elements);
             driver.FindElement(By.TagName($"body")).Click();
         }

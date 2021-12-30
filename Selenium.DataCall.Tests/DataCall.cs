@@ -96,7 +96,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("EINSTEIN") // CIO 2022 Q1
+                .ToTab("EINSTEIN")  
                 .ToSection((g => g.SectionText.Contains($"{Section}"))); 
 
             var metrics = new MetricAnswerProvider();
@@ -110,10 +110,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             ds.FismaFormEnable();
             var pcc = ds.PageControlCollection().EmptyIfNull();
-            foreach (IAutomator control in pcc)
-            {
-                ((IAutomator)control).Automate(sc);
-            }
+            foreach (IAutomator control in pcc) 
+                ((IAutomator)control).Automate(sc); 
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";

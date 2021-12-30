@@ -43,13 +43,13 @@
       "(type:radio)": "Y"
     },
     "//form[contains(@action, '_EINSTEIN_')]": {
-      "(IPAddress)": "123.123.123.123",
-      "(IP)": "123.123.123.123",
+      "(IPAddress|^IP|IP$)": "123.123.123.123",
+      "(ddlYESNOUNK_1_ddl_Edit)": "Yes",
       "(BGPPeerIP)": "123.123.123.123",
       "(BGPRoute)": "255.255.255.255/12"
     }
   },
-  "ChromeOptions": [ "log-level=3", "--window-size=480,680" ],
+  "ChromeOptions": [ "log-level=3", "--window-size=1480,1680" ],
   "ControlLocators": [
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",
@@ -70,7 +70,7 @@
       "ValueSetterTypes": "TextInputValueSetter"
     },
     {
-      "Locator": "//div[contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
+      "Locator": "//div[contains(@class, 'RadGrid-DEPRICIATED')]/table[contains(@class, 'rgMasterTable')]//*[contains(@id, 'AddNew')]",
       "Type": "RadGridForm",
       "Selector": "//div[contains(@class, 'RadGrid')]",
       "ValueSetterTypes": ""
