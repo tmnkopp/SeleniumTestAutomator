@@ -40,7 +40,8 @@ namespace CyberScope.Tests.Selenium
             }
             Element = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
-            if (Element.GetAttribute("value") == "")
+            var val = Element.GetAttribute("value");
+            if (val == "")
             {
                 Element.SendKeys("0");
             }

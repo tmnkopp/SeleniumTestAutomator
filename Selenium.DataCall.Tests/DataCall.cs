@@ -60,24 +60,25 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
 
         } 
-        [Theory] 
-        [CsvData(@"C:\temp\CIO_Validate.csv")]
+        [Theory] // C:\temp\EINSTEIN_Validate.csv
+        [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1")
+            ds.CsConnect(UserContext.Agency)
+                .ToTab("EINSTEIN") // CIO 2022 Q1
                 .ToSection((g => g.SectionText.Contains($"{Section}")));
             //ds.CsConnect(UserContext.Agency).ToTab("CIO").ToSection((g => g.SectionText.Contains($"{Section}")));
 
-            var metrics = new CIOMetricProvider();
-            metrics.Populate(ds);
-            attempt = metrics.Eval<string>(attempt);
-             
+            //var metrics = new EINSTEINMetricProvider();
+            //metrics.Populate(ds);
+            //attempt = metrics.Eval<string>(attempt);
+            
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
             Defaults.Add(metricXpath, attempt);
 
-            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults) ;
-             
+            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
+            
             ds.FismaFormEnable();
             var pcc = ds.PageControlCollection().EmptyIfNull();
             foreach (IAutomator control in pcc) {  
@@ -85,11 +86,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             }  
             ds.FismaFormSave();
 
-            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? ""; 
-            if (string.IsNullOrEmpty(expected))  
-                Assert.Equal(expected, actual); 
-            else  
-                Assert.True(Regex.IsMatch(actual, expected)); 
+            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+            Assert.Contains(expected, actual);
             ds.Driver.Quit();
         } 
         #endregion 
