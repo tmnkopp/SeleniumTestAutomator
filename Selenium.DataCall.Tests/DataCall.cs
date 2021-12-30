@@ -61,23 +61,22 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         } 
         [Theory] 
-        [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
+        [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
-            DriverService ds = new DriverService(_logger);
-            //ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1").ToSection((g => g.SectionText.Contains($"{Section}")));
-            ds.CsConnect(UserContext.Agency).ToTab("EINSTEIN").ToSection((g => g.SectionText.Contains($"{Section}")));
-            
-            var metrics = new EINSTEINMetricProvider();
-            metrics.Populate(ds); 
+            var ds = new DriverService(_logger);
+            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1")
+                .ToSection((g => g.SectionText.Contains($"{Section}")));
+            //ds.CsConnect(UserContext.Agency).ToTab("CIO").ToSection((g => g.SectionText.Contains($"{Section}")));
+
+            var metrics = new CIOMetricProvider();
+            metrics.Populate(ds);
             attempt = metrics.Eval<string>(attempt);
-              
+             
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
             Defaults.Add(metricXpath, attempt);
 
-            SessionContext sc = new SessionContext() {
-                Driver = ds.Driver , Logger = ds.Logger, Defaults = Defaults
-            };
+            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults) ;
              
             ds.FismaFormEnable();
             var pcc = ds.PageControlCollection().EmptyIfNull();
@@ -90,8 +89,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             if (string.IsNullOrEmpty(expected))  
                 Assert.Equal(expected, actual); 
             else  
-                Assert.Contains(expected, actual);
-            
+                Assert.True(Regex.IsMatch(actual, expected)); 
             ds.Driver.Quit();
         } 
         #endregion 

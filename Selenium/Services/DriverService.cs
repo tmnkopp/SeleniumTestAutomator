@@ -160,7 +160,9 @@ namespace CyberScope.Tests.Selenium
            
         public DriverService ToSection(DataCallSection Section)  { 
             SelectElement se = new SelectElement(this.Driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
+
             se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click();
+
             return this;
         }
         public DriverService ToSection(Func<DataCallSection, bool> Predicate) { 

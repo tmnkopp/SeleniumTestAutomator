@@ -25,7 +25,7 @@ namespace CyberScope.Tests.Selenium.Providers
             foreach (var kv in _Answers) {
                 EvalExpression = EvalExpression.Replace($"{kv.Key}", $" {_Answers[kv.Key]} ");
             } 
-            if (Regex.IsMatch(EvalExpression,$@"\w+" ) || string.IsNullOrEmpty(EvalExpression))
+            if (Regex.IsMatch(EvalExpression,$@"[A-Za-z]+" ) || string.IsNullOrEmpty(EvalExpression))
             {
                 return (T)Convert.ChangeType(EvalExpression, typeof(string));
             }
