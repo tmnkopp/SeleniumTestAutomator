@@ -262,27 +262,25 @@ namespace CyberScope.Tests.Selenium
 
         public DriverService FismaFormEnable()
         {
-            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15)); 
-            IWebElement ele = wait.Until(drv => 
-            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnEdit')]"))).FirstOrDefault(); 
-            ele?.Click(); 
+            string btntext = "_btnEdit";
+            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
+            var eles = wait.Until(drv =>
+                drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '{btntext}')]")));
+            (from el in eles where el.Displayed && el.Enabled select el).FirstOrDefault()?.Click();
             return this;
         }
             
         public DriverService FismaFormCancel()
         {
-            WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
-            IWebElement ele = wait.Until(drv =>
-            drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnEdit')]"))).FirstOrDefault();
-            ele?.Click();
-            return this;
+            return this.FismaFormEnable();
         }
             
         public DriverService FismaFormSave()
         {
+            string btntext = "_btnSave";
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(.15));
             var eles = wait.Until(drv =>
-                drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '_btnSave')]")));
+                drv.FindElements(By.XPath($"//td[contains(@class, 'ButtonDiv')]//*[contains(@id, '{btntext}')]")));
             (from el in eles where el.Displayed && el.Enabled select el).FirstOrDefault()?.Click();  
             return this; 
         }
