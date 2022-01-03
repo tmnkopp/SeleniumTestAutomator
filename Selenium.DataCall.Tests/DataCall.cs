@@ -45,7 +45,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1A|S3B")]
+        [InlineData("CIO 2022 Q1", "S1A|S1C|S2")]
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
