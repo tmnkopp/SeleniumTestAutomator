@@ -14,8 +14,11 @@ namespace CyberScope.Tests.Selenium
         #region PROPS
         private IWebElement ele;
         private WebDriverWait wait;
+        private SessionContext sessionContext;
+        private ChromeDriver driver;
+        private List<string> rowIds;
         #endregion
-          
+
         #region CTOR
         public InvGrid()
         { 
@@ -25,42 +28,16 @@ namespace CyberScope.Tests.Selenium
         #region METHODS
         public virtual void Automate(SessionContext sessionContext)
         {
+            this.sessionContext = sessionContext;
             this.driver = sessionContext.Driver;
 
             IReadOnlyCollection<IWebElement> elist =
                 driver.FindElementsByXPath(@"//table[contains(@class,'rgMasterTable')]/tbody//tr[contains(@class,'Row')]");
-            var ids = (from e in elist select e.GetAttribute("id")).ToList();
+            rowIds = (from e in elist select e.GetAttribute("id")).ToList();
+             
+            RowCommandPrepare("Reset");
 
-            bool hasResets = driver.FindElementsByXPath($"//tr//a[contains(text(), 'Reset')]").Count > 0;
-            if (hasResets)
-            { 
-                foreach (string id in ids)
-                { 
-                    try
-                    {
-                        var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
-                        if (elements.Count > 0)
-                        {
-                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                            IAlert alert = driver.SwitchTo().Alert();
-                            alert.Accept();
-                        } 
-                    }
-                    catch (StaleElementReferenceException ex)
-                    {
-                        sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"{id} {ex.Message} {ex.InnerException}");
-                    }
-
-                }
-            }
-
-            foreach (string id in ids)
+            foreach (string id in rowIds)
             {
                 try
                 { 
@@ -72,12 +49,12 @@ namespace CyberScope.Tests.Selenium
                         na.ContainerSelector = $"#{id}";
                         na.Automate(sessionContext);
 
-                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                        foreach (var input in inputs)
-                        { 
-                            input.Clear();
-                            input.SendKeys("1"); 
-                        }
+                        // var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
+                        // foreach (var input in inputs)
+                        // { 
+                        //     input.Clear();
+                        //     input.SendKeys("1"); 
+                        // }
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
                     if (elements.Count > 0)
@@ -97,31 +74,38 @@ namespace CyberScope.Tests.Selenium
                 }
 
             }
-       
-            if (driver.FindElementsByXPath($"//tr//a[contains(text(), 'Submit')]").Count > 0)
-            { 
-                foreach (string id in ids)
+            RowCommandPrepare("Submit"); 
+        }
+
+        private void RowCommandPrepare(string RowCommand) {
+            bool hasRowCommands = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]").Count > 0;
+            int ittr = 0;
+            while (hasRowCommands)
+            {
+                try
                 {
-                    try 
-                    { 
-                        var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
-                        if (elements.Count > 0)
-                        {
-                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                            driver.SwitchTo().Alert().Accept();
-                        }
-                    }
-                    catch (StaleElementReferenceException ex)
+                    var elements = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]");
+                    if (elements.Count > 0)
                     {
-                        sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
+                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                        IAlert alert = driver.SwitchTo().Alert();
+                        alert.Accept();
                     }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"{id} {ex.Message} {ex.InnerException}");
-                    } 
                 }
+                catch (StaleElementReferenceException ex)
+                {
+                    sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"{ex.Message} {ex.InnerException}");
+                }
+                hasRowCommands = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]").Count > 0;
+                ittr++;
+                if (ittr > rowIds.Count + 5)
+                    break;
             }
         }
         #endregion 
