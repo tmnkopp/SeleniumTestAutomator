@@ -61,17 +61,21 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             Defaults.Add(metricXpath, attempt);
 
             var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
+            var pcc = ds.PageControlCollection().EmptyIfNull();
+            string id = Utils.ExtractContainerId(ds.Driver, metricXpath);
 
             ds.FismaFormEnable();
-            var pcc = ds.PageControlCollection().EmptyIfNull();
             foreach (IAutomator control in pcc)
             {
+                if (!string.IsNullOrEmpty(id))
+                    ((IAutomator)control).ContainerSelector = $"#{id} ";
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
+
             ds.Driver.Quit();
         }
         #endregion
