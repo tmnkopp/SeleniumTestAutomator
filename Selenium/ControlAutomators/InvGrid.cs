@@ -44,17 +44,10 @@ namespace CyberScope.Tests.Selenium
                     var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
                     {
-                        esublist[0].Click();  
+                        esublist[0].Click(); 
                         NaiveAutomator na = new NaiveAutomator(this.ValueSetters); 
                         na.ContainerSelector = $"#{id}";
-                        na.Automate(sessionContext);
-
-                        // var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                        // foreach (var input in inputs)
-                        // { 
-                        //     input.Clear();
-                        //     input.SendKeys("1"); 
-                        // }
+                        na.Automate(sessionContext); 
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
                     if (elements.Count > 0)
