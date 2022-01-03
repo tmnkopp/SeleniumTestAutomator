@@ -10,6 +10,7 @@
     },
     "//form[contains(@action, '_CIO_')]|//title[text()[contains(.,'CIO')]]": {
       "(qid_1_1_6)": "10",
+      "(CBCioInvGrid)": "1",
       "(qid_1_2_1|qid_1_2_2|qid_1_2_3)": "10",
       "(qid_2_3|qid_2_4|qid_2_5|qid_2_6)": "1",
       "(qid_2_10|qid_2_10_1)": "1",
@@ -59,6 +60,12 @@
     },
     {
       "Locator": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//td[text()[contains(.,'Agency Totals')]]",
+      "Type": "InvGrid",
+      "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": ".*"
+    },
+    {
+      "Locator": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//input[contains(@id, '_EditButton')]",
       "Type": "InvGrid",
       "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]",
       "ValueSetterTypes": ".*"

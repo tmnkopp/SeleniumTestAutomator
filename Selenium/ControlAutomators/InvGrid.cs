@@ -62,12 +62,20 @@ namespace CyberScope.Tests.Selenium
                     if (esublist.Count > 0)
                     {
                         esublist[0].Click();
-                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                        foreach (var input in inputs)
-                        { 
-                            input.Clear();
-                            input.SendKeys("1"); 
-                        }
+
+                        List<IValueSetter> valueSetters = new List<IValueSetter>();
+                        valueSetters.Add(new TextInputValueSetter());
+                        valueSetters.Add(new RadDropDownListValueSetter());  
+                        NaiveAutomator na = new NaiveAutomator(valueSetters); 
+                        na.ContainerSelector = $"#{id}";
+                        na.Automate(sessionContext);
+
+                        // var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
+                        // foreach (var input in inputs)
+                        // { 
+                        //     input.Clear();
+                        //     input.SendKeys("1"); 
+                        // }
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
                     if (elements.Count > 0)

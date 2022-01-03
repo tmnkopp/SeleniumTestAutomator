@@ -119,6 +119,7 @@ namespace CyberScope.Tests.Selenium
                                         where Regex.IsMatch(vs.GetType().Name, $"{controlLocator.ValueSetterTypes}")
                                         select vs).ToList(); 
                     automators.Add(obj);
+                    //this.Logger.Information($"ControlLocator: {type.Name}");
                 }
             }
             return automators;

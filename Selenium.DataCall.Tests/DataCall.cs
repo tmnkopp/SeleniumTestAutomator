@@ -45,7 +45,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1C")]
+        [InlineData("CIO 2022 Q1", "S1A|S3B")]
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
@@ -55,7 +55,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void CIOValidate(string Section, string metricXpath, string attempt, string expected)
+        public void Validate(string Section, string metricXpath, string attempt, string expected)
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)

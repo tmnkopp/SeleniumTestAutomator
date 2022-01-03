@@ -44,7 +44,36 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             //Assert.True(ds.FismaFormValidates());
             //ds.Driver.Quit(); 
         }
+        [Theory]
+        [CsvData(@"C:\temp\CIO_Validate.csv")]
+        public void Validate(string Section, string metricXpath, string attempt, string expected)
+        {
+            var ds = new DriverService(_logger);
+            ds.CsConnect(UserContext.Agency)
+                .ToTab("CIO 2022 Q1") // CIO 2022 Q1
+                .ToSection((g => g.SectionText.Contains($"{Section}")));
 
+            var metrics = new CIOMetricProvider();
+            metrics.Populate(ds);
+            attempt = metrics.Eval<string>(attempt);
+
+            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
+            Defaults.Add(metricXpath, attempt);
+
+            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
+
+            ds.FismaFormEnable();
+            var pcc = ds.PageControlCollection().EmptyIfNull();
+            foreach (IAutomator control in pcc)
+            {
+                ((IAutomator)control).Automate(sc);
+            }
+            ds.FismaFormSave();
+
+            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+            Assert.Contains(expected, actual);
+            ds.Driver.Quit();
+        }
         #endregion
     }
 }
