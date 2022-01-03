@@ -35,7 +35,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         [Theory]
         [InlineData("CIO 2022 Q1", ".*")]
-        public void TestSections(string _PK_FORM, string SectionPattern)
+        public void Initialize(string _PK_FORM, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
             var driver = ds.CsConnect(UserContext.Agency).ToTab(_PK_FORM).Driver;

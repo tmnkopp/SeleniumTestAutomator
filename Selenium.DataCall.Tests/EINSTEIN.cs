@@ -41,7 +41,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
    
         [Theory] 
         [InlineData("EINSTEIN", "[1]")]  
-        public void TestSections(string _PK_FORM, string SectionPattern)
+        public void Initialize(string _PK_FORM, string SectionPattern)
         { 
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(_PK_FORM);  

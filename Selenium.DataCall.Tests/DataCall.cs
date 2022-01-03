@@ -43,32 +43,24 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         #endregion
 
-        #region UNITTESTS 
-        [Fact]
-        public void Service_Resolves()
-        {
-            var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1");
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"S2|7D"));
-        }
+        #region UNITTESTS  
         [Theory]
         [InlineData("CIO 2022 Q1", "S1C")]
-        public void DataCall_Resolves(string TabText, string SectionPattern)
+        public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText);
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
 
         }
-        [Theory] // C:\temp\EINSTEIN_Validate.csv
+        [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void CIOValidate(string Section, string metricXpath, string attempt, string expected)
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1") // CIO 2022 Q1
-                .ToSection((g => g.SectionText.Contains($"{Section}")));
-            //ds.CsConnect(UserContext.Agency).ToTab("CIO").ToSection((g => g.SectionText.Contains($"{Section}")));
+                .ToSection((g => g.SectionText.Contains($"{Section}"))); 
 
             var metrics = new CIOMetricProvider();
             metrics.Populate(ds);
