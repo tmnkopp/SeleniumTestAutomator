@@ -30,30 +30,36 @@ namespace CyberScope.Tests.Selenium
             IReadOnlyCollection<IWebElement> elist =
                 driver.FindElementsByXPath(@"//table[contains(@class,'rgMasterTable')]/tbody//tr[contains(@class,'Row')]");
             var ids = (from e in elist select e.GetAttribute("id")).ToList();
-            foreach (string id in ids)
-            { 
-                try
-                { 
-                    var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
-                    if (esublist.Count > 0)
-                    {
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                        esublist[0].Click();
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                        IAlert alert = driver.SwitchTo().Alert();
-                        alert.Accept();
-                    } 
-                }
-                catch (StaleElementReferenceException ex)
-                {
-                    sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
-                }
 
+            bool hasResets = driver.FindElementsByXPath($"//tr//a[contains(text(), 'Reset')]").Count > 0;
+            if (hasResets)
+            { 
+                foreach (string id in ids)
+                { 
+                    try
+                    {
+                        var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
+                        if (esublist.Count > 0)
+                        {
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                            esublist[0].Click();
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                            IAlert alert = driver.SwitchTo().Alert();
+                            alert.Accept();
+                        } 
+                    }
+                    catch (StaleElementReferenceException ex)
+                    {
+                        sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                    }
+
+                }
             }
+
             foreach (string id in ids)
             {
                 try
@@ -61,8 +67,7 @@ namespace CyberScope.Tests.Selenium
                     var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
                     {
-                        esublist[0].Click();
-
+                        esublist[0].Click(); 
                         List<IValueSetter> valueSetters = new List<IValueSetter>();
                         valueSetters.Add(new TextInputValueSetter());
                         valueSetters.Add(new RadDropDownListValueSetter());  
@@ -88,31 +93,38 @@ namespace CyberScope.Tests.Selenium
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                    if (ex.Message.Contains("element not interactable"))
+                        sessionContext.Logger.Error($"element not interactable {id} ");
+                    else
+                        throw new Exception($"{id} {ex.Message} {ex.InnerException}");
                 }
 
             }
-            foreach (string id in ids)
-            {
-                try 
-                { 
-                    var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
-                    if (elements.Count > 0)
-                    {
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                        driver.SwitchTo().Alert().Accept();
+       
+            if (driver.FindElementsByXPath($"//tr//a[contains(text(), 'Submit')]").Count > 0)
+            { 
+                foreach (string id in ids)
+                {
+                    try 
+                    { 
+                        var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Submit')]"); 
+                        if (elements.Count > 0)
+                        {
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
+                            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                            driver.SwitchTo().Alert().Accept();
+                        }
                     }
+                    catch (StaleElementReferenceException ex)
+                    {
+                        sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"{id} {ex.Message} {ex.InnerException}");
+                    } 
                 }
-                catch (StaleElementReferenceException ex)
-                {
-                    sessionContext.Logger.Warning($"StaleElementReferenceException {id} {ex.Message} {ex.InnerException}");
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"{id} {ex.Message} {ex.InnerException}");
-                } 
             }
         }
         #endregion 

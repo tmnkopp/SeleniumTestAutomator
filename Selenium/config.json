@@ -62,13 +62,13 @@
       "Locator": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//td[text()[contains(.,'Agency Totals')]]",
       "Type": "InvGrid",
       "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]",
-      "ValueSetterTypes": ".*"
+      "ValueSetterTypes": "TextInputValueSetter"
     },
     {
-      "Locator": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//input[contains(@id, '_EditButton')]",
+      "Locator": "//div[contains(@id, 'MngmtMaturityTier') and contains(@class, 'RadGrid')]/table[contains(@class, 'rgMasterTable')]//input[contains(@id, '_EditButton')]",
       "Type": "InvGrid",
-      "Selector": "//div[contains(@id, 'Inv') and contains(@class, 'RadGrid')]",
-      "ValueSetterTypes": ".*"
+      "Selector": "//div[contains(@id, 'MngmtMaturityTier') and contains(@class, 'RadGrid')]",
+      "ValueSetterTypes": "RadDropDownListValueSetter"
     },
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_hvaReadonly')]//*[contains(@class, 'qid_1_1_6')]",
