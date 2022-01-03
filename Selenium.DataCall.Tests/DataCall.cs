@@ -25,7 +25,7 @@ using System.IO;
 using CyberScope.Tests.Selenium.Providers;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
-{ 
+{
     public class DataCall
     {
         #region FIELDS 
@@ -39,30 +39,30 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             this.output = output;
             _logger = new LoggerConfiguration()
             .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .CreateLogger(); 
+            .CreateLogger();
         }
         #endregion
-  
+
         #region UNITTESTS 
-        [Fact] 
+        [Fact]
         public void Service_Resolves()
         {
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1"); 
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"S2|7D")); 
+            ds.CsConnect(UserContext.Agency).ToTab("CIO 2022 Q1");
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"S2|7D"));
         }
-        [Theory] 
-        [InlineData("CIO 2022 Q1", "S1C")] 
+        [Theory]
+        [InlineData("CIO 2022 Q1", "S1C")]
         public void DataCall_Resolves(string TabText, string SectionPattern)
-        { 
+        {
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText);  
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
+            ds.CsConnect(UserContext.Agency).ToTab(TabText);
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
 
-        } 
+        }
         [Theory] // C:\temp\EINSTEIN_Validate.csv
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void CIOValidate(string Section, string metricXpath, string attempt, string expected )
+        public void CIOValidate(string Section, string metricXpath, string attempt, string expected)
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -73,31 +73,37 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var metrics = new CIOMetricProvider();
             metrics.Populate(ds);
             attempt = metrics.Eval<string>(attempt);
-            
+
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
             Defaults.Add(metricXpath, attempt);
 
             var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
-            
+
             ds.FismaFormEnable();
             var pcc = ds.PageControlCollection().EmptyIfNull();
-            foreach (IAutomator control in pcc) {  
+            foreach (IAutomator control in pcc) {
                 ((IAutomator)control).Automate(sc);
-            }  
+            }
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
             ds.Driver.Quit();
         }
-        [Theory]  
+        [Theory]
         [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
         public void EINSTEIN_Validate(string Section, string metricXpath, string attempt, string expected)
         {
+            // string ToTab
+            // string Section
+            // MetricAnswerProvider
+            // string metricXpath
+            // string attempt
+            // string expected
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("EINSTEIN")  
-                .ToSection((g => g.SectionText.Contains($"{Section}"))); 
+                .ToTab("EINSTEIN")
+                .ToSection((g => g.SectionText.Contains($"{Section}")));
 
             var metrics = new MetricAnswerProvider();
             metrics.Populate(ds);
@@ -110,8 +116,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             ds.FismaFormEnable();
             var pcc = ds.PageControlCollection().EmptyIfNull();
-            foreach (IAutomator control in pcc) 
-                ((IAutomator)control).Automate(sc); 
+            foreach (IAutomator control in pcc)
+                ((IAutomator)control).Automate(sc);
             ds.FismaFormSave();
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
@@ -126,11 +132,12 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         public void TestCSV(string a, string b, string c, string d)
         {
             var cda = new CsvDataAttribute(@"C:\temp\DataCall_Validate.csv");
-            var a1 = a; 
-        } 
-        #endregion 
+            var a1 = a;
+        }
+        #endregion
 
-    } 
+    }
+
     public class CIOMetricProvider : MetricAnswerProvider
     {
         public override void Populate(DriverService ds)
@@ -145,11 +152,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
             string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
             string m115 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
-            SetMetric("qid_111_111", m111);
-            SetMetric("qid_111_112", m112);
-            SetMetric("qid_1_1_5", m115);
-            int sum111_112 = this.GetMetric<int>("qid_111_111") + this.GetMetric<int>("qid_111_112"); 
-            SetMetric("sum_111_112", sum111_112.ToString());
+            SetMetric("1.1.1", m111);
+            SetMetric("1.1.2", m112);
+            SetMetric("1.1.5", m115); 
 
             ((IJavaScriptExecutor)ds.Driver).ExecuteScript("window.close();");
             ds.Driver.SwitchTo().Window(handles[ds.Driver.WindowHandles.Count - 1]);

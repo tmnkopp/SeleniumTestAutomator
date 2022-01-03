@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium.Providers 
 {
-    public class MetricAnswerProvider
+    public interface IPopulateMetricAnswers
+    {
+        void Populate(DriverService ds);
+    }
+    public class MetricAnswerProvider: IPopulateMetricAnswers
     { 
         private KeyLengthSortedDecendingDictionary _Answers = new KeyLengthSortedDecendingDictionary();
         private class KeyLengthSortedDecendingDictionary : SortedDictionary<string, string>
@@ -31,19 +35,9 @@ namespace CyberScope.Tests.Selenium.Providers
                 EvalExpression = EvalExpression.Replace($"{kv.Key}", $" {_Answers[kv.Key]} ");
             }  
             object Result;
-            TryEval(EvalExpression, out Result); 
+            Utils.TryEval(EvalExpression, out Result); 
             return (T)Convert.ChangeType(Result, typeof(T));
-        }
-        private void TryEval(string EvalExpression, out object Result) { 
-            try
-            {
-                Result = new Expression(EvalExpression).Evaluate(); 
-            }
-            catch (Exception ex) {
-                Result = EvalExpression;
-                Console.WriteLine(ex.Message); 
-            } 
-        }
+        } 
         public T GetMetric<T>(string key)
         {
             object value = (_Answers.ContainsKey(key)) ? _Answers[key] : null;
@@ -54,16 +48,14 @@ namespace CyberScope.Tests.Selenium.Providers
             foreach (var item in mEles)
             {
                 string cls = item.GetAttribute("class");
-                string m = Regex.Match(cls, $"qid_[\\d_\\w]+")?.Groups[0]?.Value ?? "0";
+                string m = Regex.Match(cls, $@"qid_([\._\w]+)")?.Groups[1]?.Value ?? "0";
                 SetMetric(m, item.Text);
             }
         }
         public void SetMetric(string key, string val)
         {
-            key = key.Replace(".", "_");
-            if (!Regex.IsMatch(key, "^\\w+_"))
-                key = $"qid_{key}";
-
+            key = Regex.Replace(key, $@"qid_|\s", "");
+            key = Regex.Replace(key, $@"_", ".");  
             if (!_Answers.ContainsKey(key))
                 _Answers.Add(key, val);
         } 
