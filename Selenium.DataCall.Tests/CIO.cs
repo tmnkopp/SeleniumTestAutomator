@@ -62,9 +62,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
             var pcc = ds.PageControlCollection().EmptyIfNull();
-            string id = Utils.ExtractContainerId(ds.Driver, metricXpath);
 
             ds.FismaFormEnable();
+            string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
             foreach (IAutomator control in pcc)
             {
                 if (!string.IsNullOrEmpty(id))

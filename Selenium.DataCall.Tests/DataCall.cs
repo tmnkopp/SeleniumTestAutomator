@@ -45,7 +45,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1A|S1C|S2")]
+        [InlineData("CIO 2022 Q1", "S2")] // S1A|S1C|
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
@@ -55,7 +55,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void Validate(string Section, string metricXpath, string defaultValue, string attempt, string expected )
+        public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -83,15 +83,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
-
-            if (!string.IsNullOrEmpty(defaultValue))
-            {
-                ds.FismaFormCancel();
-                ds.FismaFormEnable();
-                ds.SetFieldValue(By.XPath(metricXpath), defaultValue);
-                ds.FismaFormSave();
-            } 
-
+             
             ds.Driver.Quit();
         }
         [Theory]

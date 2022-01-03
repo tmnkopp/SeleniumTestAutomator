@@ -30,10 +30,9 @@ namespace CyberScope.Tests.Selenium
         
         protected WebDriverWait wait; 
         protected string GetMatchAttribute(IWebElement input) { 
-            var target = $"{input.GetAttribute("name")} " +
-                $"{input.GetAttribute("id")} " +
-                $"{input.GetAttribute("class")} " +
-                $"type:{input.GetAttribute("type")} ";
+            var target = $"type:{input.GetAttribute("type")}  " + 
+                $" {input.GetAttribute("id")} " +
+                $" {input.GetAttribute("class")} ";
             return target; 
         }
     } 
