@@ -55,7 +55,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void Validate(string Section, string metricXpath, string attempt, string expected )
+        public void Validate(string Section, string metricXpath, string defaultValue, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -71,9 +71,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             var sc = new SessionContext(ds.Logger, ds.Driver, Defaults); 
             var pcc = ds.PageControlCollection().EmptyIfNull();
-            string id = Utils.ExtractContainerId(ds.Driver, metricXpath);
 
-            ds.FismaFormEnable();
+            ds.FismaFormEnable(); 
+            string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
             foreach (IAutomator control in pcc) {
                 if (!string.IsNullOrEmpty(id))
                     ((IAutomator)control).ContainerSelector = $"#{id} "; 
@@ -83,7 +83,15 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
-             
+
+            if (!string.IsNullOrEmpty(defaultValue))
+            {
+                ds.FismaFormCancel();
+                ds.FismaFormEnable();
+                ds.SetFieldValue(By.XPath(metricXpath), defaultValue);
+                ds.FismaFormSave();
+            } 
+
             ds.Driver.Quit();
         }
         [Theory]
