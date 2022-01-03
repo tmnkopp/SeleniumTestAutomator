@@ -54,16 +54,18 @@ namespace CyberScope.Tests.Selenium
             public string MetricXpath { get; set; }
             public string ErrorAttemptExpression { get; set; }
             public string ExpectedError { get; set; }
-            public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
+            public string ValidValue { get; set; } = "";
+            public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError};
         }
         private class CsvValidationAttemptMapping : CsvMapping<ValidationAttempt>
         {
             public CsvValidationAttemptMapping() : base()
             {
                 MapProperty(0, x => x.Section);
-                MapProperty(1, x => x.MetricXpath);
+                MapProperty(1, x => x.MetricXpath); 
                 MapProperty(2, x => x.ErrorAttemptExpression);
-                MapProperty(3, x => x.ExpectedError);
+                MapProperty(3, x => x.ExpectedError); 
+                
             }
         }
     }

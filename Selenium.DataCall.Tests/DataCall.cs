@@ -55,7 +55,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void Validate(string Section, string metricXpath, string attempt, string expected)
+        public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -80,6 +80,11 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
+
+            // ds.FismaFormEnable();
+            // ds.SetFieldValue(By.XPath(metricXpath), ValidValue);
+            // ds.FismaFormSave();
+
             ds.Driver.Quit();
         }
         [Theory]
