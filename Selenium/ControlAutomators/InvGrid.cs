@@ -38,11 +38,11 @@ namespace CyberScope.Tests.Selenium
                 { 
                     try
                     {
-                        var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
-                        if (esublist.Count > 0)
+                        var elements = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//a[contains(text(), 'Reset')]");
+                        if (elements.Count > 0)
                         {
                             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                            esublist[0].Click();
+                            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
                             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                             IAlert alert = driver.SwitchTo().Alert();
                             alert.Accept();
@@ -67,20 +67,17 @@ namespace CyberScope.Tests.Selenium
                     var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
                     {
-                        esublist[0].Click(); 
-                        List<IValueSetter> valueSetters = new List<IValueSetter>();
-                        valueSetters.Add(new TextInputValueSetter());
-                        valueSetters.Add(new RadDropDownListValueSetter());  
-                        NaiveAutomator na = new NaiveAutomator(valueSetters); 
+                        esublist[0].Click();  
+                        NaiveAutomator na = new NaiveAutomator(this.ValueSetters); 
                         na.ContainerSelector = $"#{id}";
                         na.Automate(sessionContext);
 
-                        // var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
-                        // foreach (var input in inputs)
-                        // { 
-                        //     input.Clear();
-                        //     input.SendKeys("1"); 
-                        // }
+                        var inputs = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@type, 'text')]");
+                        foreach (var input in inputs)
+                        { 
+                            input.Clear();
+                            input.SendKeys("1"); 
+                        }
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
                     if (elements.Count > 0)
