@@ -22,7 +22,8 @@ namespace CyberScope.Tests.Selenium
     { 
         string ContainerSelector { get; set; }
         List<IValueSetter> ValueSetters { get; set; } 
-        void Automate(SessionContext context); 
+        void Automate(SessionContext context);
+        event EventHandler<AutomatorEventArgs> OnFormSubmitted; 
     }
     public class SessionContext 
     {
@@ -70,6 +71,7 @@ namespace CyberScope.Tests.Selenium
             foreach (var type in setters)
                 valueSetters.Add((IValueSetter)Activator.CreateInstance(Type.GetType($"{type.FullName}")));
         }
+        
         public BaseAutomator(List<IValueSetter> valueSetters)
         {
             this.valueSetters = valueSetters;
@@ -107,6 +109,11 @@ namespace CyberScope.Tests.Selenium
         {
             OnStaleElement?.Invoke(this, e);
         }
+        public event EventHandler<AutomatorEventArgs> OnFormSubmitted;
+        protected virtual void FormSubmitted(AutomatorEventArgs e)
+        {
+            OnFormSubmitted?.Invoke(this, e);
+        } 
         #endregion
     } 
     

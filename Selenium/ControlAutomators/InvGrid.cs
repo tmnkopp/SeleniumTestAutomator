@@ -23,6 +23,7 @@ namespace CyberScope.Tests.Selenium
         public InvGrid()
         { 
         }
+         
         #endregion
 
         #region METHODS

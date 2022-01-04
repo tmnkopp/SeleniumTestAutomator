@@ -44,6 +44,8 @@ namespace CyberScope.Tests.Selenium
                     na.ContainerSelector = $"#{id}";
                     na.Automate(sessionContext);  
                     driver.FindElementByXPath($"//tr[contains(@id, '{id}')]//*[contains(@id, '_UpdateButton')]").Click();
+                    var args = new AutomatorEventArgs(driver);
+                    this.FormSubmitted(args);
                 } 
             }
         }

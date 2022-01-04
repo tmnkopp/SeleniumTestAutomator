@@ -45,7 +45,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "4")] // S1A|S1C|
+        [InlineData("CIO 2022 Q1", "7A")] // S1A|S1C|
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
@@ -75,7 +75,10 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.FismaFormEnable(); 
             string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
             foreach (IAutomator control in pcc) {
-                if (!string.IsNullOrEmpty(id)) ((IAutomator)control).ContainerSelector = $"#{id} "; 
+                if (!string.IsNullOrEmpty(id))  ((IAutomator)control).ContainerSelector = $"#{id} ";  
+                ((IAutomator)control).OnFormSubmitted += (s, e) => { 
+                    var err = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? ""; 
+                };
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave();
