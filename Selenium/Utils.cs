@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CyberScope.Tests.Selenium
 {
     public static class Utils
-    {
+    { 
         public static string ExtractContainerId(ChromeDriver driver, string metricXpath) {
             string id = "";
             int ittr = 0; 

@@ -8,8 +8,33 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium.Providers 
 {
-    public interface IPopulateMetricAnswers
+    public class CIOMetricProvider : MetricAnswerProvider
     {
+        public override void Populate(DriverService ds)
+        {
+            ds.OpenTab();
+            ds.ToSection((g => g.SectionText.Contains("S1")));
+
+            string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
+            string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
+            string m115 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
+            SetMetric("1.1.1", m111);
+            SetMetric("1.1.2", m112);
+            SetMetric("1.1.5", m115);
+
+            ds.CloseTab();
+
+            ds.OpenTab();
+            ds.ToSection((g => g.SectionText.Contains("S1B")));
+            string m12 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '_Section1Sum')]")) ?? "0";
+            SetMetric("1.2", m12);
+            ds.CloseTab();
+
+            base.Populate(ds);
+        }
+    }
+    public interface IPopulateMetricAnswers
+    { 
         void Populate(DriverService ds);
     }
     public class MetricAnswerProvider: IPopulateMetricAnswers

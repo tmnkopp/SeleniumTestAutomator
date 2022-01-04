@@ -133,28 +133,5 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
     }
 
-    public class CIOMetricProvider : MetricAnswerProvider
-    {
-        public override void Populate(DriverService ds)
-        {
-            var url = ds.Driver.Url;
-            ((IJavaScriptExecutor)ds.Driver).ExecuteScript("window.open();");
-            var handles = ds.Driver.WindowHandles;
-            ds.Driver.SwitchTo().Window(handles[ds.Driver.WindowHandles.Count - 1]);
-            ds.Driver.Navigate().GoToUrl($"{url}");
-            ds.ToSection((g => g.SectionText.Contains("S1")));
 
-            string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
-            string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
-            string m115 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
-            SetMetric("1.1.1", m111);
-            SetMetric("1.1.2", m112);
-            SetMetric("1.1.5", m115); 
-
-            ((IJavaScriptExecutor)ds.Driver).ExecuteScript("window.close();");
-            ds.Driver.SwitchTo().Window(handles[ds.Driver.WindowHandles.Count - 1]);
-
-            base.Populate(ds);
-        }
-    }
 }

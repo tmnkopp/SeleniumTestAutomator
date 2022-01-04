@@ -257,6 +257,21 @@ namespace CyberScope.Tests.Selenium
             return this;
         }
 
+        public DriverService OpenTab() { 
+            string url = this.Driver.Url;
+            ((IJavaScriptExecutor)this.Driver).ExecuteScript("window.open();");
+            var handles = this.Driver.WindowHandles;
+            this.Driver.SwitchTo().Window(handles[this.Driver.WindowHandles.Count - 1]);
+            this.Driver.Navigate().GoToUrl($"{url}"); 
+            return this;
+        }
+        public DriverService CloseTab()
+        {
+            var handles = this.Driver.WindowHandles;
+            ((IJavaScriptExecutor)this.Driver).ExecuteScript("window.close();");
+            this.Driver.SwitchTo().Window(handles[this.Driver.WindowHandles.Count - 1]);
+            return this;
+        }
         #endregion
 
         #region METHODS: FismaForm ACCESSORS 
