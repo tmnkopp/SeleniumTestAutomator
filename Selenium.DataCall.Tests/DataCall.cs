@@ -50,8 +50,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         {
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText);
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
