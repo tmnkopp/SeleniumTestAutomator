@@ -45,12 +45,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "S2")] // S1A|S1C|
+        [InlineData("CIO 2022 Q1", "4")] // S1A|S1C|
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText);
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
+            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
+            ds.Driver.Quit();
         }
         [Theory] 
         [CsvData(@"C:\temp\CIO_Validate.csv")]
@@ -74,8 +75,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.FismaFormEnable(); 
             string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
             foreach (IAutomator control in pcc) {
-                if (!string.IsNullOrEmpty(id))
-                    ((IAutomator)control).ContainerSelector = $"#{id} "; 
+                if (!string.IsNullOrEmpty(id)) ((IAutomator)control).ContainerSelector = $"#{id} "; 
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave();
