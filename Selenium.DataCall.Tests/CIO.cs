@@ -16,6 +16,7 @@ using Xunit.Abstractions;
 using Serilog.Events;
 using NCalc;
 using System.Collections;
+using CyberScope.Tests.Selenium.Providers;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {

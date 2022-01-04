@@ -1,4 +1,5 @@
 ﻿using NCalc;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,12 @@ namespace CyberScope.Tests.Selenium.Providers
             SetMetric("1.1.2", m112);
             SetMetric("1.1.5", m115);
 
-            ds.CloseTab();
+            ds.CloseTab(); 
 
-            ds.OpenTab();
+            ds.OpenTab(); 
             ds.ToSection((g => g.SectionText.Contains("S1B")));
-            string m12 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '_Section1Sum')]")) ?? "0";
+
+            string m12 = ds.GetFieldValue(By.XPath("//td/span[contains(@id, '_Section1Sum')]")) ?? "0";
             SetMetric("1.2", m12);
             ds.CloseTab();
 

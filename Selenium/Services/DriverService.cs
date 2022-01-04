@@ -265,6 +265,7 @@ namespace CyberScope.Tests.Selenium
             this.Driver.Navigate().GoToUrl($"{url}"); 
             return this;
         }
+        
         public DriverService CloseTab()
         {
             var handles = this.Driver.WindowHandles;
