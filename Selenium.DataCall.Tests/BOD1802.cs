@@ -71,12 +71,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
             NewTab(ds);  
             wait = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(2));
-            wait.Until(drv => drv.FindElement(By.XPath($"//input[contains(@id, 'EditButton')]"))).Click();
-
-            NewTab(ds);
-            ds.Driver.Navigate().GoToUrl("https://localhost/ReporterHome.aspx");
-            ds.Driver.FindElement(By.XPath($"//*[contains(@id, '_hl_Launch')]")).Click();
-
+            wait.Until(drv => drv.FindElement(By.XPath($"//input[contains(@id, 'EditButton')]"))).Click();  
         }
         #endregion
         private void NewTab(DriverService ds)
