@@ -4,6 +4,7 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CyberScope.Tests.Selenium
 {
@@ -14,43 +15,48 @@ namespace CyberScope.Tests.Selenium
         public void SetValue(ChromeDriver driver, string ElementId)
         {
             this.Driver = driver;
+            driver.FindElement(By.TagName($"body"))?.Click();
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
             Element.Click();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-
-            var itemschecked = false;
-
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            inputs = wait.Until(drv => drv.FindElements(By.CssSelector($"*[id*='{ElementId}'] *[class='rcbCheckAllItemsCheckBox']")));
-
-            if (inputs.Count() > 0 && !itemschecked)
-            {
-                var element = inputs[0];
-                var ischecked = element.GetAttribute("checked") ?? "";
-                if (ischecked  != "true" && element.Displayed) {
-                    ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", element);
-                    itemschecked = true;
-                } 
-            }
-
-            var rcbSlides = new string[] { "input", "" };
-
-            foreach (var item in rcbSlides)
+         
+            var itemschecked = false;  
+            try
             {
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-                inputs = wait.Until(drv => drv.FindElements(By.CssSelector($".rcbSlide *[id*='{ElementId}'] ul li {item}")));
-
-                if (inputs.Count() > 0 && !itemschecked)
+                var inputs = wait.Until(drv => drv.FindElements(By.CssSelector($"*[id*='{ElementId}'] input[class*='rcbCheckAllItemsCheckBox']")));
+                if (inputs.Count > 0)
                 {
-                    var elements = (from i in inputs
-                                    where i.Enabled && i.Displayed
-                                    select i).ToList();
-                    this.SelectFromDropDown(elements);
-                    itemschecked = true;
-                }
-            }  
+                    var element = inputs[0];
+                    //Thread.Sleep(1000);
+                    IWebElement e = new WebDriverWait(driver, TimeSpan.FromSeconds(5)).Until(
+                          dvr => (element.Displayed) ? element : null);
+                    var ischecked = element?.GetAttribute("checked") ?? "";
+                    if (ischecked != "true")
+                    {
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", element);
+                        itemschecked = true;
+                    }
+                } 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); 
+            }
+             
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            inputs = wait.Until(drv => drv.FindElements(By.CssSelector($".rcbSlide *[id*='{ElementId}'] ul li input"))); 
+            if (inputs.Count() > 0 && !itemschecked)
+            {
+                var elements = (from i in inputs
+                                where i.Enabled && i.Displayed
+                                select i).ToList();
+                this.SelectFromDropDown(elements);
+                itemschecked = true;
+            }
+           
             driver.FindElement(By.TagName($"body")).Click();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
         }
         private void SelectFromDropDown(IList<IWebElement> inputs)
         {
