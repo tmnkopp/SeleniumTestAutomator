@@ -30,8 +30,9 @@ namespace CyberScope.Tests.Selenium
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IReadOnlyCollection<IWebElement> elist = wait.Until(drv =>
                 drv.FindElements(By.CssSelector(".rgMasterTable tr[class$='Row']")));
-            var ids = (from e in elist select e.GetAttribute("id")).ToList();
-              
+
+            var ids = (from e in elist select e.GetAttribute("id")).ToList<string>();
+            
             NaiveAutomator na = new NaiveAutomator(); 
             na.ValueSetters = this.ValueSetters; 
             foreach (string id in ids)

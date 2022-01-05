@@ -76,9 +76,6 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
             foreach (IAutomator control in pcc) {
                 if (!string.IsNullOrEmpty(id))  ((IAutomator)control).ContainerSelector = $"#{id} ";  
-                ((IAutomator)control).OnFormSubmitted += (s, e) => { 
-                    var err = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? ""; 
-                };
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave();
