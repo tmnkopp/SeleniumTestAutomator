@@ -44,10 +44,8 @@ namespace CyberScope.Tests.Selenium
                 foreach (var setter in ValueSetters)
                 {
                     var meta = (ValueSetterMeta)Attribute.GetCustomAttribute(setter.GetType(), typeof(ValueSetterMeta));
-                    var selector = $"{this.container} {meta.Selector}";
-                    
-                    sessionContext.Logger.Information($"NaiveAutomator.ValueSetter: {meta.Selector}");
-
+                    var selector = $"{this.ContainerSelector} {meta.Selector}";
+                     
                     if (driver.FindElements(By.CssSelector($"{selector}")).Count < 1)
                         continue; 
 
@@ -100,7 +98,7 @@ namespace CyberScope.Tests.Selenium
         private IReadOnlyCollection<IWebElement> GetDisplayedElements()
         {
             IReadOnlyCollection<IWebElement> eCollection =
-                (from e in driver.FindElement(By.CssSelector($"{this.container}")).FindElements(By.XPath($"//input|//select|//textarea"))
+                (from e in driver.FindElement(By.CssSelector($"{this.ContainerSelector}")).FindElements(By.XPath($"//input|//select|//textarea"))
                  where e.Displayed
                  select e).ToList();
             return eCollection;

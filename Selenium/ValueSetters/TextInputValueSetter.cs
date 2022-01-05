@@ -31,7 +31,7 @@ namespace CyberScope.Tests.Selenium
                 {
                     var element = new WebDriverWait(driver, TimeSpan.FromSeconds(.25))
                         .Until(drv => drv.FindElements(By.XPath(MatchKey))).FirstOrDefault();
-                    MatchKey = element?.GetAttribute("id") ?? "";
+                    MatchKey = element?.GetAttribute("id") ?? "^$";
                 } 
                 if (Regex.Match(matchAttr, MatchKey, RegexOptions.IgnoreCase).Success) {
                     Element.Clear();

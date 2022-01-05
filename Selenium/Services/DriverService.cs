@@ -315,7 +315,7 @@ namespace CyberScope.Tests.Selenium
 
         #region METHODS: PRIV
 
-        private string GetElementID(string XPathSelector) {
+        public string GetElementID(string XPathSelector) {
             string id = "";
             if (this.Driver.FindElements(By.XPath(XPathSelector)).Count > 0)
                 id = this.Driver.FindElement(By.XPath(XPathSelector)).GetAttribute("id"); 

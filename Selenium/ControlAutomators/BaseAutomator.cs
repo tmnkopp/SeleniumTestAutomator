@@ -1,7 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +17,7 @@ namespace CyberScope.Tests.Selenium
         { 
         }
     }
+    
     internal interface IAutomator
     { 
         string ContainerSelector { get; set; }
@@ -25,35 +25,7 @@ namespace CyberScope.Tests.Selenium
         void Automate(SessionContext context);
         event EventHandler<AutomatorEventArgs> OnFormSubmitted; 
     }
-    public class SessionContext 
-    {
-        public ILogger Logger { get ; set; }
-        public ChromeDriver Driver { get; set; }
-        public Dictionary<string,string> Defaults { get; set; }
-        public OrgSubmission OrgSubmission { get; set; }
-        public SessionContext()
-        {
-
-        }
-        public SessionContext(
-            ILogger Logger
-            , ChromeDriver Driver
-            , Dictionary<string, string> Defaults)
-        {
-            this.Logger = Logger;
-            this.Driver = Driver;
-            this.Defaults = Defaults;
-        }
-    }
-    public class AutomatorEventArgs : EventArgs
-    {
-        public AutomatorEventArgs(ChromeDriver driver)
-        {
-            this.Driver = driver;
-        }
-        public ChromeDriver Driver { get; set; }
-        public string CurrentWindowHandle { get; set; }
-    }
+    
     internal abstract class BaseAutomator
     {
         #region CTOR
