@@ -15,8 +15,7 @@ namespace CyberScope.Tests.Selenium
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
             if (!Overwrite && Element.Text != "")
-                return;
-
+                return; 
             Element.Clear();
             foreach (var item in Defaults.EmptyIfNull())
             { 

@@ -27,12 +27,10 @@ namespace CyberScope.Tests.Selenium
                 var inputs = wait.Until(drv => drv.FindElements(By.CssSelector($"*[id*='{ElementId}'] input[class*='rcbCheckAllItemsCheckBox']")));
                 if (inputs.Count > 0)
                 {
-                    var element = inputs[0];
-                    //Thread.Sleep(1000);
+                    var element = inputs[0]; 
                     IWebElement e = new WebDriverWait(driver, TimeSpan.FromSeconds(5)).Until(
-                          dvr => (element.Displayed) ? element : null);
-                    var ischecked = element?.GetAttribute("checked") ?? "";
-                    if (ischecked != "true")
+                          dvr => (element.Displayed) ? element : null); 
+                    if ((element?.GetAttribute("checked") ?? "") != "true")
                     {
                         ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", element);
                         itemschecked = true;
@@ -42,8 +40,7 @@ namespace CyberScope.Tests.Selenium
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message); 
-            }
-             
+            } 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             inputs = wait.Until(drv => drv.FindElements(By.CssSelector($".rcbSlide *[id*='{ElementId}'] ul li input"))); 
             if (inputs.Count() > 0 && !itemschecked)
@@ -53,8 +50,7 @@ namespace CyberScope.Tests.Selenium
                                 select i).ToList();
                 this.SelectFromDropDown(elements);
                 itemschecked = true;
-            }
-           
+            } 
             driver.FindElement(By.TagName($"body")).Click();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
         }
