@@ -45,8 +45,8 @@ namespace CyberScope.Tests.Selenium
                 {
                     var meta = (ValueSetterMeta)Attribute.GetCustomAttribute(setter.GetType(), typeof(ValueSetterMeta));
                     var selector = $"{this.ContainerSelector} {meta.Selector}";
-                     
-                    if (driver.FindElements(By.CssSelector($"{selector}")).Count < 1)
+                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
+                    if (driver.FindElementsByCssSelector($"{selector}").Count < 1)
                         continue; 
 
                     ElementIdIterator(selector, (ElementId) =>

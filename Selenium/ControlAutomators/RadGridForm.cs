@@ -36,15 +36,13 @@ namespace CyberScope.Tests.Selenium
             {
                 this.driver.Navigate().Back();
             }
-            else {
+            else 
+            {
                 NaiveAutomator naiveFormFill = new NaiveAutomator();
                 naiveFormFill.ContainerSelector = ".rgEditForm"; 
-                naiveFormFill.Automate(sessionContext);
-
+                naiveFormFill.Automate(sessionContext); 
                 wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
-                ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id*='PerformInsert']")));
-                ele.Click();
-
+                wait.Until(drv => drv.FindElement(By.CssSelector("*[id*='PerformInsert']")))?.Click(); 
             } 
         }
         #endregion 

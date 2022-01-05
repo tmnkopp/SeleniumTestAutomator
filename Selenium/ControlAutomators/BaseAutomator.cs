@@ -24,6 +24,8 @@ namespace CyberScope.Tests.Selenium
         List<IValueSetter> ValueSetters { get; set; } 
         void Automate(SessionContext context);
         event EventHandler<AutomatorEventArgs> OnFormSubmitted; 
+        event EventHandler<AutomatorEventArgs> OnPreAutomate; 
+        event EventHandler<AutomatorEventArgs> OnPostAutomate; 
     }
     
     internal abstract class BaseAutomator
@@ -75,12 +77,7 @@ namespace CyberScope.Tests.Selenium
         protected virtual void PostAutomate(AutomatorEventArgs e)
         {
             OnPostAutomate?.Invoke(this, e);
-        }
-        public event EventHandler<AutomatorEventArgs> OnStaleElement;
-        protected virtual void StaleElement(AutomatorEventArgs e)
-        {
-            OnStaleElement?.Invoke(this, e);
-        }
+        } 
         public event EventHandler<AutomatorEventArgs> OnFormSubmitted;
         protected virtual void FormSubmitted(AutomatorEventArgs e)
         {

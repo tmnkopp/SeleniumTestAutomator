@@ -52,8 +52,7 @@ namespace CyberScope.Tests.Selenium
                     }
                     var elements = driver.FindElements(By.CssSelector($"#{id} input[id*=_UpdateButton]"));
                     if (elements.Count > 0)
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                    driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]); 
                 }
                 catch (StaleElementReferenceException ex)
                 {
@@ -68,10 +67,12 @@ namespace CyberScope.Tests.Selenium
                 }
 
             }
-            RowCommandPrepare("Submit"); 
+            RowCommandPrepare("Submit");
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
         }
 
         private void RowCommandPrepare(string RowCommand) {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             bool hasRowCommands = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]").Count > 0;
             int ittr = 0;
             while (hasRowCommands)
@@ -80,10 +81,8 @@ namespace CyberScope.Tests.Selenium
                 {
                     var elements = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]");
                     if (elements.Count > 0)
-                    {
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]);
-                        driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                    { 
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", elements[0]); 
                         IAlert alert = driver.SwitchTo().Alert();
                         alert.Accept();
                     }

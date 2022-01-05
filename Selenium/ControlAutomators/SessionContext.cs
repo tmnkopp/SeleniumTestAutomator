@@ -11,8 +11,7 @@ namespace CyberScope.Tests.Selenium
         public Dictionary<string,string> Defaults { get; set; }
         public OrgSubmission OrgSubmission { get; set; }
         public SessionContext()
-        {
-
+        { 
         }
         public SessionContext(
             ILogger Logger
@@ -23,6 +22,5 @@ namespace CyberScope.Tests.Selenium
             this.Driver = Driver;
             this.Defaults = Defaults;
         }
-    }
-    
+    } 
 }

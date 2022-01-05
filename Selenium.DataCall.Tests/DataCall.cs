@@ -45,11 +45,11 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS  
         [Theory]
-        [InlineData("CIO 2022 Q1", "7A")] // S1A|S1C|
+        [InlineData("CIO 2022 Q1", "S1A|S1C|4")] // S1A|S1C|
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText);
+            ds.CsConnect(UserContext.Agency).ToTab(TabText);  
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
             ds.Driver.Quit();
         }
