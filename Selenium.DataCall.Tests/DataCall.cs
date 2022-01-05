@@ -46,12 +46,17 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS  
 
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1A|S1C|4|8|9|10")] // S1A|S1C|
-        //[InlineData("BOD 18-02 Annual 2021", "S1A")] // S1A|S1C|
+        [InlineData("CIO 2022 Q1", ".*")]  
+        //[InlineData("CIO 2022 Q1", "S1A|S1C|4|8|9|10")] // S1A|S1C| 
+        //[InlineData("BOD 18-02 Annual 2021", "S1A")] //  S1A|S1C| 
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText);  
+            ds.CsConnect(UserContext.Agency).ToTab(TabText);
+            ds.OnSectionComplete += (s, e) =>
+            {
+                var sec = e.Section.URL;
+            };
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
             ds.Driver.Quit();
         }

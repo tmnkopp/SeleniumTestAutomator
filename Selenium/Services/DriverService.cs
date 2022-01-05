@@ -240,9 +240,7 @@ namespace CyberScope.Tests.Selenium
                  
                 this.ToSection(section);
                 this.FismaFormEnable();
-
-                ((IJavaScriptExecutor)this.Driver).ExecuteScript("document.getElementsByClassName('navbar')[0].style.display = 'none';");
-                    
+                 
                 foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
                     ((IAutomator)control).Automate(sc);
          
