@@ -80,7 +80,7 @@ namespace CyberScope.Tests.Selenium.Providers
                         from col in row.FindElements(By.XPath(".//td"))
                         where Regex.IsMatch(col.Text.Trim(), $@"^[\d\.a-zA-Z]+$")
                         select col).FirstOrDefault();
-                    var ans = row.FindElement(By.XPath(".//td[last()-1]/span"));
+                    var ans = row.FindElement(By.XPath(".//td/span[contains(@class, 'CustomControlValue')]"));
                     if (!string.IsNullOrEmpty(idt.Text) && !string.IsNullOrEmpty(ans.Text)) 
                         SetMetric(idt.Text, ans.Text); 
                 }
