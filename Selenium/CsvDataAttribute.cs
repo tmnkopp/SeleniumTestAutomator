@@ -23,8 +23,13 @@ namespace CyberScope.Tests.Selenium
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (string.IsNullOrEmpty(_fileName))
-            {
-               _fileName = $"{ConfigurationManager.AppSettings.Get($"TestDataDir")}{testMethod.DeclaringType.Name}_{testMethod.Name}.csv";
+            { 
+                _fileName = ConfigurationManager.AppSettings.Get($"TestDataDir")
+                    .Replace("[Type]", testMethod.DeclaringType.Name)
+                    .Replace("[TestMethod]", testMethod.Name);
+                if (!_fileName.EndsWith(".csv")) 
+                    _fileName = $"{_fileName}.csv";
+            
             }
             var csvMapper = new CsvValidationAttemptMapping();
             var csvParserOptions = new CsvParserOptions(true, ',');
@@ -68,6 +73,5 @@ namespace CyberScope.Tests.Selenium
                 
             }
         }
-    }
-
+    } 
 }

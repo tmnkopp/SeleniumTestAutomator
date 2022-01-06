@@ -61,7 +61,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.Driver.Quit();
         }
         [Theory] 
-        [CsvData(@"C:\temp\DataCall_Validate1.csv")]
+        [CsvData(@"")]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
