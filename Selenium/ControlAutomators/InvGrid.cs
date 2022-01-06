@@ -45,8 +45,9 @@ namespace CyberScope.Tests.Selenium
                 {
                     var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
-                    {
-                        esublist[0].Click(); 
+                    { 
+                        ((IJavaScriptExecutor)driver).ExecuteScript($"document.getElementById('ctl00_lblStaging').innerHTML='<div style=\"color:#fff;\">{id}</div>';");
+                        ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].click();", esublist[0]);
                         NaiveAutomator na = new NaiveAutomator(this.ValueSetters); 
                         na.ContainerSelector = $"#{id}";
                         na.Automate(sessionContext); 

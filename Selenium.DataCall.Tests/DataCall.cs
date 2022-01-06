@@ -46,7 +46,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS  
 
         [Theory]
-        [InlineData("CIO 2022 Q1", ".*")]  
+        [InlineData("CIO 2022 Q1", "S1A")]  
         //[InlineData("CIO 2022 Q1", "S1A|S1C|4|8|9|10")] // S1A|S1C| 
         //[InlineData("BOD 18-02 Annual 2021", "S1A")] //  S1A|S1C| 
         public void Initialize(string TabText, string SectionPattern)
