@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium
@@ -32,16 +33,16 @@ namespace CyberScope.Tests.Selenium
             this.sessionContext = sessionContext;
             this.driver = sessionContext.Driver;
 
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             IReadOnlyCollection<IWebElement> elist =
                 driver.FindElementsByXPath(@"//table[contains(@class,'rgMasterTable')]/tbody//tr[contains(@class,'Row')]");
             rowIds = (from e in elist select e.GetAttribute("id")).ToList();
              
-            RowCommandPrepare("Reset");
-
+            RowCommandPrepare("Reset"); 
             foreach (string id in rowIds)
             {
                 try
-                { 
+                {
                     var esublist = driver.FindElementsByXPath($"//tr[contains(@id, '{id}')]//input[contains(@id, '_EditButton')]");
                     if (esublist.Count > 0)
                     {
@@ -95,7 +96,9 @@ namespace CyberScope.Tests.Selenium
                 {
                     throw new Exception($"{ex.Message} {ex.InnerException}");
                 }
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                 hasRowCommands = driver.FindElementsByXPath($"//tr[contains(@class,'Row')]//a[contains(text(), '{RowCommand}')]").Count > 0;
+                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                 ittr++;
                 if (ittr > rowIds.Count + 5)
                     break;

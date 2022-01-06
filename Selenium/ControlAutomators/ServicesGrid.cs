@@ -27,7 +27,7 @@ namespace CyberScope.Tests.Selenium
         public virtual void Automate(SessionContext sessionContext)
         {
             this.driver = sessionContext.Driver;
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
             IAlert alert;
             try
             {
@@ -65,6 +65,7 @@ namespace CyberScope.Tests.Selenium
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_AddNewRecordButton_input']")));
             ele.Click();
 
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
             List<IValueSetter> valueSetters = new List<IValueSetter>();
                 valueSetters.Add(new TextInputValueSetter());
                 valueSetters.Add(new RadDropDownListValueSetter());

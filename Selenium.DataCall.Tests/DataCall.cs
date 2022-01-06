@@ -55,13 +55,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.CsConnect(UserContext.Agency).ToTab(TabText);
             ds.OnSectionComplete += (s, e) =>
             {
-                var sec = e.Section.URL;
+                var url = e.Section.URL;
             };
             ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
             ds.Driver.Quit();
         }
         [Theory] 
-        [CsvData(@"C:\temp\CIO_Validate.csv")]
+        [CsvData(@"C:\temp\DataCall_Validate1.csv")]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
             var ds = new DriverService(_logger);
@@ -93,7 +93,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
              
             ds.Driver.Quit();
         }
-        [Theory]
+        [Theory(Skip="true")]
         [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
         public void EINSTEIN_Validate(string Section, string metricXpath, string attempt, string expected)
         {
