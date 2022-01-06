@@ -16,6 +16,9 @@ namespace CyberScope.Tests.Selenium
     public class CsvDataAttribute : DataAttribute
     {
         private string _fileName;
+        public CsvDataAttribute()
+        { 
+        }
         public CsvDataAttribute(string fileName)
         {
             _fileName = fileName; 
