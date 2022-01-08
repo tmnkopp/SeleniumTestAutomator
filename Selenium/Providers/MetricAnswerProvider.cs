@@ -9,6 +9,20 @@ using System.Threading.Tasks;
 
 namespace CyberScope.Tests.Selenium.Providers 
 {
+    [AttributeUsage(AttributeTargets.Class)]
+    public class AnswerProviderMeta : Attribute
+    {
+        public string Selector { get; set; }
+        public AnswerProviderMeta()
+        {
+        }
+    }
+    public interface IAnswerProvider
+    {
+        void Populate(DriverService ds);
+        T Eval<T>(string EvalExpression);
+    }
+    [AnswerProviderMeta(Selector= ".*CIO.*")]
     public class CIOMetricProvider : MetricAnswerProvider, IAnswerProvider
     {
         public override void Populate(DriverService ds)
@@ -35,11 +49,7 @@ namespace CyberScope.Tests.Selenium.Providers
             base.Populate(ds); 
         }
     }
-    public interface IAnswerProvider
-    { 
-        void Populate(DriverService ds);
-        T Eval<T>(string EvalExpression);
-    }
+
     public class MetricAnswerProvider: IAnswerProvider
     { 
         private KeyLengthSortedDecendingDictionary _answers = new KeyLengthSortedDecendingDictionary();

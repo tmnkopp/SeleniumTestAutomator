@@ -103,10 +103,27 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void PerformValidation_Validates(string Section, string metricXpath, string attempt, string expected)
         {
-            var va = new ValidationAttempt(Section, metricXpath, attempt, expected);
             var ds = new DriverService(_logger);
+
+            var va = new ValidationAttempt(Section, metricXpath, attempt, expected);
+            var providers = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+                           where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
+                           from t in assm.GetTypes()
+                           where typeof(IAnswerProvider).IsAssignableFrom(t) 
+                           && t.IsClass 
+                           select t).ToList();
+            var provider = (from p in providers
+                            let m = (AnswerProviderMeta)Attribute.GetCustomAttribute(p.GetType(), typeof(AnswerProviderMeta))
+                            where m.Selector == ".*CIO.*"
+                            select p
+                            ).FirstOrDefault();
+            var nam = provider.AssemblyQualifiedName;
+
+
+            va.AnswerProviderTypeName = "CIOMetricProvider"; 
+
             ds.CsConnect(UserContext.Agency)
-                .ToTab("CIO 2022 Q1") // CIO 2022 Q1
+                .ToTab("CIO 2022 Q1")  
                 .ToSection((g => g.SectionText.Contains($"{va.Section}")));
              
             ds.PerformValidation(va, () =>
