@@ -8,7 +8,8 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium;
 using System.Text.RegularExpressions;
 using System.IO;
-using Serilog; 
+using Serilog;
+using CyberScope.Tests.Selenium.Providers;
 
 namespace CyberScope.Tests.Selenium
 {
@@ -224,7 +225,35 @@ namespace CyberScope.Tests.Selenium
                             }).ToList(); 
             return groups;  
         }
-         
+
+        public void PerformValidation(ValidationAttempt va, Action Assertion) {
+            var ds = this; 
+            var typ = Assm.GetTypes()
+                .Where(t => t.Name == (va.AnswerProviderTypeName ?? "MetricAnswerProvider") && typeof(IAnswerProvider)
+                .IsAssignableFrom(t)).FirstOrDefault();
+
+            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(Type.GetType($"{typ.FullName}"));
+            ((IAnswerProvider)obj).Populate(ds);
+            string attempt = ((IAnswerProvider)obj).Eval<string>(va.ErrorAttemptExpression);
+
+            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
+            Defaults.Add(va.MetricXpath, attempt);
+
+            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
+            var pcc = ds.PageControlCollection().EmptyIfNull();
+
+            ds.FismaFormEnable();
+            string id = Utils.ExtractContainerId(ds.Driver, va.MetricXpath);
+            foreach (IAutomator control in pcc)
+            {
+                if (!string.IsNullOrEmpty(id))
+                    ((IAutomator)control).ContainerSelector = $"#{id} ";
+                ((IAutomator)control).Automate(sc);
+            }
+            ds.FismaFormSave(); 
+            Assertion();  
+        }
+
         public DriverService TestSections(Func<DataCallSection, bool> SectionGroupPredicate )
         { 
             SessionContext sc = new SessionContext() { 

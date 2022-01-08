@@ -12,36 +12,65 @@ using Xunit.Sdk;
 
 namespace CyberScope.Tests.Selenium
 {
+    public class ValidationAttempt
+    {
+
+        #region CTOR
+
+        public ValidationAttempt()
+        {
+        }
+        public ValidationAttempt(string Section, string MetricXpath, string ErrorAttemptExpression, string ExpectedError)
+        {
+            this.Section = Section;
+            this.MetricXpath = MetricXpath;
+            this.ErrorAttemptExpression = ErrorAttemptExpression;
+            this.ExpectedError = ExpectedError;
+        }
+        #endregion
+
+        public string Section { get; set; }
+        public string MetricXpath { get; set; }
+        public string ErrorAttemptExpression { get; set; }
+        public string ExpectedError { get; set; }
+        public string ValidValue { get; set; } = ""; 
+        public string AnswerProviderTypeName { get; set; } 
+        public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
+    }
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
     {
+        #region CTOR
+
         private string _fileName;
         public CsvDataAttribute()
-        { 
+        {
         }
         public CsvDataAttribute(string fileName)
         {
-            _fileName = fileName; 
+            _fileName = fileName;
         }
+
+        #endregion
+
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (string.IsNullOrEmpty(_fileName))
-            { 
+            {
                 _fileName = ConfigurationManager.AppSettings.Get($"TestDataDir")
                     .Replace("[Type]", testMethod.DeclaringType.Name)
                     .Replace("[TestMethod]", testMethod.Name);
-                if (!_fileName.EndsWith(".csv")) 
-                    _fileName = $"{_fileName}.csv";
-            
+                if (!_fileName.EndsWith(".csv"))
+                    _fileName = $"{_fileName}.csv"; 
             }
             var csvMapper = new CsvValidationAttemptMapping();
             var csvParserOptions = new CsvParserOptions(true, ',');
-            CsvParser<ValidationAttempt> csvParser = new CsvParser<ValidationAttempt>(csvParserOptions, csvMapper); 
-            var result = csvParser.ReadFromFile(_fileName, Encoding.ASCII).ToList(); 
+            CsvParser<ValidationAttempt> csvParser = new CsvParser<ValidationAttempt>(csvParserOptions, csvMapper);
+            var result = csvParser.ReadFromFile(_fileName, Encoding.ASCII).ToList();
             foreach (var item in result)
             {
                 yield return item.Result.GetAsRow;
-            } 
+            }
         }
         private static object[] ConvertParameters(IReadOnlyList<object> values, IReadOnlyList<Type> parameterTypes)
         {
@@ -55,26 +84,18 @@ namespace CyberScope.Tests.Selenium
         private static object ConvertParameter(object parameter, Type parameterType)
         {
             return parameterType == typeof(int) ? Convert.ToInt32(parameter) : parameter;
-        } 
-        private class ValidationAttempt
-        {
-            public string Section { get; set; }
-            public string MetricXpath { get; set; }
-            public string ErrorAttemptExpression { get; set; }
-            public string ExpectedError { get; set; }
-            public string ValidValue { get; set; } = "";
-            public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError};
         }
+
         private class CsvValidationAttemptMapping : CsvMapping<ValidationAttempt>
         {
             public CsvValidationAttemptMapping() : base()
-            { 
+            {
                 MapProperty(0, x => x.Section);
-                MapProperty(1, x => x.MetricXpath);  
+                MapProperty(1, x => x.MetricXpath);
                 MapProperty(2, x => x.ErrorAttemptExpression);
-                MapProperty(3, x => x.ExpectedError); 
-                
+                MapProperty(3, x => x.ExpectedError);
+
             }
         }
-    } 
+    }
 }

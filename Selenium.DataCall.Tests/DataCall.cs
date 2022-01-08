@@ -64,15 +64,21 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [CsvData()]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
+            var va = new ValidationAttempt(Section, metricXpath, attempt, expected);
+
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1") // CIO 2022 Q1
-                .ToSection((g => g.SectionText.Contains($"{Section}"))); 
+                .ToSection((g => g.SectionText.Contains($"{Section}")));
 
-            var metrics = new CIOMetricProvider();
-            metrics.Populate(ds);
-            attempt = metrics.Eval<string>(attempt);
+            var typ = Assm.GetTypes()
+                .Where(t => t.Name == "CIOMetricProvider" && typeof(IAnswerProvider)
+                .IsAssignableFrom(t)).FirstOrDefault();
 
+            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(Type.GetType($"{typ.FullName}"));
+            ((IAnswerProvider)obj).Populate(ds);
+            attempt = ((IAnswerProvider)obj).Eval<string>(attempt);
+    
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
             Defaults.Add(metricXpath, attempt);
 
@@ -94,37 +100,20 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.Driver.Quit();
         }
         [Theory(Skip="true")]
-        [CsvData(@"C:\temp\EINSTEIN_Validate.csv")]
-        public void EINSTEIN_Validate(string Section, string metricXpath, string attempt, string expected)
+        [CsvData(@"C:\temp\CIO_Validate.csv")]
+        public void PerformValidation_Validates(string Section, string metricXpath, string attempt, string expected)
         {
-            // string ToTab
-            // string Section
-            // MetricAnswerProvider
-            // string metricXpath
-            // string attempt
-            // string expected
+            var va = new ValidationAttempt(Section, metricXpath, attempt, expected);
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("EINSTEIN")
-                .ToSection((g => g.SectionText.Contains($"{Section}")));
-
-            var metrics = new MetricAnswerProvider();
-            metrics.Populate(ds);
-            attempt = metrics.Eval<string>(attempt);
-
-            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
-            Defaults.Add(metricXpath, attempt);
-
-            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
-
-            ds.FismaFormEnable();
-            var pcc = ds.PageControlCollection().EmptyIfNull();
-            foreach (IAutomator control in pcc)
-                ((IAutomator)control).Automate(sc);
-            ds.FismaFormSave();
-
-            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
-            Assert.Contains(expected, actual);
+                .ToTab("CIO 2022 Q1") // CIO 2022 Q1
+                .ToSection((g => g.SectionText.Contains($"{va.Section}")));
+             
+            ds.PerformValidation(va, () =>
+            {
+                var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                Assert.Contains(va.ExpectedError, actual);
+            });
             ds.Driver.Quit();
         }
         #endregion
