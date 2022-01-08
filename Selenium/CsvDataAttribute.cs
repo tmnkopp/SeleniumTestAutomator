@@ -20,8 +20,9 @@ namespace CyberScope.Tests.Selenium
         public ValidationAttempt()
         {
         }
-        public ValidationAttempt(string Section, string MetricXpath, string ErrorAttemptExpression, string ExpectedError)
+        public ValidationAttempt(string Tab, string Section, string MetricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
+            this.Tab = Tab;
             this.Section = Section;
             this.MetricXpath = MetricXpath;
             this.ErrorAttemptExpression = ErrorAttemptExpression;
@@ -29,6 +30,7 @@ namespace CyberScope.Tests.Selenium
         }
         #endregion
 
+        public string Tab { get; set; }
         public string Section { get; set; }
         public string MetricXpath { get; set; }
         public string ErrorAttemptExpression { get; set; }
