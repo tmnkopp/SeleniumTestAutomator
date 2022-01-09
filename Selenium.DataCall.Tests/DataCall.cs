@@ -72,7 +72,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 .ApplyValidation(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
-                }).DisposeDriverService();
+                });
+            ds.DisposeDriverService();
         }
         [Theory]
         [CsvData(@"C:\temp\CIO_Validate.csv")]

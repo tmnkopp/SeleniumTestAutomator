@@ -235,7 +235,7 @@ namespace CyberScope.Tests.Selenium
                     from t in assm.GetTypes()
                     where typeof(IAnswerProvider).IsAssignableFrom(t) && t.IsClass
                     select t).ToList();
-             
+            
             apt.ForEach(t => {
                 var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
