@@ -64,7 +64,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [CsvData()]
         public void Validate(string Section, string metricXpath, string attempt, string expected )
         {
-            var va = new ValidationAttempt(Section, metricXpath, attempt, expected);
+            var va = new ValidationAttempt( Section, metricXpath, attempt, expected);
 
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
@@ -101,19 +101,19 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory]
         [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void PerformValidation_Validates(string Section, string metricXpath, string attempt, string expected)
+        public void PerformValidation_Validates(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
             string tab = "CIO 2022 Q1";
-            var va = new ValidationAttempt(tab, Section, metricXpath, attempt, expected);
-       
+            var va = new ValidationAttempt(Section, metricXpath, ErrorAttemptExpression, ExpectedError); 
             var ds = new DriverService(_logger); 
-            ds.CsConnect(UserContext.Agency).ToTab(tab).ToSection((g => g.SectionText.Contains($"{va.Section}")));
-            
-            ds.PerformValidation(va, () =>
-            {
-                var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
-                Assert.Contains(va.ExpectedError, actual);
-            });
+            ds.CsConnect(UserContext.Agency)
+                .ToTab(tab)
+                .ToSection((s => s.SectionText.Contains($"{va.Section}"))) 
+                .ApplyValidation(va, () =>
+                {
+                    var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                    Assert.Contains(ExpectedError, actualError);
+                });
             ds.Driver.Quit();
         }
         #endregion
@@ -127,8 +127,6 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var a1 = a;
         }
         #endregion
-
-    }
-
-
+ 
+    } 
 }

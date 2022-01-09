@@ -226,21 +226,28 @@ namespace CyberScope.Tests.Selenium
             return groups;  
         }
 
-        public void PerformValidation(ValidationAttempt va, Action Assertion) {
-            var ds = this;
-            var AnswerProviders = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+        public void ApplyValidation(ValidationAttempt va, Action Assertion) {
+            var ds = this; 
+            var answerProviderTypes = (from assm in AppDomain.CurrentDomain.GetAssemblies()
                                    where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
                                    from t in assm.GetTypes()
-                                   where typeof(IAnswerProvider).IsAssignableFrom(t)
-                                   && t.IsClass
+                                   where typeof(IAnswerProvider).IsAssignableFrom(t) && t.IsClass
                                    select t).ToList();
-            var answerProvider = (from p in AnswerProviders
-                                  let attr = p.GetCustomAttribute<AnswerProviderMeta>(false)
-                                  where Regex.IsMatch(attr.Selector, va.Tab)
-                                  select p
-                            ).FirstOrDefault() ?? typeof(MetricAnswerProvider);
- 
-            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(answerProvider.GetType());
+
+            Type answerProvider = typeof(MetricAnswerProvider);
+            answerProviderTypes.ForEach(t =>
+            {
+                var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
+                if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
+                {
+                    var e = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(.25))
+                          .Until(drv => drv.FindElements(By.XPath(attr?.XpathMatch)));
+                    if (e.Count > 0)
+                        answerProvider = t;
+                } 
+            }); 
+            
+            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(answerProvider);
             ((IAnswerProvider)obj).Populate(ds);
             string attempt = ((IAnswerProvider)obj).Eval<string>(va.ErrorAttemptExpression);
 

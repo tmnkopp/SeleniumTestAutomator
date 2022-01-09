@@ -11,10 +11,11 @@ namespace CyberScope.Tests.Selenium.Providers
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class AnswerProviderMeta : Attribute
-    {
-        public string Selector { get; set; }
-        public AnswerProviderMeta()
+    { 
+        public string XpathMatch { get; set; }
+        public AnswerProviderMeta(string XpathMatch)
         {
+            this.XpathMatch = XpathMatch;
         }
     }
     public interface IAnswerProvider
@@ -22,9 +23,12 @@ namespace CyberScope.Tests.Selenium.Providers
         void Populate(DriverService ds);
         T Eval<T>(string EvalExpression);
     }
-    [AnswerProviderMeta(Selector= ".*CIO.*")]
+    [AnswerProviderMeta("//form[contains(@action, '_CIO_')]")]
     public class CIOMetricProvider : MetricAnswerProvider, IAnswerProvider
     {
+        public CIOMetricProvider()
+        { 
+        }
         public override void Populate(DriverService ds)
         {
             ds.OpenTab();
@@ -51,7 +55,10 @@ namespace CyberScope.Tests.Selenium.Providers
     }
 
     public class MetricAnswerProvider: IAnswerProvider
-    { 
+    {
+        public MetricAnswerProvider()
+        { 
+        }
         private KeyLengthSortedDecendingDictionary _answers = new KeyLengthSortedDecendingDictionary();
         private class KeyLengthSortedDecendingDictionary : SortedDictionary<string, string>
         {
@@ -71,7 +78,8 @@ namespace CyberScope.Tests.Selenium.Providers
         {
             foreach (var kv in _answers) {
                 EvalExpression = EvalExpression.Replace($"{kv.Key}", $" {_answers[kv.Key]} ");
-            }  
+            }
+            EvalExpression = Regex.Replace(EvalExpression, $@"(Numeric)", "0");  
             object Result;
             Utils.TryEval(EvalExpression, out Result); 
             return (T)Convert.ChangeType(Result, typeof(T));
