@@ -69,7 +69,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{Section}")))
-                .ApplyValidation(va, () => {
+                .ApplyValidationAttempt(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
@@ -84,7 +84,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{Section}"))) 
-                .ApplyValidation(va, () => {
+                .ApplyValidationAttempt(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });

@@ -20,7 +20,7 @@ namespace CyberScope.Tests.Selenium
         public ValidationAttempt()
         {
         }
-        public ValidationAttempt(  string MetricXpath, string ErrorAttemptExpression )
+        public ValidationAttempt(string MetricXpath, string ErrorAttemptExpression )
         {  
             this.MetricXpath = MetricXpath;
             this.ErrorAttemptExpression = ErrorAttemptExpression; 

@@ -188,23 +188,21 @@ namespace CyberScope.Tests.Selenium
         #endregion
 
         #region METHODS: FIELD ACCESSORS
-        public IWebElement GetField(By By)
+        public IWebElement GetElement(By By)
         {
             WebDriverWait wait = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(1));
             return (from e in wait.Until(dvr => dvr.FindElements(By))
                     where e.Enabled && e.Displayed
                     select e).FirstOrDefault();
-        }
-        
+        } 
         public string GetFieldValue(By By)
         {
-            IWebElement element = GetField(By);
+            IWebElement element = GetElement(By);
             return element?.Text;
-        }
-        
+        } 
         public DriverService SetFieldValue(By By, string value)
         {
-            IWebElement element = GetField(By);
+            IWebElement element = GetElement(By);
             element?.Clear();
             element?.SendKeys(value);
             return this;
@@ -227,7 +225,7 @@ namespace CyberScope.Tests.Selenium
             return groups;  
         }
 
-        public DriverService ApplyValidation(ValidationAttempt va, Action Assertion) {
+        public DriverService ApplyValidationAttempt(ValidationAttempt va, Action Assertion) {
             var ds = this;
             Type answerProvider = typeof(MetricAnswerProvider);
             var apt = (from assm in AppDomain.CurrentDomain.GetAssemblies()
@@ -240,8 +238,8 @@ namespace CyberScope.Tests.Selenium
                 var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
                 {
-                    var e = this.defaultWait.Until(drv => ds.Driver.FindElements(By.XPath(attr?.XpathMatch)));
-                    if (e.Count > 0) answerProvider = t;
+                    var e = this.GetElement(By.XPath(attr.XpathMatch)); 
+                    if (e != null) answerProvider = t;
                 } 
             }); 
             
