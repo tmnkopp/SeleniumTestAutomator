@@ -36,9 +36,9 @@ namespace CyberScope.Tests.Selenium.Providers
             ds.ToSection((g => g.SectionText.Contains("S1")));
             base.Populate(ds);
 
-            string m111 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
-            string m112 = ds.GetFieldValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
-            string m115 = ds.GetFieldValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
+            string m111 = ds.GetElementValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblfirst_Total')]")) ?? "0";
+            string m112 = ds.GetElementValue(By.XPath("//tr[last()]/td/span[contains(@id, 'lblSecond_Total')]")) ?? "0";
+            string m115 = ds.GetElementValue(By.XPath("//td/span[contains(text(), '1.1.5')]/../..//*[contains(@class, 'CustomControlValue')]")) ?? "0";
             SetMetric("1.1.1", m111);
             SetMetric("1.1.2", m112);
             SetMetric("1.1.5", m115);

@@ -195,7 +195,7 @@ namespace CyberScope.Tests.Selenium
                     where e.Enabled && e.Displayed
                     select e).FirstOrDefault();
         } 
-        public string GetFieldValue(By By)
+        public string GetElementValue(By By)
         {
             IWebElement element = GetElement(By);
             return element?.Text;

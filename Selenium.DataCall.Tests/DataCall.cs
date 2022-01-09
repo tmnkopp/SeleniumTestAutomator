@@ -70,7 +70,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{Section}")))
                 .ApplyValidationAttempt(va, () => {
-                    var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                    var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
             ds.DisposeDriverService();
@@ -85,7 +85,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{Section}"))) 
                 .ApplyValidationAttempt(va, () => {
-                    var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                    var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
             ds.DisposeDriverService();

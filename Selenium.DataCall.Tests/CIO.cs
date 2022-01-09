@@ -73,7 +73,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             }
             ds.FismaFormSave();
 
-            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+            var actual = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
             Assert.Contains(expected, actual);
 
             ds.Driver.Quit();
