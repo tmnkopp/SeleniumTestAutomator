@@ -60,7 +60,9 @@ namespace CyberScope.Tests.Selenium
                     foreach (var item in args.EmptyIfNull()) 
                         options.AddArgument(item);
                  
-                    _driver = new ChromeDriver(chromeDriverService, options); 
+                    _driver = new ChromeDriver(chromeDriverService, options);
+
+                    this.defaultWait = new WebDriverWait(_driver, TimeSpan.FromSeconds(1)); 
                 }
                 return _driver;
             }
@@ -69,8 +71,9 @@ namespace CyberScope.Tests.Selenium
         #endregion
 
         #region CTOR 
+        WebDriverWait defaultWait;
         public DriverService(ILogger Logger)
-        {
+        { 
             this.Logger = Logger;
         } 
         #endregion
@@ -226,7 +229,7 @@ namespace CyberScope.Tests.Selenium
             return groups;  
         }
 
-        public void ApplyValidation(ValidationAttempt va, Action Assertion) {
+        public DriverService ApplyValidation(ValidationAttempt va, Action Assertion) {
             var ds = this; 
             var answerProviderTypes = (from assm in AppDomain.CurrentDomain.GetAssemblies()
                                    where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
@@ -235,15 +238,12 @@ namespace CyberScope.Tests.Selenium
                                    select t).ToList();
 
             Type answerProvider = typeof(MetricAnswerProvider);
-            answerProviderTypes.ForEach(t =>
-            {
+            answerProviderTypes.ForEach(t => {
                 var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
                 {
-                    var e = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(.25))
-                          .Until(drv => drv.FindElements(By.XPath(attr?.XpathMatch)));
-                    if (e.Count > 0)
-                        answerProvider = t;
+                    var e = this.defaultWait.Until(drv => ds.Driver.FindElements(By.XPath(attr?.XpathMatch)));
+                    if (e.Count > 0) answerProvider = t;
                 } 
             }); 
             
@@ -266,7 +266,8 @@ namespace CyberScope.Tests.Selenium
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave(); 
-            Assertion();  
+            Assertion();
+            return this;
         }
 
         public DriverService TestSections(Func<DataCallSection, bool> SectionGroupPredicate )

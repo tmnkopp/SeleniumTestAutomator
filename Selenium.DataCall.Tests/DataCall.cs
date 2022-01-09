@@ -62,59 +62,33 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Theory] 
         [CsvData()]
-        public void Validate(string Section, string metricXpath, string attempt, string expected )
+        public void Validate(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
-            var va = new ValidationAttempt( Section, metricXpath, attempt, expected);
-
+            var va = new ValidationAttempt(Section, metricXpath, ErrorAttemptExpression, ExpectedError);
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("CIO 2022 Q1") // CIO 2022 Q1
-                .ToSection((g => g.SectionText.Contains($"{Section}")));
-
-            var typ = Assm.GetTypes()
-                .Where(t => t.Name == "CIOMetricProvider" && typeof(IAnswerProvider)
-                .IsAssignableFrom(t)).FirstOrDefault();
-
-            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(Type.GetType($"{typ.FullName}"));
-            ((IAnswerProvider)obj).Populate(ds);
-            attempt = ((IAnswerProvider)obj).Eval<string>(attempt);
-    
-            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
-            Defaults.Add(metricXpath, attempt);
-
-            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults); 
-            var pcc = ds.PageControlCollection().EmptyIfNull();
-
-            ds.FismaFormEnable(); 
-            string id = Utils.ExtractContainerId(ds.Driver, metricXpath); 
-            foreach (IAutomator control in pcc) {
-                if (!string.IsNullOrEmpty(id))  
-                    ((IAutomator)control).ContainerSelector = $"#{id} ";  
-                ((IAutomator)control).Automate(sc);
-            }
-            ds.FismaFormSave();
-
-            var actual = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
-            Assert.Contains(expected, actual);
-             
-            ds.Driver.Quit();
+                .ToTab("CIO 2022 Q1")
+                .ToSection((s => s.SectionText.Contains($"{va.Section}")))
+                .ApplyValidation(va, () => {
+                    var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                    Assert.Contains(ExpectedError, actualError);
+                });
+            ds.DisposeDriverService();
         }
         [Theory]
         [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void PerformValidation_Validates(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
-        {
-            string tab = "CIO 2022 Q1";
+        { 
             var va = new ValidationAttempt(Section, metricXpath, ErrorAttemptExpression, ExpectedError); 
             var ds = new DriverService(_logger); 
             ds.CsConnect(UserContext.Agency)
-                .ToTab(tab)
+                .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{va.Section}"))) 
-                .ApplyValidation(va, () =>
-                {
+                .ApplyValidation(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
-            ds.Driver.Quit();
+            ds.DisposeDriverService();
         }
         #endregion
 
