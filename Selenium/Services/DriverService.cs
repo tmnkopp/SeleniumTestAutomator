@@ -30,8 +30,7 @@ namespace CyberScope.Tests.Selenium
     public class DriverService
     {
         #region PROPS 
-        public UserContext UserContext { get; set; } = UserContext.Agency;
-        public TestResult TestResult { get; set; }
+        public UserContext UserContext { get; set; } = UserContext.Agency; 
         public ILogger Logger;  
         private ChromeDriver _driver;  
 

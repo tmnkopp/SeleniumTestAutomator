@@ -52,6 +52,8 @@ namespace CyberScope.Tests.Selenium
 
         #endregion
 
+
+
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (string.IsNullOrEmpty(_fileName))
