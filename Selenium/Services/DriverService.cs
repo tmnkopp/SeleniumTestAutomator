@@ -166,10 +166,8 @@ namespace CyberScope.Tests.Selenium
         }
            
         public DriverService ToSection(DataCallSection Section)  { 
-            SelectElement se = new SelectElement(this.Driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
-
-            se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click();
-
+            SelectElement se = new SelectElement(this.Driver.FindElementByCssSelector("*[id*='_ddl_Sections']")); 
+            se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click(); 
             return this;
         }
         public DriverService ToSection(Func<DataCallSection, bool> Predicate) { 
@@ -230,15 +228,15 @@ namespace CyberScope.Tests.Selenium
         }
 
         public DriverService ApplyValidation(ValidationAttempt va, Action Assertion) {
-            var ds = this; 
-            var answerProviderTypes = (from assm in AppDomain.CurrentDomain.GetAssemblies()
-                                   where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
-                                   from t in assm.GetTypes()
-                                   where typeof(IAnswerProvider).IsAssignableFrom(t) && t.IsClass
-                                   select t).ToList();
-
+            var ds = this;
             Type answerProvider = typeof(MetricAnswerProvider);
-            answerProviderTypes.ForEach(t => {
+            var apt = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+                    where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
+                    from t in assm.GetTypes()
+                    where typeof(IAnswerProvider).IsAssignableFrom(t) && t.IsClass
+                    select t).ToList();
+             
+            apt.ForEach(t => {
                 var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
                 {

@@ -20,12 +20,10 @@ namespace CyberScope.Tests.Selenium
         public ValidationAttempt()
         {
         }
-        public ValidationAttempt( string Section, string MetricXpath, string ErrorAttemptExpression, string ExpectedError)
-        { 
-            this.Section = Section;
+        public ValidationAttempt(  string MetricXpath, string ErrorAttemptExpression )
+        {  
             this.MetricXpath = MetricXpath;
-            this.ErrorAttemptExpression = ErrorAttemptExpression;
-            this.ExpectedError = ExpectedError;
+            this.ErrorAttemptExpression = ErrorAttemptExpression; 
         }
         #endregion
 

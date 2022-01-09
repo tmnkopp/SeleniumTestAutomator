@@ -64,26 +64,25 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [CsvData()]
         public void Validate(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
-            var va = new ValidationAttempt(Section, metricXpath, ErrorAttemptExpression, ExpectedError);
+            var va = new ValidationAttempt( metricXpath, ErrorAttemptExpression );
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
-                .ToSection((s => s.SectionText.Contains($"{va.Section}")))
+                .ToSection((s => s.SectionText.Contains($"{Section}")))
                 .ApplyValidation(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
-                });
-            ds.DisposeDriverService();
+                }).DisposeDriverService();
         }
         [Theory]
         [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void PerformValidation_Validates(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         { 
-            var va = new ValidationAttempt(Section, metricXpath, ErrorAttemptExpression, ExpectedError); 
+            var va = new ValidationAttempt( metricXpath, ErrorAttemptExpression ); 
             var ds = new DriverService(_logger); 
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
-                .ToSection((s => s.SectionText.Contains($"{va.Section}"))) 
+                .ToSection((s => s.SectionText.Contains($"{Section}"))) 
                 .ApplyValidation(va, () => {
                     var actualError = ds.GetFieldValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
