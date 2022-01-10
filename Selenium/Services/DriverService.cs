@@ -226,15 +226,15 @@ namespace CyberScope.Tests.Selenium
 
         public DriverService ApplyValidationAttempt(ValidationAttempt va, Action Assertion) {
             var ds = this;
-            Type answerProvider = typeof(MetricAnswerProvider);
+            Type answerProvider = typeof(ElementValueProvider);
             var apt = (from assm in AppDomain.CurrentDomain.GetAssemblies()
                     where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
                     from t in assm.GetTypes()
-                    where typeof(IAnswerProvider).IsAssignableFrom(t) && t.IsClass
+                    where typeof(IElementValueProvider).IsAssignableFrom(t) && t.IsClass
                     select t).ToList();
             
             apt.ForEach(t => {
-                var attr = t.GetCustomAttribute<AnswerProviderMeta>(false);
+                var attr = t.GetCustomAttribute<ElementValueProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
                 {
                     var e = this.GetElement(By.XPath(attr.XpathMatch)); 
@@ -242,9 +242,9 @@ namespace CyberScope.Tests.Selenium
                 } 
             }); 
             
-            IAnswerProvider obj = (IAnswerProvider)Activator.CreateInstance(answerProvider);
-            ((IAnswerProvider)obj).Populate(ds);
-            string attempt = ((IAnswerProvider)obj).Eval<string>(va.ErrorAttemptExpression);
+            IElementValueProvider obj = (IElementValueProvider)Activator.CreateInstance(answerProvider);
+            ((IElementValueProvider)obj).Populate(ds);
+            string attempt = ((IElementValueProvider)obj).Eval<string>(va.ErrorAttemptExpression);
 
             var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
             Defaults.Add(va.MetricXpath, attempt);
