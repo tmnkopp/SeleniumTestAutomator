@@ -174,16 +174,7 @@ namespace CyberScope.Tests.Selenium
             this.ToSection(section);
             return this; 
         }
-           
-        public DriverService ToSection(int Index)
-        {
-            var driver = this.Driver; 
-            SelectElement se = new SelectElement(driver.FindElementByCssSelector("*[id*='_ddl_Sections']"));
-            if (Index < 0) 
-                Index = se.Options.Count() - 1; 
-            se.SelectByIndex(Index);
-            return this;
-        }
+        
         #endregion
 
         #region METHODS: FIELD ACCESSORS
