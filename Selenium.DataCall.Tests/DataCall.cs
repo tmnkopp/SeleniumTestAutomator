@@ -23,6 +23,8 @@ using Xunit.Sdk;
 using System.Reflection;
 using System.IO;
 using CyberScope.Tests.Selenium.Providers;
+using TinyCsvParser;
+using System.Collections.ObjectModel;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
@@ -90,6 +92,41 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 });
             ds.DisposeDriverService();
         }
+
+        [Theory]
+        [InlineData(@"CIO 2022 Q1", "S2" )]
+        public void Custom_Automation(string Tab, string Section )
+        { 
+            var ds = new DriverService(_logger);
+            ds.CsConnect(UserContext.Agency);
+            ds.ToTab(Tab);
+            ds.ToSection((s => s.SectionText.Contains($"{Section}"))) ;
+             
+            CsvParser<GenericMap> csvParser = new CsvParser<GenericMap>(
+              new CsvParserOptions(true, ',')
+             ,new CsvGenericMapping()
+            );
+
+            var csv = csvParser.ReadFromFile(@"c:\temp\automate.csv", Encoding.ASCII).ToList();
+            foreach (var row in csv)
+            {
+                MethodInfo methodInfo = typeof(ChromeDriver).GetMethod("FindElementsByXPath");
+                object[] parametersArray = new object[] { row.Result.ColC };
+                ReadOnlyCollection<IWebElement> elements = methodInfo.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
+                elements?.ToList()?.ForEach( e => {
+                    object result = null;
+                    object[] parms = null;
+                    methodInfo = typeof(IWebElement).GetMethod(row.Result.ColD);  
+                    if (methodInfo.GetParameters().Length > 0)
+                    {
+                        parms = new object[] { row.Result.ColE }; 
+                    } 
+                    result = methodInfo.Invoke(e, parms);
+                }); 
+            }
+            ds.DisposeDriverService();
+        }
+
         #endregion
 
         #region PRIVS  
