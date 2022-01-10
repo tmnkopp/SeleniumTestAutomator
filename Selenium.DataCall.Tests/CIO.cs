@@ -46,37 +46,19 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             //ds.Driver.Quit(); 
         }
         [Theory]
-        [CsvData(@"C:\temp\CIO_Validate.csv")]
-        public void Validate(string Section, string metricXpath, string attempt, string expected)
+        [CsvData()]
+        public void Validate(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
+            var va = new ValidationAttempt(metricXpath, ErrorAttemptExpression);
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("CIO 2022 Q1") // CIO 2022 Q1
-                .ToSection((g => g.SectionText.Contains($"{Section}")));
-
-            var metrics = new CIOMetricProvider();
-            metrics.Populate(ds);
-            attempt = metrics.Eval<string>(attempt);
-
-            var Defaults = new DefaultInputProvider(ds.Driver).DefaultValues;
-            Defaults.Add(metricXpath, attempt);
-
-            var sc = new SessionContext(ds.Logger, ds.Driver, Defaults);
-            var pcc = ds.PageControlCollection().EmptyIfNull();
-
-            ds.FismaFormEnable();
-            string id = Utils.ExtractContainerId(ds.Driver, metricXpath);
-            foreach (IAutomator control in pcc)
-            {
-                if (!string.IsNullOrEmpty(id)) ((IAutomator)control).ContainerSelector = $"#{id} ";
-                ((IAutomator)control).Automate(sc);
-            }
-            ds.FismaFormSave();
-
-            var actual = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
-            Assert.Contains(expected, actual);
-
-            ds.Driver.Quit();
+                .ToTab("CIO 2022 Q1")
+                .ToSection((s => s.SectionText.Contains($"{Section}")))
+                .ApplyValidationAttempt(va, () => {
+                    var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                    Assert.Contains(ExpectedError, actualError);
+                });
+            ds.DisposeDriverService();
         }
         #endregion
     }
