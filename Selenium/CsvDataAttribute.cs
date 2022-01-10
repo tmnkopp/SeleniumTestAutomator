@@ -7,40 +7,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TinyCsvParser;
-using TinyCsvParser.Mapping;
 using Xunit.Sdk;
 
 namespace CyberScope.Tests.Selenium
 {
-    public class ValidationAttempt
-    {
-
-        #region CTOR
-
-        public ValidationAttempt()
-        {
-        }
-        public ValidationAttempt(string MetricXpath, string ErrorAttemptExpression )
-        {  
-            this.MetricXpath = MetricXpath;
-            this.ErrorAttemptExpression = ErrorAttemptExpression; 
-        }
-        #endregion
-
-        #region PROPS
-
-        public string Tab { get; set; }
-        public string Section { get; set; }
-        public string MetricXpath { get; set; }
-        public string ErrorAttemptExpression { get; set; }
-        public string ExpectedError { get; set; }
-        public string ValidValue { get; set; } = "";
-        public string AnswerProviderTypeName { get; set; }
-        public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
-
-        #endregion
-
-    }
+     
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
     {
@@ -57,8 +28,7 @@ namespace CyberScope.Tests.Selenium
 
         #endregion
 
-        #region METHODS
-
+        #region METHODS 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
             if (string.IsNullOrEmpty(_fileName))
@@ -90,17 +60,6 @@ namespace CyberScope.Tests.Selenium
         private static object ConvertParameter(object parameter, Type parameterType)
         {
             return parameterType == typeof(int) ? Convert.ToInt32(parameter) : parameter;
-        }
-        private class CsvValidationAttemptMapping : CsvMapping<ValidationAttempt>
-        {
-            public CsvValidationAttemptMapping() : base()
-            {
-                MapProperty(0, x => x.Section);
-                MapProperty(1, x => x.MetricXpath);
-                MapProperty(2, x => x.ErrorAttemptExpression);
-                MapProperty(3, x => x.ExpectedError);
-
-            }
         }
          
         #endregion
