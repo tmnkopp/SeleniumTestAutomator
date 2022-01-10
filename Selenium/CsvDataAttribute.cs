@@ -27,14 +27,19 @@ namespace CyberScope.Tests.Selenium
         }
         #endregion
 
+        #region PROPS
+
         public string Tab { get; set; }
         public string Section { get; set; }
         public string MetricXpath { get; set; }
         public string ErrorAttemptExpression { get; set; }
         public string ExpectedError { get; set; }
-        public string ValidValue { get; set; } = ""; 
-        public string AnswerProviderTypeName { get; set; } 
+        public string ValidValue { get; set; } = "";
+        public string AnswerProviderTypeName { get; set; }
         public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
+
+        #endregion
+
     }
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public class CsvDataAttribute : DataAttribute
@@ -52,7 +57,7 @@ namespace CyberScope.Tests.Selenium
 
         #endregion
 
-
+        #region METHODS
 
         public override IEnumerable<object[]> GetData(MethodInfo testMethod)
         {
@@ -62,7 +67,7 @@ namespace CyberScope.Tests.Selenium
                     .Replace("[Type]", testMethod.DeclaringType.Name)
                     .Replace("[TestMethod]", testMethod.Name);
                 if (!_fileName.EndsWith(".csv"))
-                    _fileName = $"{_fileName}.csv"; 
+                    _fileName = $"{_fileName}.csv";
             }
             var csvMapper = new CsvValidationAttemptMapping();
             var csvParserOptions = new CsvParserOptions(true, ',');
@@ -86,7 +91,6 @@ namespace CyberScope.Tests.Selenium
         {
             return parameterType == typeof(int) ? Convert.ToInt32(parameter) : parameter;
         }
-
         private class CsvValidationAttemptMapping : CsvMapping<ValidationAttempt>
         {
             public CsvValidationAttemptMapping() : base()
@@ -98,5 +102,8 @@ namespace CyberScope.Tests.Selenium
 
             }
         }
+         
+        #endregion
+
     }
 }
