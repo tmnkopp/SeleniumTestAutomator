@@ -40,7 +40,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         {
             var ds = new Selenium.DriverService(_logger);
             var driver = ds.CsConnect(UserContext.Agency).ToTab(_PK_FORM).Driver;
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
 
             //Assert.True(ds.FismaFormValidates());
             //ds.Driver.Quit(); 

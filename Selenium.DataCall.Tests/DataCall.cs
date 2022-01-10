@@ -57,7 +57,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             {
                 var url = e.Section.URL;
             };
-            ds.TestSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
             ds.Driver.Quit();
         }
         [Theory] 

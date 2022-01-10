@@ -265,7 +265,7 @@ namespace CyberScope.Tests.Selenium
             return this;
         }
 
-        public DriverService TestSections(Func<DataCallSection, bool> SectionGroupPredicate )
+        public DriverService InitSections(Func<DataCallSection, bool> SectionGroupPredicate )
         { 
             SessionContext sc = new SessionContext() { 
                 Driver = this.Driver
