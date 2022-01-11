@@ -15,7 +15,7 @@ namespace CyberScope.Tests.Selenium
     }
     public class ProcessMap 
     { 
-        public string ElementSelector { get; set; }
+        public string ElementLocator { get; set; }
         public string Action { get; set; }
         public string Param { get; set; } 
     }
@@ -23,7 +23,7 @@ namespace CyberScope.Tests.Selenium
     {
         public CsvGenericMapping() : base()
         { 
-            MapProperty(0, x => x.ElementSelector);
+            MapProperty(0, x => x.ElementLocator);
             MapProperty(1, x => x.Action);
             MapProperty(2, x => x.Param);  
         }

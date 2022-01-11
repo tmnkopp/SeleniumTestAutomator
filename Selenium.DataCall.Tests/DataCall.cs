@@ -91,8 +91,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                     Assert.Contains(ExpectedError, actualError);
                 });
             ds.DisposeDriverService();
-        }
-
+        } 
         [Fact]
         public void CustomScript()
         {
@@ -106,11 +105,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 var expected = "";
                 Assert.Contains(expected, actualError);
             };
-            processor.Process(ds);
-             
+            processor.Process(ds); 
         } 
-        #endregion
-
+        #endregion 
         #region PRIVS  
         [Theory]
         [CsvData(@"C:\temp\DataCall_Validate.csv")]
@@ -119,18 +116,20 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var cda = new CsvDataAttribute(@"C:\temp\DataCall_Validate.csv");
             var a1 = a;
         }
-        #endregion
- 
-    }
-
+        #endregion 
+    } 
     public class CsvCommandProcessor
     {
         #region CTOR
 
-        public string Filename { get; set; }
-        public CsvCommandProcessor(string filename)
+        private string _filename;
+        private CsvParser<ProcessMap> parser;
+        public CsvCommandProcessor(string Filename)
         {
-            this.Filename = filename;  
+            this._filename = Filename;
+            this.parser = new CsvParser<ProcessMap>(
+              new CsvParserOptions(true, ','), new CsvGenericMapping()
+            );
         }
 
         #endregion
@@ -147,36 +146,31 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         public event EventHandler<ProcessEventArgs> OnProcessComplete;
         protected virtual void ProcessComplete(ProcessEventArgs e)
         {
-            OnProcessComplete?.Invoke(this, e);
+            OnProcessComplete?.Invoke(this, e); 
         }
         #endregion
 
         #region METHODS
 
         public void Process(DriverService ds)
-        { 
-            CsvParser<ProcessMap> csvParser = new CsvParser<ProcessMap>(
-              new CsvParserOptions(true, ','), new CsvGenericMapping()
-            ); 
-            var rows = csvParser.ReadFromFile(this.Filename, Encoding.ASCII).ToList();
+        {  
+            var rows = parser.ReadFromFile(this._filename, Encoding.ASCII).ToList();
             foreach (var row in rows)
             { 
-                By by = (row.Result.ElementSelector.StartsWith("//")) ? By.XPath(row.Result.ElementSelector) : By.CssSelector(row.Result.ElementSelector);
+                By by = (row.Result.ElementLocator.StartsWith("//")) ? By.XPath(row.Result.ElementLocator) : By.CssSelector(row.Result.ElementLocator);
                 object[] parametersArray = new object[] { by };
 
-                MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElements");
+                MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElement");
                 ds.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
-                ReadOnlyCollection<IWebElement> elements = mi.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
-                elements?.ToList()?.ForEach(e =>
-                { 
-                    object[] parms = null;
-                    mi = typeof(IWebElement).GetMethod(row.Result.Action); 
-                    if (mi.GetParameters().Length > 0) 
-                        parms = new object[] { row.Result.Param }; 
-                    if (mi.Name == "SendKeys")
-                        typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
-                    object result = mi.Invoke(e, parms);
-                });
+                IWebElement e = mi.Invoke(ds.Driver, parametersArray) as IWebElement;
+                
+                object[] parms = null;
+                mi = typeof(IWebElement).GetMethod(row.Result.Action); 
+                if (mi.GetParameters().Length > 0) 
+                    parms = new object[] { row.Result.Param }; 
+                if (mi.Name == "SendKeys")
+                    typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
+                object result = mi.Invoke(e, parms); 
             }
             var args = new ProcessEventArgs(ds);
             ProcessComplete(args);
