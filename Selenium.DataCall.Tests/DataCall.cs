@@ -93,40 +93,22 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.DisposeDriverService();
         }
 
-        [Theory]
-        [InlineData(@"CIO 2022 Q1", "S2" )]
-        public void Custom_Automation(string Tab, string Section )
-        { 
+        [Fact]
+        public void CustomScript()
+        {
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency);
-            ds.ToTab(Tab);
-            ds.ToSection((s => s.SectionText.Contains($"{Section}"))) ;
-             
-            CsvParser<GenericMap> csvParser = new CsvParser<GenericMap>(
-              new CsvParserOptions(true, ',')
-             ,new CsvGenericMapping()
-            );
 
-            var csv = csvParser.ReadFromFile(@"c:\temp\automate.csv", Encoding.ASCII).ToList();
-            foreach (var row in csv)
+            var processor = new CsvCommandProcessor(@"c:\temp\DataCall_CustomAutomate.csv");
+            processor.OnProcessComplete += (s, a) =>
             {
-                MethodInfo methodInfo = typeof(ChromeDriver).GetMethod("FindElementsByXPath");
-                object[] parametersArray = new object[] { row.Result.ColC };
-                ReadOnlyCollection<IWebElement> elements = methodInfo.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
-                elements?.ToList()?.ForEach( e => {
-                    object result = null;
-                    object[] parms = null;
-                    methodInfo = typeof(IWebElement).GetMethod(row.Result.ColD);  
-                    if (methodInfo.GetParameters().Length > 0)
-                    {
-                        parms = new object[] { row.Result.ColE }; 
-                    } 
-                    result = methodInfo.Invoke(e, parms);
-                }); 
-            }
-            ds.DisposeDriverService();
-        }
-
+                var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
+                var expected = "";
+                Assert.Contains(expected, actualError);
+            };
+            processor.Process(ds);
+             
+        } 
         #endregion
 
         #region PRIVS  
@@ -139,5 +121,74 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         #endregion
  
-    } 
+    }
+
+    public class CsvCommandProcessor
+    {
+        #region CTOR
+
+        public string Filename { get; set; }
+        public CsvCommandProcessor(string filename)
+        {
+            this.Filename = filename;  
+        }
+
+        #endregion
+
+        #region Events 
+        public class ProcessEventArgs : EventArgs
+        {
+            public DriverService DriverService { get; set; } 
+            public ProcessEventArgs(DriverService driverService)
+            {
+                this.DriverService = driverService; 
+            }
+        } 
+        public event EventHandler<ProcessEventArgs> OnProcessComplete;
+        protected virtual void ProcessComplete(ProcessEventArgs e)
+        {
+            OnProcessComplete?.Invoke(this, e);
+        }
+        #endregion
+
+        #region METHODS
+
+        public void Process(DriverService ds)
+        {
+
+            CsvParser<GenericMap> csvParser = new CsvParser<GenericMap>(
+              new CsvParserOptions(true, ','), new CsvGenericMapping()
+            );
+
+            var rows = csvParser.ReadFromFile(this.Filename, Encoding.ASCII).ToList();
+            foreach (var row in rows)
+            {
+                if (!string.IsNullOrEmpty(row.Result.ColA.Trim()))
+                    ds.ToTab(row.Result.ColA);
+
+                if (!string.IsNullOrEmpty(row.Result.ColB.Trim()))
+                    ds.ToSection((s => s.SectionText.Contains($"{row.Result.ColB}")));
+
+                MethodInfo methodInfo = typeof(ChromeDriver).GetMethod("FindElementsByXPath");
+                object[] parametersArray = new object[] { row.Result.ColC };
+                ReadOnlyCollection<IWebElement> elements = methodInfo.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
+                elements?.ToList()?.ForEach(e =>
+                {
+                    object result = null;
+                    object[] parms = null;
+                    methodInfo = typeof(IWebElement).GetMethod(row.Result.ColD);
+                    if (methodInfo.GetParameters().Length > 0)
+                    {
+                        parms = new object[] { row.Result.ColE };
+                    }
+                    result = methodInfo.Invoke(e, parms);
+                });
+            }
+            var args = new ProcessEventArgs(ds);
+            ProcessComplete(args);
+        }
+
+        #endregion
+
+    }
 }
