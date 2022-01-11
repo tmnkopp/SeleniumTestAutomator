@@ -169,19 +169,23 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 if (!string.IsNullOrEmpty(row.Result.ColB.Trim()))
                     ds.ToSection((s => s.SectionText.Contains($"{row.Result.ColB}")));
 
-                MethodInfo methodInfo = typeof(ChromeDriver).GetMethod("FindElementsByXPath");
-                object[] parametersArray = new object[] { row.Result.ColC };
-                ReadOnlyCollection<IWebElement> elements = methodInfo.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
+                By by = (row.Result.ColC.StartsWith("//")) ? By.XPath(row.Result.ColC) : By.CssSelector(row.Result.ColC);
+                object[] parametersArray = new object[] { by };
+
+                MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElements"); 
+                ReadOnlyCollection<IWebElement> elements = mi.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
                 elements?.ToList()?.ForEach(e =>
                 {
                     object result = null;
                     object[] parms = null;
-                    methodInfo = typeof(IWebElement).GetMethod(row.Result.ColD);
-                    if (methodInfo.GetParameters().Length > 0)
+                    mi = typeof(IWebElement).GetMethod(row.Result.ColD); 
+                    if (mi.GetParameters().Length > 0)
                     {
                         parms = new object[] { row.Result.ColE };
                     }
-                    result = methodInfo.Invoke(e, parms);
+                    if (mi.Name == "SendKeys")
+                        typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
+                    result = mi.Invoke(e, parms);
                 });
             }
             var args = new ProcessEventArgs(ds);
