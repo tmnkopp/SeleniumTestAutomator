@@ -162,7 +162,7 @@ namespace CyberScope.Tests.Selenium
             }
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             var eles = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_Surveys')]//*[contains(@class, 'rtsTxt')]")))?.Reverse();
-   
+            
             ele = (from e in eles where Regex.IsMatch(e.Text, TabText) || e.Text.Contains(TabText) select e).FirstOrDefault();
             ele?.Click(); 
             ele = wait.Until(drv => drv.FindElement(By.XPath($"//a[contains(@id, '_ctl04_hl_Launch')]")));

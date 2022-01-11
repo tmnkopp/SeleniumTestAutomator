@@ -155,19 +155,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         public void Process(DriverService ds)
         { 
-            CsvParser<GenericMap> csvParser = new CsvParser<GenericMap>(
+            CsvParser<ProcessMap> csvParser = new CsvParser<ProcessMap>(
               new CsvParserOptions(true, ','), new CsvGenericMapping()
             ); 
             var rows = csvParser.ReadFromFile(this.Filename, Encoding.ASCII).ToList();
             foreach (var row in rows)
-            {
-                if (!string.IsNullOrEmpty(row.Result.ColA.Trim()))
-                    ds.ToTab(row.Result.ColA);
-
-                if (!string.IsNullOrEmpty(row.Result.ColB.Trim()))
-                    ds.ToSection((s => s.SectionText.Contains($"{row.Result.ColB}")));
-
-                By by = (row.Result.ColC.StartsWith("//")) ? By.XPath(row.Result.ColC) : By.CssSelector(row.Result.ColC);
+            { 
+                By by = (row.Result.ElementSelector.StartsWith("//")) ? By.XPath(row.Result.ElementSelector) : By.CssSelector(row.Result.ElementSelector);
                 object[] parametersArray = new object[] { by };
 
                 MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElements");
@@ -176,10 +170,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 elements?.ToList()?.ForEach(e =>
                 { 
                     object[] parms = null;
-                    mi = typeof(IWebElement).GetMethod(row.Result.ColD); 
+                    mi = typeof(IWebElement).GetMethod(row.Result.Action); 
                     if (mi.GetParameters().Length > 0) 
-                        parms = new object[] { row.Result.ColE };
-             
+                        parms = new object[] { row.Result.Param }; 
                     if (mi.Name == "SendKeys")
                         typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
                     object result = mi.Invoke(e, parms);
@@ -187,9 +180,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             }
             var args = new ProcessEventArgs(ds);
             ProcessComplete(args);
-        }
-
-        #endregion
-
+        } 
+        #endregion 
     }
 }
