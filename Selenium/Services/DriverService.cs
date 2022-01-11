@@ -149,11 +149,18 @@ namespace CyberScope.Tests.Selenium
             return this;
         }
             
-        public DriverService ToTab(string TabText)
+        public DriverService ToTab(string TabText, bool Launch = true)
         { 
             var driver = this.Driver;
-            IWebElement ele; 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            IWebElement ele;
+            WebDriverWait wait;
+            if (!driver.Url.Contains("ReporterHome.aspx"))
+            {
+                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+                ele = wait.Until(drv => drv.FindElement(By.XPath($"//*[contains(@id, 'ctl00_ImageButton1')]")));
+                ele?.Click();
+            }
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             var eles = wait.Until(drv => drv.FindElements(By.XPath($"//*[contains(@id, '_Surveys')]//*[contains(@class, 'rtsTxt')]")))?.Reverse();
    
             ele = (from e in eles where Regex.IsMatch(e.Text, TabText) || e.Text.Contains(TabText) select e).FirstOrDefault();
@@ -169,6 +176,7 @@ namespace CyberScope.Tests.Selenium
             se?.Options.Where(o => o.Text.Contains(Section?.SectionText)).FirstOrDefault()?.Click(); 
             return this;
         }
+        
         public DriverService ToSection(Func<DataCallSection, bool> Predicate) { 
             var section = this.Sections().Where(Predicate).FirstOrDefault();
             this.ToSection(section);

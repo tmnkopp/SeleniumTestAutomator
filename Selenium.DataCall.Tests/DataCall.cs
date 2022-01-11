@@ -154,12 +154,10 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region METHODS
 
         public void Process(DriverService ds)
-        {
-
+        { 
             CsvParser<GenericMap> csvParser = new CsvParser<GenericMap>(
               new CsvParserOptions(true, ','), new CsvGenericMapping()
-            );
-
+            ); 
             var rows = csvParser.ReadFromFile(this.Filename, Encoding.ASCII).ToList();
             foreach (var row in rows)
             {
@@ -176,17 +174,15 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 ds.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 ReadOnlyCollection<IWebElement> elements = mi.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
                 elements?.ToList()?.ForEach(e =>
-                {
-                    object result = null;
+                { 
                     object[] parms = null;
                     mi = typeof(IWebElement).GetMethod(row.Result.ColD); 
-                    if (mi.GetParameters().Length > 0)
-                    {
+                    if (mi.GetParameters().Length > 0) 
                         parms = new object[] { row.Result.ColE };
-                    }
+             
                     if (mi.Name == "SendKeys")
                         typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
-                    result = mi.Invoke(e, parms);
+                    object result = mi.Invoke(e, parms);
                 });
             }
             var args = new ProcessEventArgs(ds);
