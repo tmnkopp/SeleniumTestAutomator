@@ -172,7 +172,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 By by = (row.Result.ColC.StartsWith("//")) ? By.XPath(row.Result.ColC) : By.CssSelector(row.Result.ColC);
                 object[] parametersArray = new object[] { by };
 
-                MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElements"); 
+                MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElements");
+                ds.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 ReadOnlyCollection<IWebElement> elements = mi.Invoke(ds.Driver, parametersArray) as ReadOnlyCollection<IWebElement>;
                 elements?.ToList()?.ForEach(e =>
                 {
