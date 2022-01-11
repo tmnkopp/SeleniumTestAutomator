@@ -163,11 +163,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElement");
                 ds.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 IWebElement e = mi.Invoke(ds.Driver, parametersArray) as IWebElement;
-                
-                object[] parms = null;
-                mi = typeof(IWebElement).GetMethod(row.Result.Action); 
-                if (mi.GetParameters().Length > 0) 
-                    parms = new object[] { row.Result.Param }; 
+                 
+                mi = typeof(IWebElement).GetMethod(row.Result.Action);
+                object[] parms = (mi.GetParameters().Length > 0) ? new object[] { row.Result.Param } : null; 
                 if (mi.Name == "SendKeys")
                     typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
                 object result = mi.Invoke(e, parms); 
