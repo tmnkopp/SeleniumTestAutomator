@@ -49,7 +49,7 @@ namespace CyberScope.Tests.Selenium
         }  
         [Fact]
         public void ControlLocatorsProvider_Provides()
-        {
+        { 
             var set = SettingsProvider.ControlLocators[0];
             Assert.IsType<ControlLocator>(set);
         }

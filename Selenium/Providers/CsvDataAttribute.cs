@@ -34,8 +34,8 @@ namespace CyberScope.Tests.Selenium
             if (string.IsNullOrEmpty(_fileName))
             {
                 _fileName = ConfigurationManager.AppSettings.Get($"TestDataDir")
-                    .Replace("[Type]", testMethod.DeclaringType.Name)
-                    .Replace("[TestMethod]", testMethod.Name);
+                    .Replace("{Type}", testMethod.DeclaringType.Name)
+                    .Replace("{TestMethod}", testMethod.Name);
                 if (!_fileName.EndsWith(".csv"))
                     _fileName = $"{_fileName}.csv";
             }

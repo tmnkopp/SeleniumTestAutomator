@@ -35,7 +35,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS 
 
         [Theory]
-        [InlineData("CIO 2022 Q1", ".*")]
+        [InlineData("2021 Q4", ".*")]
         public void Initialize(string _PK_FORM, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);

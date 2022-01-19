@@ -235,13 +235,13 @@ namespace CyberScope.Tests.Selenium
         public DriverService ApplyValidationAttempt(ValidationAttempt va, Action Assertion) {
             var ds = this;
             Type answerProvider = typeof(ElementValueProvider);
-            var apt = (from assm in AppDomain.CurrentDomain.GetAssemblies()
+            var ElementValueProviders = (from assm in AppDomain.CurrentDomain.GetAssemblies()
                     where assm.FullName.Contains(AppDomain.CurrentDomain.FriendlyName)
                     from t in assm.GetTypes()
                     where typeof(IElementValueProvider).IsAssignableFrom(t) && t.IsClass
                     select t).ToList();
             
-            apt.ForEach(t => {
+            ElementValueProviders.ForEach(t => {
                 var attr = t.GetCustomAttribute<ElementValueProviderMeta>(false);
                 if (!string.IsNullOrEmpty(attr?.XpathMatch ?? ""))
                 {
