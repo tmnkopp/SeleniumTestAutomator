@@ -115,8 +115,23 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 catch (Exception)
                 {
                     throw;
-                } 
+                }
+                if (AlertPresent(ds.Driver))
+                {
+                    ds.Driver.SwitchTo().Alert().Accept();
+                }
             }  
+        }
+        public static bool AlertPresent(ChromeDriver d){
+            try
+            { 
+                d.SwitchTo().Alert();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            } 
         }
 
         [Fact] 
