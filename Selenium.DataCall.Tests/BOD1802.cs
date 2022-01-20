@@ -75,52 +75,48 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         #region UNITTESTS  
         [Fact]
-        public void HvaAnnual_Resolves(){
+        public void HvaAnnual_Resolves(){ 
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency);
-            ds.ToTab("BOD 18-02 Annual 2021");
+            ds.CsConnect(UserContext.Agency).ToTab("BOD 18-02 Annual 2021");
             
-            wait = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(2));
-            var xpaths = new string[] {
-                  "//*[@id='ctl00_ContentPlaceHolder1_CBButtPanel1_btnEdit']"
-                , "//*[contains(@id, 'ctl00_ContentPlaceHolder1_CBYesNo_10_SelectionList_1')]"
-                , "//*[@id='ctl00_ContentPlaceHolder1_CBtext7_WebTextEdit1']"
-            };
-            var mtx = new List<dynamic>(); 
-            mtx.Add(new {xpath = "//*[contains(@id, 'ctl00_ContentPlaceHolder1_CBYesNo_10_SelectionList_1')]", param="Y" });
-            mtx.Add(new { xpath = "//*[@id='ctl00_ContentPlaceHolder1_CBButtPanel1_btnEdit']" });
-            mtx.Add(new {xpath = "//*[@id='ctl00_ContentPlaceHolder1_CBtext7_WebTextEdit1']", param = "test" });
+            var mtx = new List<object[]>();
+            mtx.Add(new object[] { "//*[@id='ctl00_ContentPlaceHolder1_CBButtPanel1_btnEdit']" });
+            mtx.Add(new object[] { "//*[contains(@id, 'ctl00_ContentPlaceHolder1_CBYesNo_10_SelectionList_0')]" }); 
+            mtx.Add(new object[] { "//*[contains(@id, 'ctl00_ContentPlaceHolder1_CBtext7_WebTextEdit1')]", "test" }); 
+            foreach (object[] obs in mtx)
+            {
+                var xpath = obs[0];
+                object[] args = (obs.Count() > 0) ? obs.Skip(1).ToArray() : null;
+                wait = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(1));
 
-            foreach (dynamic item in mtx)
-            {
-                var xp = item.xpath;
-                var p = item.param;
-            }
-            foreach (var xpath in xpaths)
-            {
-                IWebElement elm = wait.Until(drv => drv.FindElement(By.XPath($"{xpath}"))); 
-                foreach (var item in new string[] { "Clear", "SendKeys", "Click" })
+                var elm = (from e in wait.Until(drv => drv.FindElements(By.XPath($"{xpath}")))
+                           where !Regex.IsMatch(e.TagName, $@"(span|div|table|td|tr)")
+                           select e).FirstOrDefault(); 
+                try
+                {  
+                    if (args.Count() == 0) 
+                    {
+                        elm.Click();
+                    }
+                    else
+                    {
+                        elm.Clear();
+                        elm.SendKeys(xpath.ToString());
+                    }
+                }
+                catch (TargetInvocationException ex)
                 {
-                    try
-                    { 
-                        MethodInfo mi = elm.GetType().GetMethod(item);
-                        if (mi.GetParameters().Count() > 0) {
-                            mi.Invoke(elm, new object[]{ xpath });
-                        }else{
-                            mi.Invoke(elm, null);
-                        }   
-                    }
-                    catch (TargetInvocationException ex)
-                    {
-                        _logger.Warning($"{{@model}}", new { element_tag= elm.TagName, element_id = elm.GetAttribute("id"), method = item, xpath = xpath, exception = ex.InnerException.Message});
-                    }
-                    catch (Exception )
-                    {
-                        throw;
-                    }
-                }  
-            }
-
+                    _logger.Warning($"{{@model}}", new { 
+                    element_tag = elm.TagName, 
+                    element_id = elm.GetAttribute("id"),  
+                    xpath = xpath, 
+                    exception = ex.InnerException.Message });
+                }
+                catch (Exception)
+                {
+                    throw;
+                } 
+            }  
         }
 
         [Fact] 
