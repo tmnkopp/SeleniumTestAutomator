@@ -62,7 +62,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         public void Logger_Resolves()
         {
             string raw = File.ReadAllText(@"d:\logs\log202201191240.txt");
-            MatchCollection matches = Regex.Matches(raw, @"\[WRN\].*(\{.+InvalidElementStateException.+)");
+            MatchCollection matches = Regex.Matches(raw, @"\[WRN\].*(\{.+invalid element state.+\})");
             raw = $"[{ string.Join(",", (from Match m in matches select m.Groups[1].Value).ToList()) }]"; 
 
             string xpath = "//*[@id='ctl00_ContentPlaceHolder1_CBButtPanel1_btnEdit']";
@@ -70,8 +70,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             dynamic query =  (from j in ((JArray)json)
                               where j["xpath"].ToString() == xpath
                              select j).FirstOrDefault() ;
-            var item =  query.method.Value ;
-            // return ((JArray)json).Select(i => (string)i).ToList();
+            var item =  query.method.Value ; 
         }
         #region UNITTESTS  
         [Fact]
