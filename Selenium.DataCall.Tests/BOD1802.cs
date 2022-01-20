@@ -82,7 +82,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             wait = new WebDriverWait(ds.Driver, TimeSpan.FromSeconds(2));
             wait.Until(drv => drv.FindElement(By.XPath($"//input[contains(@id, 'EditButton')]"))).Click();  
         }
-        #endregion
+     
         private void NewTab(DriverService ds)
         { 
             var url = ds.Driver.Url;
