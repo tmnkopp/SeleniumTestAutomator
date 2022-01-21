@@ -22,19 +22,5 @@ namespace CyberScope.Tests.Selenium
             return AppDomain.CurrentDomain.GetAssemblies()
                             .SelectMany(assm => assm.GetTypes()).Where(t => t.IsClass);
         }
-    }
-    public class EventHandlers { 
-        public static void OpenTempHandle(object sender, AutomatorEventArgs e) {
-            var driver = e.Driver;
-            var url = driver.Url;
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.open();");
-            driver.SwitchTo().Window(driver.WindowHandles.Last());
-            driver.Url = url;
-        } 
-        public static void CloseTempHandle(object sender, AutomatorEventArgs e) {
-            var driver = e.Driver;
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.close();");
-            driver.SwitchTo().Window(e.CurrentWindowHandle);
-        } 
-    }
+    } 
 }
