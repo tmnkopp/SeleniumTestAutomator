@@ -35,14 +35,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS 
 
         [Theory]
-        [InlineData("2022 Q1", "1A|S2")]
+        [InlineData("2022 Q1", "S3A")]
         public void Initialize(string _PK_FORM, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
             var driver = ds.CsConnect(UserContext.Agency).ToTab(_PK_FORM).Driver;
-            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-
-            //Assert.True(ds.FismaFormValidates());
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
+            Assert.True(ds.FismaFormValidates());
             //ds.Driver.Quit(); 
         }
         [Theory]
