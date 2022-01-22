@@ -10,13 +10,13 @@
     },
     "//form[contains(@action, '_CIO_')]|//title[text()[contains(.,'CIO')]]": {
       "(qid_1_1_6)": "10",
-      "(CBCioInvGrid)": "1",
+      "(CBCioInvGrid)": "10",
       "(qid_1_2_1)": "30",
       "(qid_1_2_2)": "20",
       "(qid_1_2_3)": "10",
       "(qid_2_3|qid_2_4|qid_2_5|qid_2_6)": "1",
-      "(qid_2_10\\s?$)": "10",
-      "(qid_2_10_1)": "5",
+      "(qid_2_10)": "3",
+      "(qid_2_10_1)": "1",
       "(qid_2_10_2|qid_2_10_3)": "1",
       "(qid_4_1\\s?$)": "3",
       "(qid_4_\\d_\\d_[a-z])": "1",
@@ -56,7 +56,7 @@
       "(BGPRoute)": "255.255.255.255/12"
     }
   },
-  "ChromeOptions": [ "log-level=3", "--window-size=440,440" ],
+  "ChromeOptions": [ "log-level=3", "--window-size=1240,1240" ],
   "ControlLocators": [
     {
       "Locator": "//div[contains(@id, 'ctl00_ContentPlaceHolder1_Panel')]//input[contains(@id, '_btnEdit')]",
