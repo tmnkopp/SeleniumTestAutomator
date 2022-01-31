@@ -28,10 +28,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         {
             this.output = output;
             _logger = new LoggerConfiguration()
-            .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .CreateLogger();
-        }
-
+                .WriteTo.TestOutput(output, LogEventLevel.Verbose)
+                .CreateLogger();
+        } 
         #region UNITTESTS 
 
         [Theory]
