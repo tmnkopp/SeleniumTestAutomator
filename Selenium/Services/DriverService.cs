@@ -145,6 +145,8 @@ namespace CyberScope.Tests.Selenium
             driver.FindElementByCssSelector("input[id$=Login1_LoginButton]").Click(); 
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IWebElement ele = wait.Until(drv => drv.FindElement(By.CssSelector($"input[id$=ctl00_ContentPlaceHolder1_btn_Accept]")));
+            ele.Click();
+            ele = wait.Until(drv => drv.FindElement(By.CssSelector($"img[id*=ctl00_AgencyNav]")));
             ele.Click(); 
             return this;
         }
