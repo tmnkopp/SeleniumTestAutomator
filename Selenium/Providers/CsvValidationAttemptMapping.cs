@@ -13,19 +13,4 @@ namespace CyberScope.Tests.Selenium
             MapProperty(3, x => x.ExpectedError); 
         }
     }
-    public class ProcessMap 
-    { 
-        public string ElementLocator { get; set; }
-        public string Action { get; set; }
-        public string Param { get; set; } 
-    }
-    public class CsvGenericMapping : CsvMapping<ProcessMap>
-    {
-        public CsvGenericMapping() : base()
-        { 
-            MapProperty(0, x => x.ElementLocator);
-            MapProperty(1, x => x.Action);
-            MapProperty(2, x => x.Param);  
-        }
-    } 
 }

@@ -1,10 +1,9 @@
 ﻿namespace CyberScope.Tests.Selenium
 {
+
     public class ValidationAttempt
-    {
-
-        #region CTOR
-
+    { 
+        #region CTOR 
         public ValidationAttempt()
         {
         }

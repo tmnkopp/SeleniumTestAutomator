@@ -39,15 +39,26 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
 
         #region UNITTESTS 
    
-        [Theory] 
-        [InlineData("EINSTEIN", "[1]")]  
-        public void Initialize(string _PK_FORM, string SectionPattern)
+        [Theory]
+        [CsvInitData()]
+        public void Initialize( string Section)
         { 
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(_PK_FORM);  
-            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-            
+            ds.CsConnect(UserContext.Agency).ToTab("EINSTEIN"); 
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{Section}"));
+
         }
+        [Theory]
+        [CsvData()]
+        public void Validate(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
+        {
+            var s = Section;
+            var mxp = metricXpath;
+            var eae = ErrorAttemptExpression;
+            var ee = ExpectedError;
+
+        }
+
         #endregion 
     }
 }
