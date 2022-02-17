@@ -41,7 +41,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
    
         [Theory]
         [CsvInitData()]
-        public void Initialize( string Section)
+        public void Initialize(string Section)
         { 
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab("EINSTEIN"); 
