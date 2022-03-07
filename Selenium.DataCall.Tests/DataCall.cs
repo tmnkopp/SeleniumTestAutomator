@@ -25,6 +25,10 @@ using System.IO;
 using CyberScope.Tests.Selenium.Providers;
 using TinyCsvParser;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
@@ -48,7 +52,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS  
 
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1A")]  
+        [InlineData("CIO 2022 Q1", "S1A")]
         //[InlineData("CIO 2022 Q1", "S1A|S1C|4|8|9|10")] // S1A|S1C| 
         //[InlineData("BOD 18-02 Annual 2021", "S1A")] //  S1A|S1C| 
         public void Initialize(string TabText, string SectionPattern)
@@ -62,16 +66,17 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
             ds.Driver.Quit();
         }
-        [Theory] 
+        [Theory]
         [CsvData()]
         public void Validate(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
         {
-            var va = new ValidationAttempt( metricXpath, ErrorAttemptExpression );
+            var va = new ValidationAttempt(metricXpath, ErrorAttemptExpression);
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
                 .ToSection((s => s.SectionText.Contains($"{Section}")))
-                .ApplyValidationAttempt(va, () => {
+                .ApplyValidationAttempt(va, () =>
+                {
                     var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
@@ -80,18 +85,19 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [Theory]
         [CsvData(@"C:\temp\CIO_Validate.csv")]
         public void PerformValidation_Validates(string Section, string metricXpath, string ErrorAttemptExpression, string ExpectedError)
-        { 
-            var va = new ValidationAttempt( metricXpath, ErrorAttemptExpression ); 
-            var ds = new DriverService(_logger); 
+        {
+            var va = new ValidationAttempt(metricXpath, ErrorAttemptExpression);
+            var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
                 .ToTab("CIO 2022 Q1")
-                .ToSection((s => s.SectionText.Contains($"{Section}"))) 
-                .ApplyValidationAttempt(va, () => {
+                .ToSection((s => s.SectionText.Contains($"{Section}")))
+                .ApplyValidationAttempt(va, () =>
+                {
                     var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";
                     Assert.Contains(ExpectedError, actualError);
                 });
             ds.DisposeDriverService();
-        } 
+        }
         [Fact]
         public void CustomScript()
         {
@@ -105,9 +111,15 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 var expected = "";
                 Assert.Contains(expected, actualError);
             };
-            processor.Process(ds); 
-        } 
-        #endregion 
+            processor.Process(ds);
+        }
+        [Fact]
+        public void Request_ReturnsResponse()
+        {
+            var o = new CVEProvider();
+            o.Get();
+        }
+        #endregion
 
         #region PRIVS  
         [Theory]
@@ -118,7 +130,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var a1 = a;
         }
         #endregion 
-    } 
+    }
     public class CsvCommandProcessor
     {
         #region CTOR
@@ -138,42 +150,103 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region Events 
         public class ProcessEventArgs : EventArgs
         {
-            public DriverService DriverService { get; set; } 
+            public DriverService DriverService { get; set; }
             public ProcessEventArgs(DriverService driverService)
             {
-                this.DriverService = driverService; 
+                this.DriverService = driverService;
             }
-        } 
+        }
         public event EventHandler<ProcessEventArgs> OnProcessComplete;
         protected virtual void ProcessComplete(ProcessEventArgs e)
         {
-            OnProcessComplete?.Invoke(this, e); 
+            OnProcessComplete?.Invoke(this, e);
         }
         #endregion
 
         #region METHODS
 
         public void Process(DriverService ds)
-        {  
+        {
             var rows = parser.ReadFromFile(this._filename, Encoding.ASCII).ToList();
             foreach (var row in rows)
-            { 
+            {
                 By by = (row.Result.ElementLocator.StartsWith("//")) ? By.XPath(row.Result.ElementLocator) : By.CssSelector(row.Result.ElementLocator);
                 object[] parametersArray = new object[] { by };
 
                 MethodInfo mi = typeof(ChromeDriver).GetMethod("FindElement");
                 ds.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 IWebElement e = mi.Invoke(ds.Driver, parametersArray) as IWebElement;
-                 
+
                 mi = typeof(IWebElement).GetMethod(row.Result.Action);
-                object[] parms = (mi.GetParameters().Length > 0) ? new object[] { row.Result.Param } : null; 
+                object[] parms = (mi.GetParameters().Length > 0) ? new object[] { row.Result.Param } : null;
                 if (mi.Name == "SendKeys")
                     typeof(IWebElement).GetMethod("Clear").Invoke(e, null);
-                object result = mi.Invoke(e, parms); 
+                object result = mi.Invoke(e, parms);
             }
             var args = new ProcessEventArgs(ds);
             ProcessComplete(args);
-        } 
-        #endregion 
+        }
+        #endregion
+    }
+
+
+    public class Cve
+    {
+        public string cveID { get; set; }
+        public string vendorProject { get; set; }
+        public string product { get; set; }
+        public string vulnerabilityName { get; set; }
+        public string dateAdded { get; set; }
+        public string shortDescription { get; set; }
+        public string requiredAction { get; set; }
+        public string dueDate { get; set; }
+    }
+     
+    public class CveRequest
+    {
+        public string title { get; set; }
+        public string catalogVersion { get; set; }
+        public DateTime dateReleased { get; set; }
+        public int count { get; set; }
+        public Vulnerability[] vulnerabilities { get; set; }
+    }
+
+    public class Vulnerability
+    {
+        public string cveID { get; set; }
+        public string vendorProject { get; set; }
+        public string product { get; set; }
+        public string vulnerabilityName { get; set; }
+        public string dateAdded { get; set; }
+        public string shortDescription { get; set; }
+        public string requiredAction { get; set; }
+        public string dueDate { get; set; }
+    }
+
+    public class CVEProvider
+    {
+        private const string URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
+        public void Get()
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(URL);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage response = client.GetAsync(URL).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                // dynamic resp = response.Content.ReadAsAsync<ExpandoObject>().Result;
+                var resp = response.Content.ReadAsAsync<CveRequest>().Result;
+                foreach (var v in resp.vulnerabilities)
+                {
+                    Console.WriteLine("{0}", v.cveID);
+                }
+            }
+            else
+            {
+                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+            }
+            client.Dispose();
+        }
     }
 }
+
