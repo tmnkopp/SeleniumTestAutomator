@@ -1,30 +1,16 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
+using OpenQA.Selenium.Chrome; 
+using System; 
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
-using SeleniumExtras.WaitHelpers;
-using System.Text.RegularExpressions;
-using CyberScope.Tests.Selenium;
-using System.Drawing.Imaging;
+using System.Text; 
+using Xunit; 
+using System.Text.RegularExpressions; 
 using static CyberScope.Tests.Selenium.DriverService;
 using Serilog;
 using Serilog.Events;
-using Xunit.Abstractions;
-using System.Diagnostics;
-using NCalc;
-using Xunit.Sdk;
-using System.Reflection;
-using System.IO;
-using CyberScope.Tests.Selenium.Providers;
-using TinyCsvParser;
-using System.Collections.ObjectModel;
+using Xunit.Abstractions; 
+using System.Reflection; 
+using TinyCsvParser; 
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Dynamic;
@@ -52,7 +38,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS  
 
         [Theory]
-        [InlineData("CIO 2022 Q1", "S1A")]
+        [InlineData("CIO 2022 Q1", "S1C")]
         //[InlineData("CIO 2022 Q1", "S1A|S1C|4|8|9|10")] // S1A|S1C| 
         //[InlineData("BOD 18-02 Annual 2021", "S1A")] //  S1A|S1C| 
         public void Initialize(string TabText, string SectionPattern)
@@ -61,10 +47,11 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             ds.CsConnect(UserContext.Agency).ToTab(TabText);
             ds.OnSectionComplete += (s, e) =>
             {
-                var url = e.Section.URL;
+                Screenshot ss = ((ITakesScreenshot)ds.Driver).GetScreenshot();
+                ss.SaveAsFile($"C://temp//{Regex.Replace(e.Section.SectionText, @"[^\w\d]", "")}.png", ScreenshotImageFormat.Png);
             };
             ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-            ds.Driver.Quit();
+            // ds.Driver.Quit();
         }
         [Theory]
         [CsvData()]
@@ -112,13 +99,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 Assert.Contains(expected, actualError);
             };
             processor.Process(ds);
-        }
-        [Fact]
-        public void Request_ReturnsResponse()
-        {
-            var o = new CVEProvider();
-            o.Get();
-        }
+        } 
         #endregion
 
         #region PRIVS  
@@ -188,65 +169,6 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         #endregion
     }
-
-
-    public class Cve
-    {
-        public string cveID { get; set; }
-        public string vendorProject { get; set; }
-        public string product { get; set; }
-        public string vulnerabilityName { get; set; }
-        public string dateAdded { get; set; }
-        public string shortDescription { get; set; }
-        public string requiredAction { get; set; }
-        public string dueDate { get; set; }
-    }
-     
-    public class CveRequest
-    {
-        public string title { get; set; }
-        public string catalogVersion { get; set; }
-        public DateTime dateReleased { get; set; }
-        public int count { get; set; }
-        public Vulnerability[] vulnerabilities { get; set; }
-    }
-
-    public class Vulnerability
-    {
-        public string cveID { get; set; }
-        public string vendorProject { get; set; }
-        public string product { get; set; }
-        public string vulnerabilityName { get; set; }
-        public string dateAdded { get; set; }
-        public string shortDescription { get; set; }
-        public string requiredAction { get; set; }
-        public string dueDate { get; set; }
-    }
-
-    public class CVEProvider
-    {
-        private const string URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
-        public void Get()
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(URL);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = client.GetAsync(URL).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                // dynamic resp = response.Content.ReadAsAsync<ExpandoObject>().Result;
-                var resp = response.Content.ReadAsAsync<CveRequest>().Result;
-                foreach (var v in resp.vulnerabilities)
-                {
-                    Console.WriteLine("{0}", v.cveID);
-                }
-            }
-            else
-            {
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
-            }
-            client.Dispose();
-        }
-    }
+ 
 }
 
