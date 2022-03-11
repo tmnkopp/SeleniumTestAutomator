@@ -89,17 +89,14 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         }
         [Fact]
         public void GetDownloads()
-        {
-            
+        { 
             var path = ConfigurationManager.AppSettings.Get($"DownloadsDirs");
             var file = new DirectoryInfo(path)
                 .GetFiles()
                 .OrderByDescending(f => f.LastWriteTime)
                 .FirstOrDefault()
                 .FullName; 
-        }
-
-
+        } 
         [Fact]
         public void CustomScript()
         {
