@@ -42,24 +42,32 @@ namespace CyberScope.Tests.Selenium
                 alert.Accept();
             }
 
-            Thread.Sleep(10000); 
+            Thread.Sleep(8000); 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
 
             ele = driver.FindElements(By.XPath("//*[contains(@id, '_rbtnDownload')]")).FirstOrDefault();
             if (ele != null) ele.Click();
-      
+             
             var path = ConfigurationManager.AppSettings.Get($"DownloadsDir");
             if (path != null)
             {
+                Thread.Sleep(2000);
                 var file = new DirectoryInfo(path)
                             .GetFiles()
+                            .Where(f => !f.FullName.EndsWith(".tmp"))
                             .OrderByDescending(f => f.LastWriteTime)
                             .FirstOrDefault()
-                            .FullName;
+                            .FullName; 
                 ele = driver.FindElements(By.XPath("//*[contains(@id, '_fileUpload')]")).FirstOrDefault();
                 ele.SendKeys(file);
-            } 
-              
+                ele = driver.FindElements(By.XPath("//*[contains(@id, '_cmdUpload')]")).FirstOrDefault();
+                if (ele != null) ele.Click();
+                Thread.Sleep(8000);
+            }
+            ele = driver.FindElements(By.XPath("//*[contains(@id, '_ctl04_EditButton')]")).FirstOrDefault();
+            if (ele != null) ele.Click();
+            
+
             NaiveAutomator naiveFormFill = new NaiveAutomator(this.ValueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow"; 
             naiveFormFill.Automate(sessionContext);
