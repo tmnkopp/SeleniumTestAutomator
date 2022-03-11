@@ -71,10 +71,8 @@ namespace CyberScope.Tests.Selenium
             { 
                 ele = driver.FindElements(By.XPath("//*[contains(@id, '_cb_NA')]")).FirstOrDefault();
                 IWebElement elespan = ele.FindElements(By.XPath("//*[contains(@class, 'rbToggleCheckbox')]")).FirstOrDefault();
-       
-                var chk = elespan.GetAttribute("class").Contains("rbToggleCheckboxChecked");
-                var rbToggleCheckboxChecked = elespan.GetAttribute("class").Contains("rbToggleCheckboxChecked");
-                if (!rbToggleCheckboxChecked) ele?.Click(); 
+                var chkd = elespan.GetAttribute("class").Contains("rbToggleCheckboxChecked"); 
+                if (!chkd) ele?.Click(); 
             }
             catch (StaleElementReferenceException ex)
             {
@@ -83,8 +81,7 @@ namespace CyberScope.Tests.Selenium
              
             NaiveAutomator naiveFormFill = new NaiveAutomator(this.ValueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow"; 
-            naiveFormFill.Automate(sessionContext);
-
+            naiveFormFill.Automate(sessionContext); 
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_UpdateButton']")));
             ele.Click();
