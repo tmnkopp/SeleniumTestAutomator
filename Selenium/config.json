@@ -105,6 +105,12 @@
       "Type": "SystemsGrid",
       "Selector": "//div[contains(@class, 'GTTDataGrid')]",
       "ValueSetterTypes": "TextInputValueSetter"
+    },
+    {
+      "Locator": "//*[contains(@class, 'ImportableDataGrid')]//input[contains(@id, 'import')]",
+      "Type": "ImportableDataGrid",
+      "Selector": "//*[contains(@class, 'ImportableDataGrid')]",
+      "ValueSetterTypes": "TextInputValueSetter"
     }
   ]
 }

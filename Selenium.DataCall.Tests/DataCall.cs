@@ -15,6 +15,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Dynamic;
 using Newtonsoft.Json;
+using System.IO;
+using System.Configuration;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
@@ -85,6 +87,19 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
                 });
             ds.DisposeDriverService();
         }
+        [Fact]
+        public void GetDownloads()
+        {
+            
+            var path = ConfigurationManager.AppSettings.Get($"DownloadsDirs");
+            var file = new DirectoryInfo(path)
+                .GetFiles()
+                .OrderByDescending(f => f.LastWriteTime)
+                .FirstOrDefault()
+                .FullName; 
+        }
+
+
         [Fact]
         public void CustomScript()
         {

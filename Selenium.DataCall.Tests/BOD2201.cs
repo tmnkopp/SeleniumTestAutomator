@@ -51,9 +51,8 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
-            ds.CsConnect(UserContext.Agency).ToTab(TabText);
-            
-            //ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
+            ds.CsConnect(UserContext.Agency).ToTab(TabText); 
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
       
         }
     } 
