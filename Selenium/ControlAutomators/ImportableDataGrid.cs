@@ -79,12 +79,15 @@ namespace CyberScope.Tests.Selenium
 
             ele = driver.FindElements(By.XPath("//*[contains(@id, '_ctl04_EditButton')]")).FirstOrDefault();
             if (ele != null) ele.Click();
+
             NaiveAutomator naiveFormFill = new NaiveAutomator(this.ValueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow"; 
             naiveFormFill.Automate(sessionContext); 
+
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             ele = wait.Until(drv => drv.FindElement(By.CssSelector("*[id$='_UpdateButton']")));
             ele.Click();
+
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
         }
         #endregion
