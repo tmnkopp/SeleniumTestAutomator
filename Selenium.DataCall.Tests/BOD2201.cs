@@ -47,13 +47,12 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #endregion
   
         [Theory]
-        [InlineData("22-01", "S2")] 
+        [InlineData("22-01", ".*")] 
         public void Initialize(string TabText, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText); 
-            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
-      
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
         }
     } 
 }

@@ -54,8 +54,7 @@
       "(ddlYESNOUNK_1_ddl_Edit)": "Yes",
       "(BGPPeerIP)": "123.123.123.123",
       "(BGPRoute)": "255.255.255.255/12"
-    },
-    {
+    }, 
       "//form[contains(@action, '_BOD2201_')]": {
         "(Count)": "" 
     }
