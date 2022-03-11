@@ -42,7 +42,7 @@ namespace CyberScope.Tests.Selenium
                 alert.Accept();
             }
 
-            Thread.Sleep(8000); 
+            Thread.Sleep(6000); 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
 
             ele = driver.FindElements(By.XPath("//*[contains(@id, '_rbtnDownload')]")).FirstOrDefault();
@@ -62,11 +62,9 @@ namespace CyberScope.Tests.Selenium
                 ele.SendKeys(file);
                 ele = driver.FindElements(By.XPath("//*[contains(@id, '_cmdUpload')]")).FirstOrDefault();
                 if (ele != null) ele.Click();
-                Thread.Sleep(8000);
+                Thread.Sleep(5000);
             }
-            ele = driver.FindElements(By.XPath("//*[contains(@id, '_ctl04_EditButton')]")).FirstOrDefault();
-            if (ele != null) ele.Click();
-
+             
             try
             { 
                 ele = driver.FindElements(By.XPath("//*[contains(@id, '_cb_NA')]")).FirstOrDefault();
@@ -78,7 +76,9 @@ namespace CyberScope.Tests.Selenium
             {
                 sessionContext.Logger.Warning($"StaleElementReferenceException {ex.Message} {ex.InnerException}");
             }
-             
+
+            ele = driver.FindElements(By.XPath("//*[contains(@id, '_ctl04_EditButton')]")).FirstOrDefault();
+            if (ele != null) ele.Click();
             NaiveAutomator naiveFormFill = new NaiveAutomator(this.ValueSetters) ;
             naiveFormFill.ContainerSelector = ".rgEditRow"; 
             naiveFormFill.Automate(sessionContext); 
