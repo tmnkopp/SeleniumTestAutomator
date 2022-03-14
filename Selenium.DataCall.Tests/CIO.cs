@@ -34,7 +34,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region UNITTESTS 
 
         [Theory]
-        [InlineData("2022 Q1", ".*")]
+        [InlineData("2022 Q2", ".*")]
         public void Initialize(string _PK_FORM, string SectionPattern)
         {
             var ds = new Selenium.DriverService(_logger);
@@ -50,7 +50,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             var va = new ValidationAttempt(metricXpath, ErrorAttemptExpression);
             var ds = new DriverService(_logger);
             ds.CsConnect(UserContext.Agency)
-                .ToTab("CIO 2022 Q1")
+                .ToTab("CIO 2022 Q2")
                 .ToSection((s => s.SectionText.Contains($"{Section}")))
                 .ApplyValidationAttempt(va, () => {
                     var actualError = ds.GetElementValue(By.XPath("//*[contains(@id, 'Error')]")) ?? "";

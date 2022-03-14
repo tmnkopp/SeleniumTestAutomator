@@ -13,29 +13,42 @@ namespace CyberScope.Tests.Selenium
     { 
         public void SetValue(ChromeDriver driver, string ElementId)
         {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}"))); 
-            bool matched = false;
-            string onclick = Element.GetAttribute("onclick") ?? "";
-            // if (onclick.Contains("__doPostBack"))
-            // {
-            //     Element.Click();
-            //     return;
-            // }
-            foreach (var item in Defaults.EmptyIfNull())
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(8));
+            IWebElement Element = null;
+            try
             {
-                if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
+                Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
+            }
+            catch (NoSuchElementException ex)
+            { 
+                Console.WriteLine($"NoSuchElementException: {ElementId} \n{ex.Message} \n{ex.InnerException}" );
+            }
+            catch (Exception ex)
+            { 
+                throw;
+            }
+
+            if (Element != null)
+            {
+                bool matched = false;
+                string onclick = Element.GetAttribute("onclick") ?? "";
+
+                foreach (var item in Defaults.EmptyIfNull())
                 {
-                    matched = true;
-                    if (Element.GetAttribute("value").ToUpper() == item.Value.ToUpper())
+                    if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
                     {
-                        Element.Click();
-                        break;
+                        matched = true;
+                        if (Element.GetAttribute("value").ToUpper() == item.Value.ToUpper())
+                        {
+                            Element.Click();
+                            break;
+                        }
                     }
                 }
-            } 
-            if (!matched) {
-                Element.Click();
+                if (!matched)
+                {
+                    Element.Click();
+                }
             } 
         }
     }
