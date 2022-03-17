@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic; 
 namespace CyberScope.Tests
 {
-    [EntityMeta("fsma_Questions")]
+    [ORMEntityMap("fsma_Questions")]
     public class Question
     {
         public Question(){ 
         
         } 
+	 
 		public QuestionType QuestionType { get; set; }
 		public int PK_Question { get; set; }
 		public string FormName { get; set; }

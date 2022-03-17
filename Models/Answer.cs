@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic; 
 namespace CyberScope.Tests
 {
-    [EntityMeta("fsma_Answers")]
+    [ORMEntityMap("fsma_Answers")]
     public class FsmaAnswer
     {
         public FsmaAnswer(){ 

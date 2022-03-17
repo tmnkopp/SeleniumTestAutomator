@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic; 
 namespace CyberScope.Tests
 {
-    [EntityMeta("fsma_QuestionGroups")]
+    [ORMEntityMap("fsma_QuestionGroups")]
     public class QuestionGroup
     {
         public QuestionGroup(){

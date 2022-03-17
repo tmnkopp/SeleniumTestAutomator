@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 
 namespace CyberScope.Tests
 {
-    [EntityMeta("fsma_OrgSubmissions")]
+    [ORMEntityMap("fsma_OrgSubmissions")]
     public class OrgSubmission
     {
         public OrgSubmission(){ 

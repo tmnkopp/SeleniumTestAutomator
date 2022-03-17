@@ -1,4 +1,5 @@
-﻿using CyberScope.Tests;
+﻿using CyberBalance.CS.Core;
+using CyberScope.Tests;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

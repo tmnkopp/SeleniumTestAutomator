@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic; 
 namespace CyberScope.Tests
 {
-    [EntityMeta("fsma_FormMaster")]
+    [ORMEntityMap("fsma_FormMaster")]
     public class FormMaster
     {
         public FormMaster(){
