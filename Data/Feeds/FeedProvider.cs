@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Dynamic;
 using System.Net.Http.Headers;
+using System.Net;
 
 namespace CyberBalance.CS.Core
 {
@@ -40,6 +41,8 @@ namespace CyberBalance.CS.Core
         {
             if (string.IsNullOrWhiteSpace(feedUri))
                 throw new Exception($"Feed url cannot be null");
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
             HttpResponseMessage response;
             HttpClient client = new HttpClient();
