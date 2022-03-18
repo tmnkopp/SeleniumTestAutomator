@@ -41,35 +41,20 @@ namespace CyberBalance.CS.Core
         {
             if (string.IsNullOrWhiteSpace(feedUri))
                 throw new Exception($"Feed url cannot be null");
-
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-
-            HttpResponseMessage response;
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(feedUri);
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+ 
             try
             {
-                response = client.GetAsync(feedUri).Result;
+                using (var webClient = new WebClient())
+                {
+                    var jsonData = webClient.DownloadString(feedUri);
+                    return this.Deserializer(jsonData);
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception($"Feed Load Error {feedUri} {ex.Message} {ex.InnerException}");
-            }
-            finally
-            {
-                client.Dispose();
-            }
-            if (response.IsSuccessStatusCode)
-            {
-                dynamic result = response.Content.ReadAsAsync<ExpandoObject>().Result;
-                string json_result = JsonConvert.SerializeObject(result);
-                return this.Deserializer(json_result);
-            }
-            else
-            {
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
-            }
+            } 
             return default(T);
         }
         private Func<string, T> Deserializer { get; set; } = (json) =>
