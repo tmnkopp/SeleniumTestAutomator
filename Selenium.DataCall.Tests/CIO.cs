@@ -17,6 +17,7 @@ using Serilog.Events;
 using NCalc;
 using System.Collections;
 using CyberScope.Tests.Selenium.Providers;
+using CyberScope.Tests.Selenium.DataCall.Tests;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
@@ -30,9 +31,13 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
             _logger = new LoggerConfiguration()
                 .WriteTo.TestOutput(output, LogEventLevel.Verbose)
                 .CreateLogger();
-        } 
+        }
         #region UNITTESTS 
 
+        public CIO()
+        {
+            TestInitializer.InitIIS();
+        }
         [Theory]
         [InlineData("2022 Q2", ".*")]
         public void Initialize(string _PK_FORM, string SectionPattern)

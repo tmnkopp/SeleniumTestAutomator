@@ -13,6 +13,8 @@ using SeleniumExtras.WaitHelpers;
 using Serilog;
 using Xunit.Abstractions;
 using Serilog.Events;
+using System.IO;
+using System.Diagnostics;
 
 namespace CyberScope.Tests.Selenium
 { 
@@ -30,11 +32,28 @@ namespace CyberScope.Tests.Selenium
 
         [Fact]
         public void Connects()
-        {  
+        { 
             var ds = new DriverService(_logger);
             var driver = ds.CsConnect(UserContext.Agency).Driver;
             Assert.IsType<ChromeDriver>(driver);
             ds.DisposeDriverService(); 
-        }  
+        }
+        [Fact]
+        public void IIS_Connects()
+        {
+            StartIIS();
+           // _iisProcess.Kill(); 
+        }
+        
+        private void StartIIS()
+        { 
+            var solutionFolder = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory)));
+            var applicationPath = Path.Combine(solutionFolder, "CyberScope.Tests"); 
+            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            Process _iisProcess = new Process(); 
+            _iisProcess.StartInfo.FileName = programFiles + @"\IIS Express\iisexpress.exe";
+            _iisProcess.StartInfo.Arguments = string.Format("/path:{0} /port:{1}", applicationPath, "57236");
+            _iisProcess.Start();
+        } 
     } 
 }

@@ -20,7 +20,9 @@ using Xunit.Abstractions;
 using System.IO; 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection; 
+using System.Reflection;
+using System.Diagnostics;
+
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 { 
     public class BOD2201
@@ -28,7 +30,7 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #region FIELDS 
         ILogger _logger;
         private readonly ITestOutputHelper output;
-        WebDriverWait wait;
+        WebDriverWait wait; 
         #endregion
 
         #region CTOR 
@@ -50,9 +52,11 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         [InlineData("22-01", ".*")] 
         public void Initialize(string TabText, string SectionPattern)
         {
+
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText); 
-            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}")); 
-        }
+            ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));
+            
+        } 
     } 
 }
