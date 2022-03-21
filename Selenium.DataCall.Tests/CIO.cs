@@ -11,33 +11,24 @@ using System.Threading.Tasks;
 using Xunit;
 using SeleniumExtras.WaitHelpers;
 using System.Text.RegularExpressions;
-using Serilog;
 using Xunit.Abstractions;
 using Serilog.Events;
 using NCalc;
 using System.Collections;
 using CyberScope.Tests.Selenium.Providers;
-using CyberScope.Tests.Selenium.DataCall.Tests;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
-    public class CIO
+    public class CIO: BaseDataCallTest
     {
-        ILogger _logger;
-        private readonly ITestOutputHelper output;
-        public CIO(ITestOutputHelper output)
+        #region CTOR
+        public CIO(ITestOutputHelper output) : base(output)
         {
-            this.output = output;
-            _logger = new LoggerConfiguration()
-                .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-                .CreateLogger();
         }
+        #endregion
+
         #region UNITTESTS 
 
-        public CIO()
-        {
-            TestInitializer.InitIIS();
-        }
         [Theory]
         [InlineData("2022 Q2", ".*")]
         public void Initialize(string _PK_FORM, string SectionPattern)

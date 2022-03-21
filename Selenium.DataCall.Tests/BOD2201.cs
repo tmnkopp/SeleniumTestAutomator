@@ -25,34 +25,18 @@ using System.Diagnostics;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 { 
-    public class BOD2201
-    {
-        #region FIELDS 
-        ILogger _logger;
-        private readonly ITestOutputHelper output;
-        WebDriverWait wait; 
-        #endregion
-
+    public class BOD2201 : BaseDataCallTest
+    { 
         #region CTOR 
-        public BOD2201(ITestOutputHelper output)
-        {
-            this.output = output;
-            _logger = new LoggerConfiguration()
-            .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .WriteTo.File(@"d:\logs\log.txt",
-                rollingInterval: RollingInterval.Day,
-                rollOnFileSizeLimit: true)
-            .CreateLogger();
-
-
+        public BOD2201(ITestOutputHelper output):base(output)
+        {  
         }
         #endregion
   
         [Theory]
         [InlineData("22-01", ".*")] 
         public void Initialize(string TabText, string SectionPattern)
-        {
-
+        { 
             var ds = new Selenium.DriverService(_logger);
             ds.CsConnect(UserContext.Agency).ToTab(TabText); 
             ds.InitSections(qg => Regex.IsMatch(qg.SectionText, $"{SectionPattern}"));

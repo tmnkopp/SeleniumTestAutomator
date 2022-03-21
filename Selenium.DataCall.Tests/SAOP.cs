@@ -17,18 +17,15 @@ using Serilog.Events;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 {
-    public class SAOP
+    public class SAOP : BaseDataCallTest
     {
-        ILogger _logger;
-        private readonly ITestOutputHelper output;
-        public SAOP(ITestOutputHelper output)
-        { 
-            this.output = output;
-            _logger = new LoggerConfiguration()
-            .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .CreateLogger();
+        #region CTOR
+        public SAOP(ITestOutputHelper output) : base(output)
+        {
         }
-        
+        #endregion
+
+
         #region UNITTESTS 
         [Theory]
         [InlineData("2021 Annual Report - SAOP", "8")]

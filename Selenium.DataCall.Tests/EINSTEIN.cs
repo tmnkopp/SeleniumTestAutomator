@@ -20,7 +20,7 @@ using Xunit.Abstractions;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 { 
-    public class EINSTEIN
+    public class EINSTEIN: BaseDataCallTest
     {
         #region FIELDS 
         ILogger _logger;
@@ -28,12 +28,9 @@ namespace CyberScope.Tests.Selenium.Datacall.Tests
         #endregion
 
         #region CTOR 
-        public EINSTEIN(ITestOutputHelper output)
+        public EINSTEIN(ITestOutputHelper output):base(output)
         {
-            this.output = output;
-            _logger = new LoggerConfiguration()
-            .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .CreateLogger();
+ 
         }
         #endregion
 

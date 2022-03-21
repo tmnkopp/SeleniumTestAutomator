@@ -24,26 +24,15 @@ using System.Reflection;
 
 namespace CyberScope.Tests.Selenium.Datacall.Tests
 { 
-    public class BOD1802
+    public class BOD1802 : BaseDataCallTest
     {
-        #region FIELDS 
-        ILogger _logger;
-        private readonly ITestOutputHelper output;
+        #region FIELDS  
         WebDriverWait wait;
         #endregion
 
         #region CTOR 
-        public BOD1802(ITestOutputHelper output)
-        {
-            this.output = output;
-            _logger = new LoggerConfiguration()
-            .WriteTo.TestOutput(output, LogEventLevel.Verbose)
-            .WriteTo.File(@"d:\logs\log.txt",
-                rollingInterval: RollingInterval.Day,
-                rollOnFileSizeLimit: true)
-            .CreateLogger();
-
-
+        public BOD1802(ITestOutputHelper output): base(output)
+        { 
         }
         #endregion
 
