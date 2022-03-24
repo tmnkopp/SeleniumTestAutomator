@@ -9,9 +9,15 @@ namespace CyberScope.Tests.Selenium
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
         public Dictionary<string,string> Defaults { get; set; }
+        public UserContext userContext { get; set; }
         public OrgSubmission OrgSubmission { get; set; }
         public SessionContext()
         { 
+        }
+        public SessionContext(ILogger Logger, ChromeDriver Driver)
+        {
+            this.Logger = Logger;
+            this.Driver = Driver;
         }
         public SessionContext(
             ILogger Logger

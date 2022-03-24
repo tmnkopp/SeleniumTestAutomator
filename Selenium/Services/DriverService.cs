@@ -17,7 +17,8 @@ namespace CyberScope.Tests.Selenium
     public enum UserContext
     {
         Admin,
-        Agency
+        Agency,
+        CB
     }
     public enum TestResult
     {
@@ -135,19 +136,21 @@ namespace CyberScope.Tests.Selenium
 
         #region METHODS: NAV
         public DriverService CsConnect(UserContext userContext)
-        { 
-            var driver = this.Driver;
-            var user = $"{ConfigurationManager.AppSettings.Get($"{userContext.ToString()}User")}";
-            var pass = $"{ConfigurationManager.AppSettings.Get($"{userContext.ToString()}Pass")}";
-            driver.Url = ConfigurationManager.AppSettings.Get("CSTargerUrl");  
-            driver.FindElementByCssSelector("input[id$=Login1_UserName]").SendKeys(user);
-            driver.FindElementByCssSelector("input[id$=Login1_Password]").SendKeys(pass);
-            driver.FindElementByCssSelector("input[id$=Login1_LoginButton]").Click(); 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            IWebElement ele = wait.Until(drv => drv.FindElement(By.CssSelector($"input[id$=ctl00_ContentPlaceHolder1_btn_Accept]")));
-            ele.Click();
-            ele = wait.Until(drv => drv.FindElement(By.CssSelector($"img[id*=ctl00_AgencyNav]")));
-            ele.Click(); 
+        {
+            var url = ConfigurationManager.AppSettings.Get("CSTargerUrl");
+            var sc = new SessionContext()
+            {
+                Driver = this.Driver ,
+                Logger = this.Logger ,
+                userContext = userContext
+            }; 
+            var IConnectType = (from t in Assm.GetTypes()
+                           where typeof(IConnect).IsAssignableFrom(t) 
+                           && Regex.IsMatch(url, t.GetCustomAttribute<ConnectorMeta>()?.Selector ?? "^$")
+                           select t).FirstOrDefault() ?? typeof(DefaultCsConnector);
+             
+            IConnect obj = (IConnect)Activator.CreateInstance(Type.GetType($"{IConnectType.FullName}"));
+            obj.Connect(sc); 
             return this;
         }
             
