@@ -35,6 +35,7 @@ namespace CyberScope.Tests.Selenium
                     MatchKey = element?.GetAttribute("id") ?? "^$";
                 } 
                 if (Regex.Match(matchAttr, MatchKey, RegexOptions.IgnoreCase).Success) {
+                    sessionContext.Logger.Information($"TextInputValueSetter MatchKey: {MatchKey}  matchAttr:{matchAttr} ");
                     Element.Clear();
                     Element.SendKeys(item.Value);
                 }     
