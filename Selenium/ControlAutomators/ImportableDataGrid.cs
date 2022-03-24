@@ -62,6 +62,7 @@ namespace CyberScope.Tests.Selenium
                 ele.SendKeys(file);
                 ele = driver.FindElements(By.XPath("//*[contains(@id, '_cmdUpload')]")).FirstOrDefault();
                 if (ele != null) ele.Click();
+                sessionContext.Logger.Information($"File Uploaded {file}");
                 Thread.Sleep(5000);
             }
              

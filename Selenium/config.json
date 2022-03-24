@@ -56,7 +56,8 @@
       "(BGPRoute)": "255.255.255.255/12"
     },
     "//form[contains(@action, 'BOD2201_')]": {
-      "(CveCountJustification)": "^$"
+      "(CveCountJustification)": "^$",
+      "(UnremediatedCount)": "0"
     }
   },
   "ChromeOptions": [ "log-level=3", "--window-size=1440,1240" ],
