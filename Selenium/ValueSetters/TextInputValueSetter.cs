@@ -13,8 +13,9 @@ namespace CyberScope.Tests.Selenium
     [ValueSetterMeta( Selector="input[type='text']:not([readonly='readonly'])")]
     public class TextInputValueSetter : BaseValueSetter, IValueSetter
     { 
-        public void SetValue(ChromeDriver driver, string ElementId) {
+        public void SetValue(SessionContext sessionContext, string ElementId) {
 
+            var driver = sessionContext.Driver;
             string id = ElementId;
             IWebElement Element = new WebDriverWait(driver, TimeSpan.FromSeconds(1))
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
@@ -24,7 +25,7 @@ namespace CyberScope.Tests.Selenium
                 .Until(drv => drv.FindElement(By.CssSelector($"input[id='{id}']")));
 
             string matchAttr = this.GetMatchAttribute(Element); 
-            foreach (var item in Defaults.EmptyIfNull())
+            foreach (var item in sessionContext.Defaults.EmptyIfNull())
             {
                 string MatchKey = item.Key;
                 if (MatchKey.StartsWith("//"))

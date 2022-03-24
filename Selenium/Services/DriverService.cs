@@ -274,18 +274,19 @@ namespace CyberScope.Tests.Selenium
                 ((IAutomator)control).Automate(sc);
             }
             ds.FismaFormSave(); 
+            this.LogScreenshot($"ValidationAttempt {ds.Driver.Title}");
             Assertion();
             return this;
         }
 
         public DriverService InitSections(Func<DataCallSection, bool> SectionGroupPredicate )
         { 
-            SessionContext sc = new SessionContext() { 
+            SessionContext sessionContext = new SessionContext() { 
                 Driver = this.Driver
                 , Logger = this.Logger
                 , Defaults = new DefaultInputProvider(this.Driver).DefaultValues 
             };
-             
+       
             foreach (DataCallSection section in this.Sections().Where(SectionGroupPredicate))
             {
                 var appargs = new DriverServiceEventArgs(this);
@@ -295,18 +296,42 @@ namespace CyberScope.Tests.Selenium
                 this.FismaFormEnable();
                  
                 foreach (IAutomator control in this.PageControlCollection().EmptyIfNull())
-                    ((IAutomator)control).Automate(sc);
+                    ((IAutomator)control).Automate(sessionContext);
          
                 if (this.Driver.PageSource.Contains("Server Error in '/' Application")) 
                     ApplicationError(appargs);
 
                 this.FismaFormSave();
-
+ 
+                sessionContext.Logger.Information($"InitSections SectionComplete {section.SectionText}");
+                this.LogScreenshot(section.SectionText);
                 SectionComplete(appargs);
             }
  
             return this;
         }
+        public void LogScreenshot(string log)
+        {
+            var ssdir = ConfigurationManager.AppSettings.Get("ScreenshotLogDir");
+            if (!string.IsNullOrWhiteSpace(ssdir))
+            {
+                var uri = (this.Driver.Url.Contains("?")) ? this.Driver.Url.Substring(1, this.Driver.Url.IndexOf("?")) : this.Driver.Url;
+                uri = (from s in uri.Split('/') where s.Contains(".") select s).FirstOrDefault();
+                uri = Regex.Replace(uri, @"[^\w\d_]", "");
+                uri = (uri.Length >= 50) ? uri.Substring(1, 50) : uri;
+
+                log = Regex.Replace(log, @"[^\w\d]", "");
+                log = (log.Length >= 50) ? log.Substring(1, 50) : log;
+                
+                ssdir = ssdir.Replace("{log}", log);
+                ssdir = ssdir.Replace("{uri}", uri);
+                ssdir = ssdir.Replace("{date}", DateTime.Now.ToString("yyyy_MM_dd"));
+     
+                Screenshot ss = ((ITakesScreenshot)this.Driver).GetScreenshot();
+                ss.SaveAsFile($"{ssdir}", ScreenshotImageFormat.Png);
+            }
+        }
+
 
         public DriverService OpenTab() { 
             string url = this.Driver.Url;
@@ -357,8 +382,10 @@ namespace CyberScope.Tests.Selenium
             this.ToSection(-1);
             var success = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(5))
             .Until(dvr => dvr.FindElements(By.CssSelector("#ctl00_ContentPlaceHolder1_lblSuccessInfo")));
-            if (success.Count() > 0)
+            if (success.Count() > 0){
                 return success[0].Text.Contains("Your form has been validated and contains no errors.");
+            }    
+            this.Logger.Warning($"FismaForm InValid");
             return false;
         }
 

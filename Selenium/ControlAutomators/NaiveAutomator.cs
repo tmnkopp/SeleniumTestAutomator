@@ -44,8 +44,7 @@ namespace CyberScope.Tests.Selenium
                 foreach (var setter in ValueSetters)
                 {
                     var meta = (ValueSetterMeta)Attribute.GetCustomAttribute(setter.GetType(), typeof(ValueSetterMeta));
-                    var selector = $"{this.ContainerSelector} {meta.Selector}";
-                    //((IJavaScriptExecutor)driver).ExecuteScript($"document.getElementById('ctl00_lbl_FormHeader').innerHTML='<div style=\"color:#fff;\">{System.Web.HttpUtility.HtmlEncode(selector)}</div>';");
+                    var selector = $"{this.ContainerSelector} {meta.Selector}"; 
                     driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(.01);
                     if (driver.FindElementsByCssSelector($"{selector}").Count < 1)
                         continue; 
@@ -53,18 +52,18 @@ namespace CyberScope.Tests.Selenium
                     ElementIdIterator(selector, (ElementId) =>
                     {
                         IValueSetter valueSetter = setter;
-                        valueSetter.Overwrite = posts==0;
-                        valueSetter.Defaults = sessionContext.Defaults;
+                        valueSetter.Overwrite = posts==0; 
                         try
                         {
-                            valueSetter.SetValue(driver, ElementId);
+                            valueSetter.SetValue(sessionContext, ElementId);
                         }
                         catch (StaleElementReferenceException ex)
                         {
-                            sessionContext.Logger.Warning($"StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
+                            sessionContext.Logger.Warning($"NaiveAutomator StaleElementReferenceException {ElementId} {ex.Message} {ex.InnerException}"); 
                         }
                         catch (Exception ex)
                         {
+                            sessionContext.Logger.Error($"NaiveAutomator Exception {ElementId} {ex.Message} {ex.InnerException}");
                             if (!ex.Message.Contains("element not interactable"))
                             {
                                 throw new Exception($"{ElementId} {ex.Message} {ex.InnerException}");

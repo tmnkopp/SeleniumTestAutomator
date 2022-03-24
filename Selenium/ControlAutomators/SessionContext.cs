@@ -1,6 +1,10 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using Serilog;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace CyberScope.Tests.Selenium
 {
@@ -9,8 +13,7 @@ namespace CyberScope.Tests.Selenium
         public ILogger Logger { get ; set; }
         public ChromeDriver Driver { get; set; }
         public Dictionary<string,string> Defaults { get; set; }
-        public UserContext userContext { get; set; }
-        public OrgSubmission OrgSubmission { get; set; }
+        public UserContext userContext { get; set; } 
         public SessionContext()
         { 
         }
@@ -28,5 +31,6 @@ namespace CyberScope.Tests.Selenium
             this.Driver = Driver;
             this.Defaults = Defaults;
         }
+
     } 
 }

@@ -11,13 +11,14 @@ namespace CyberScope.Tests.Selenium
     [ValueSetterMeta(Selector = "select:not([id*='_ddl_Sections'])")]
     public class SelectValueSetter : BaseValueSetter, IValueSetter
     {
-        public void SetValue(ChromeDriver driver, string ElementId)
+        public void SetValue(SessionContext sessionContext, string ElementId)
         {
+            var driver = sessionContext.Driver;
             IWebElement Element = driver.FindElement(By.CssSelector($"#{ElementId}"));
             SelectElement sel = new SelectElement(Element);
             sel.SelectByIndex(sel.Options.Count - 1);
             string matchAttr = this.GetMatchAttribute(Element);
-            foreach (var item in Defaults.EmptyIfNull())
+            foreach (var item in sessionContext.Defaults.EmptyIfNull())
             {
                 string MatchKey = item.Key;
                 if (MatchKey.StartsWith("//"))

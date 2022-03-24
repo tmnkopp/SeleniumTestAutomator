@@ -11,8 +11,9 @@ namespace CyberScope.Tests.Selenium
     [ValueSetterMeta(Selector = "input[type='radio']")]
     public class RadioValueSetter : BaseValueSetter, IValueSetter
     { 
-        public void SetValue(ChromeDriver driver, string ElementId)
+        public void SetValue(SessionContext sessionContext, string ElementId)
         {
+            var driver = sessionContext.Driver;
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(8));
             IWebElement Element = null;
             try
@@ -21,10 +22,11 @@ namespace CyberScope.Tests.Selenium
             }
             catch (NoSuchElementException ex)
             { 
-                Console.WriteLine($"NoSuchElementException: {ElementId} \n{ex.Message} \n{ex.InnerException}" );
+                sessionContext.Logger.Error($"RadioValueSetter NoSuchElementException {ElementId} {ex.Message} {ex.InnerException}"); 
             }
             catch (Exception ex)
             { 
+                sessionContext.Logger.Error($"RadioValueSetter Exception {ElementId} {ex.Message} {ex.InnerException}");
                 throw;
             }
 
@@ -33,7 +35,7 @@ namespace CyberScope.Tests.Selenium
                 bool matched = false;
                 string onclick = Element.GetAttribute("onclick") ?? "";
 
-                foreach (var item in Defaults.EmptyIfNull())
+                foreach (var item in sessionContext.Defaults.EmptyIfNull())
                 {
                     if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
                     {

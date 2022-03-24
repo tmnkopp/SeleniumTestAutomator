@@ -11,12 +11,13 @@ namespace CyberScope.Tests.Selenium
     [ValueSetterMeta(Selector = "button[class*='RadRadioButton']")]
     public class RadButtonValueSetter : BaseValueSetter, IValueSetter
     { 
-        public void SetValue(ChromeDriver driver, string ElementId)
+        public void SetValue(SessionContext sessionContext, string ElementId)
         {
+            var driver = sessionContext.Driver;
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}"))); 
             bool matched = false;
-            foreach (var item in Defaults.EmptyIfNull())
+            foreach (var item in sessionContext.Defaults.EmptyIfNull())
             {
                 if (Regex.Match(this.GetMatchAttribute(Element), item.Key, RegexOptions.IgnoreCase).Success)
                 {

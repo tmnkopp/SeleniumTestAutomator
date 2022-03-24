@@ -12,19 +12,17 @@ namespace CyberScope.Tests.Selenium
     public class ValueSetterMeta: Attribute
     {
         public string Selector { get; set; }
+        public string XPATH { get; set; }
         public ValueSetterMeta()
         { 
         }
     } 
     public interface IValueSetter {
-        void SetValue(ChromeDriver driver, string ElementId); 
-        Dictionary<string, string> Defaults { set; } 
+        void SetValue(SessionContext sessionContext, string ElementId);  
         bool Overwrite { get; set; }
     }
     public abstract class BaseValueSetter
-    {
-        protected Dictionary<string, string> defaults;
-        public Dictionary<string, string> Defaults { set => defaults = value; protected get => defaults; } 
+    { 
         public bool Overwrite { get; set; } = true;
         protected IList<IWebElement> inputs;
         

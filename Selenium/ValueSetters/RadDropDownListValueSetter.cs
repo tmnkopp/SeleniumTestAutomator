@@ -11,10 +11,10 @@ namespace CyberScope.Tests.Selenium
     [ValueSetterMeta(Selector = "*[class*='RadDropDownList']")]
     public class RadDropDownListValueSetter : BaseValueSetter, IValueSetter
     {
-        private ChromeDriver Driver;
-        public void SetValue(ChromeDriver driver, string ElementId)
+        private ChromeDriver driver;
+        public void SetValue(SessionContext sessionContext, string ElementId)
         {
-            this.Driver = driver;
+            this.driver = sessionContext.Driver;
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(1));
             IWebElement Element = wait.Until(drv => drv.FindElement(By.CssSelector($"#{ElementId}")));
             Element.Click();
@@ -32,11 +32,11 @@ namespace CyberScope.Tests.Selenium
         {
             foreach (var element in inputs)
             {
-                IWebElement e = new WebDriverWait(this.Driver, TimeSpan.FromSeconds(5)).Until(
+                IWebElement e = new WebDriverWait(this.driver, TimeSpan.FromSeconds(5)).Until(
                       dvr => (element.Displayed) ? element : null); 
                 if (element.Enabled && (element.GetAttribute("checked") ?? "") != "true")
                 {
-                    ((IJavaScriptExecutor)this.Driver).ExecuteScript("arguments[0].click();", element);
+                    ((IJavaScriptExecutor)this.driver).ExecuteScript("arguments[0].click();", element);
                     break;
                 } 
             } 
