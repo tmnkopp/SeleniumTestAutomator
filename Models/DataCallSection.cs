@@ -1,7 +1,7 @@
 
 using System;
 using System.Collections.Generic; 
-namespace CyberScope.Tests
+namespace CyberScope.Automator
 { 
     public class DataCallSection
     {
