@@ -22,7 +22,7 @@
         public string ExpectedError { get; set; } = "";
         public string ValidValue { get; set; } = "";
         public string AnswerProviderTypeName { get; set; }
-        public object[] GetAsRow => new object[] { Tab, Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
+        public object[] GetAsRow => new object[] { Section, MetricXpath, ErrorAttemptExpression, ExpectedError };
 
         #endregion
 
