@@ -5,8 +5,7 @@ namespace CyberScope.Automator
 { 
     public class DataCallSection
     {
-        public DataCallSection(){
-      
+        public DataCallSection(){ 
         }   
 		public string SectionText { get; set; } 
 		public string URL { get; set; } 
