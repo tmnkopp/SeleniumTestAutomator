@@ -13,7 +13,7 @@ namespace CyberScope.Automator.Providers
         public override void Populate(SessionContext sessionContext)
         {
             // base.Populate(ds);
-            string _fileName = Automator.SettingsProvider.appSettings[$"TestDataDir"].Replace("{Type}_Validations", "ElementPath");
+            string _fileName = Utils.GetDataPath() + "ElementPath.csv";
             var csvParser = new CsvParser<ElementValueMap>(new CsvParserOptions(true, ','), new ElementValueMapper());
             var result = csvParser.ReadFromFile(_fileName, Encoding.ASCII).ToList();
             foreach (var item in result)
